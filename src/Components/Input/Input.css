@@ -1,0 +1,13 @@
+.input{
+    background: #fff;
+    box-shadow: 0 6px 10px 0 rgba(0, 0, 0 , .1);
+    padding: 15px;
+    margin: 15px;
+    border: 1px solid rgb(133, 133, 133);
+    border-radius: 10px;
+}
+
+.createPostInput{
+    width: 96.5%;
+    margin: 0px 0px 15px 0px;
+}

@@ -1,0 +1,26 @@
+.NavBar{
+    width: 80%;
+    padding: 15px 10%;
+    background-color: #6389e1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.NavBar > a, .NavBar > p {
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 21px;
+    color: #f0f3fc;
+    margin: 0px 15px;
+}
+
+.NavBar > a:hover, .NavBar > p:hover {
+    color: #3c5287;
+}
+
+.profilePicNavBar{
+    border-radius: 100%;
+    width: 60px;
+    height: 60px;
+}

@@ -1,0 +1,72 @@
+.button{
+    border: none;
+    background-color: #6389e1;
+    color: #fff;
+    font-size: 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 15px 17px;
+    width: 100%;
+    margin: 0px 15px;
+}
+
+.postTypesButton{
+    width: 80%;
+}
+
+.postTypesButtonBlock{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.createPostButton{
+    background-color: #6389e1;
+    margin: 10px 0px 0px 0px;
+    width: 100%;
+}
+
+.cancelCreatePostButton{
+    background-color: #f14e4e;
+    margin: 10px 0px 0px 0px;
+    width: 100%;
+}
+
+.commentButton{
+    border: none;
+    background-color: #00a8ff;
+    color: #fff;
+    font-size: 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 15px 17px;
+    margin-top: 5px;
+}
+
+.commentButtonBlock{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.showNewPostBlockButton{
+    margin: 0px 0px 15px 0px;
+    background-color: #6389e1;
+}
+
+.showNewPostBlockButtonBlock{
+    width: 100%
+}
+
+.deleteButton{
+    background-color: #f14e4e;
+    padding: 10px 0px;
+}
+
+.editButton{
+    background-color: #6389e1;
+    padding: 10px 0px;
+}
+
+.editButtonBlock{
+    margin-right: 15px;
+}

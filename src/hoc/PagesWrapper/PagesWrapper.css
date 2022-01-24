@@ -1,0 +1,6 @@
+.mainWrapper{
+    margin: 1% 10%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}

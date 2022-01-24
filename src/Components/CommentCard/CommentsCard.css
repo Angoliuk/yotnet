@@ -1,0 +1,28 @@
+.commentAuthorInfoBlock{
+    display: flex;
+    align-items: center;
+}
+
+.commentInfoBlock{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.commentInfoTextBlock{
+    margin-left: 20px;
+}
+
+.commentDate{
+    font-size: 13px;
+}
+
+.commentAuthorPic{
+    border-radius: 100%;
+    width: 60px;
+    height: 60px;
+}
+
+.commentCard{
+    margin-left: 15px;
+}

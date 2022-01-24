@@ -1,0 +1,6 @@
+export const LOGIN = 'LOGIN'
+export const LOGOUT = 'LOGOUT'
+export const UPDATE_POSTS = 'UPDATE_POSTS'
+export const UPDATE_COMMENTS = 'UPDATE_COMMENTS'
+export const ADD_COMMENTS = 'ADD_COMMENTS'
+export const ADD_POSTS = 'ADD_POSTS'

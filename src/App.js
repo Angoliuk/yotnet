@@ -1,25 +1,32 @@
-import logo from './logo.svg';
+import { useEffect } from 'react';
+import { connect } from 'react-redux';
 import './App.css';
+import RoutesList from './Pages/Routes';
+import { autoLogin } from './ReduxStorage/actions/userActions';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+function App(props) {
+
+    const { autoLogin } = props
+
+    useEffect(() => {
+        autoLogin()
+    })
+
+    return (
+        <RoutesList />
+    );
 }
 
-export default App;
+function mapStateToProps(state) {
+    return{
+        accessToken: state.userReducers.accessToken,
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return{
+        autoLogin: () => dispatch(autoLogin()),
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
