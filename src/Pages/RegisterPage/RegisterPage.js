@@ -65,7 +65,8 @@ function RegisterPage(props) {
 
     return(
         <div>
-            <InputsWithUserData 
+            <InputsWithUserData
+                showPassword={true} 
                 stateForInputs={registerData} 
                 onChangeInput={inputChangeHandler}
                 onChangeAvatar={avatarChangeHandler}
