@@ -7,6 +7,8 @@ import { useHttp } from "../../Hook/useHttp";
 import validator from "validator";
 import { connect } from "react-redux";
 import { login } from "../../ReduxStorage/actions/userActions";
+import { Input } from "../../Components/Input/Input";
+import './ProfilePage.css'
 
 function ProfilePage(props) {
 
@@ -16,16 +18,19 @@ function ProfilePage(props) {
     const id = useParams().id
     const [userInfo, setUserInfo] = useState({
         email: '',
-        password: '',
         firstname: '',
         lastname: '',
         age: 0,
         avatar: "https://picsum.photos/60",
     })
+
+    const [newPassword, setNewPassword] = useState('')
+
     const [showAvatarsBlock, setShowAvatarsBlock] = useState(false)
 
     const dataRequest = useCallback( async() => {
         const user = await request(`/users?id=${id}`, 'GET', null)
+        delete user[0].password
         setUserInfo(user[0])
     }, [id, request])
 
@@ -34,6 +39,10 @@ function ProfilePage(props) {
             ...userInfo,
             [event.target.name]: event.target.value
         })
+    }
+
+    const passwordInputChangeHandler = (event) => {
+        setNewPassword(event.target.value)
     }
 
     const avatarChangeHandler = (event) => {
@@ -51,17 +60,25 @@ function ProfilePage(props) {
             && userInfo.lastname
             && userInfo.firstname
             && userInfo.age > 14
-            && validator.isLength(userInfo.password, {min: 6, max: undefined})
             ){
+                if (newPassword.length >= 6) {
+                    setUserInfo({...userInfo, password: newPassword})
+                }else if (newPassword.length < 6 && newPassword.length > 0){
+                    showAlertHandler({
+                        show: true,
+                        text: `Minimal lenght of password - 6`,
+                        type: 'error',
+                    })
+                    return null
+                }
                 const updatedUser = await request(`/users/${id}`, 'PATCH', userInfo)
+                //password do not change
                 login({...updatedUser, accessToken: accessToken})
-                // console.log({...updatedUser, accessToken: accessToken})
                 showAlertHandler({
                     show: true,
                     text: `Everything successfully saved`,
                     type: 'success',
                 })
-                //update locally and go back to home or etc
             }else{
                 throw new Error('Enter all data')
             }     
@@ -80,12 +97,26 @@ function ProfilePage(props) {
 
     return(
         <div>
+            <p className="blockNameProfile">Information about you</p>
+
             <InputsWithUserData 
+                showPassword={false}
                 stateForInputs={userInfo} 
                 onChangeInput={inputChangeHandler}
                 onChangeAvatar={avatarChangeHandler}
                 showAvatarsBlock={showAvatarsBlock}
             />
+
+            <p className="blockNameProfile">Password</p>
+
+            <Input
+                name='password' 
+                value={newPassword} 
+                htmlForText="Password" 
+                onChange={passwordInputChangeHandler} 
+                type='password'
+            />
+
             <Button 
                 onClick={updateUserProfile} 
                 text='Save' 
