@@ -8,3 +8,10 @@
 .createPostTextarea{
     width: 99%;
 }
+
+.editPostTextarea{
+    padding: 1%;
+    width: 97.7%;
+    margin-top: 15px;
+}
+

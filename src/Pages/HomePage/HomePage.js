@@ -10,18 +10,21 @@ import { useHttp } from "../../Hook/useHttp";
 import { addPosts } from "../../ReduxStorage/actions/postActions";
 import './HomePage.css'
 import validator from 'validator'
+import { addAnnouncements } from "../../ReduxStorage/actions/announcementActions";
+import { Loader } from "../../Components/Loader/Loader";
 
 function HomePage(props) {
 
-    const {request} = useHttp()
+    const {request, loading} = useHttp()
 
-    const {userInfo, showAlertHandler, posts, addPosts} = props
+    const {userInfo, showAlertHandler, posts, addPosts, addAnnouncements} = props
     const [showNewPostBlock, setShowNewPostBlock] = useState(false)
 
     const dataRequest = useCallback(async () => {
         try {            
             const data = await request(`/posts?_page=1&_limit=20&_expand=user&_sort=createdAt&_order=desc`, 'GET', null)
             // &userId_like=${userId}
+            //user posts and announcements
             addPosts(data)
         } catch (e) {
             showAlertHandler({
@@ -36,25 +39,36 @@ function HomePage(props) {
     const [newPost, setNewPost] = useState({
         title: '',
         body: '',
+        isAnnouncement: false,
     })
 
     const newPostInputHandler = useCallback((event) => {
-        setNewPost({
-            ...newPost,
-            [event.target.name]: event.target.value
-        })
+        event.target.name === "isAnnouncement"
+        ?   setNewPost({
+                ...newPost,
+                [event.target.name]: event.target.checked
+            })
+        :   setNewPost({
+                ...newPost,
+                [event.target.name]: event.target.value
+            })
+        
     }, [newPost])
 
     const createNewPost = async () => {
         try {
-            if (
-            validator.isLength(newPost.title, {min: 1, max: 150})
-            && validator.isLength(newPost.body, {min: 1, max: 1000})
-            && userInfo.id
-            ){
-                const newPostFromBD = await request('/664/posts', 'POST', {title: newPost.title, body: newPost.body, createdAt: new Date(), updatedAt: new Date(), userId: userInfo.id}, {'Authorization': `Bearer ${userInfo.accessToken}`})
-                addPosts([{
-                    ...newPostFromBD,
+            
+            if (newPost.isAnnouncement) {
+
+                if (
+                    !validator.isLength(newPost.title, {min: 1, max: 100})
+                    || !validator.isLength(newPost.body, {min: 1, max: 250})
+                    || !userInfo.id
+                ){throw new Error('write something')}
+
+                const newAnnouncementFromDB = await request('/664/announcements', 'POST', {title: newPost.title, body: newPost.body, createdAt: new Date(), updatedAt: new Date(), userId: userInfo.id}, {'Authorization': `Bearer ${userInfo.accessToken}`})
+                addAnnouncements([{
+                    ...newAnnouncementFromDB,
                     user: {
                         id: userInfo.id, 
                         firstname: userInfo.firstname, 
@@ -63,15 +77,38 @@ function HomePage(props) {
                         age: userInfo.age,
                     }
                 }])
+
             } else {
-                throw new Error('write something')
+
+                if (
+                    !validator.isLength(newPost.title, {min: 1, max: 150})
+                    || !validator.isLength(newPost.body, {min: 1, max: 600})
+                    || !userInfo.id
+                ){throw new Error('write something')}
+
+                const newPostFromDB = await request('/664/posts', 'POST', {title: newPost.title, body: newPost.body, createdAt: new Date(), updatedAt: new Date(), userId: userInfo.id}, {'Authorization': `Bearer ${userInfo.accessToken}`})
+                addPosts([{
+                    ...newPostFromDB,
+                    user: {
+                        id: userInfo.id, 
+                        firstname: userInfo.firstname, 
+                        lastname: userInfo.lastname, 
+                        email: userInfo.email, 
+                        age: userInfo.age,
+                    }
+                }])
             }
+
             setShowNewPostBlock(false)
             setNewPost({
                 title: '',
                 body: '',
             })
         } catch (e) {
+            setNewPost({
+                title: '',
+                body: '',
+            })
             setShowNewPostBlock(false)
             showAlertHandler({
                 show: true,
@@ -130,9 +167,22 @@ function HomePage(props) {
                             placeholder="What`s on your mind?"
                         />
 
+                        <div className="isAnnouncementBlock">
+                            <input 
+                                onChange={newPostInputHandler} 
+                                placeholder='' 
+                                type="checkbox"
+                                name='isAnnouncement' 
+                                id="isAnnouncement"
+                                className="isAnnouncementCheckbox"
+                            />
+
+                            <label htmlFor="isAnnouncement">Post as announcement</label>
+                        </div>
+                        
                         <Button 
                             onClick={createNewPost} 
-                            text='Create post' 
+                            text='Create' 
                             name='createPostButton' 
                             className="createPostButton button"
                         />
@@ -149,9 +199,10 @@ function HomePage(props) {
             }
 
             {
-            posts
+            posts && !loading
             ?   <Posts />
-            :   <div>loading</div>
+            :   Modal(<Loader />)
+                
             }
         </>
     )
@@ -166,7 +217,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return{
-        addPosts: (newPosts) => dispatch(addPosts(newPosts))
+        addPosts: (newPosts) => dispatch(addPosts(newPosts)),
+        addAnnouncements: (newAnnouncements) => dispatch(addAnnouncements(newAnnouncements)),
     }
 }
 

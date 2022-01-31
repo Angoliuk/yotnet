@@ -70,3 +70,17 @@
 .editButtonBlock{
     margin-right: 15px;
 }
+
+.editPostButton{
+    margin: 10px 0px;
+}
+
+.editButtonAnnouncement{
+    background-color: #6389e1;
+    padding: 5px 0px;
+}
+
+.deleteButtonAnnouncement{
+    background-color: #f14e4e;
+    padding: 5px 0px;
+}

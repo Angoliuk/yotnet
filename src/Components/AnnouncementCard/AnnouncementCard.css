@@ -1,0 +1,32 @@
+.announcementInfoBlock{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: -25px;
+}
+
+.announcementAuthorInfoBlock{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.announcementAuthorPicBlock{
+    margin-right: 15px;
+}
+
+.announcementDate{
+    font-size: 13px;
+    padding-bottom: 10px;
+}
+
+.announcementAuthorPic{
+    /* border-radius: 100%; */
+    width: 60px;
+    height: 60px;
+}
+
+.ButtonsForUserAnnouncementBlock{
+    display: flex;
+    margin-right: 20px;
+}

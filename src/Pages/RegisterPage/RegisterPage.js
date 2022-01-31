@@ -7,10 +7,12 @@ import { login } from "../../ReduxStorage/actions/userActions";
 import validator from 'validator';
 import './RegisterPage.css'
 import InputsWithUserData from "../../Components/InputsWithUserData/InputsWithUserData";
+import { Loader } from "../../Components/Loader/Loader";
+import { Modal } from "../../Components/Modal/Modal";
 
 function RegisterPage(props) {
 
-    const {request} = useHttp()
+    const {request, loading} = useHttp()
 
     const [registerData, setRegisterData] = useState({
         email: '',
@@ -42,6 +44,7 @@ function RegisterPage(props) {
 
     const processRegister = async () => {
         try {
+            
             if(
             validator.isEmail(registerData.email) 
             && registerData.lastname
@@ -51,9 +54,11 @@ function RegisterPage(props) {
             ){
                 const data = await request('/register', 'POST', registerData)
                 login({...data.user, accessToken: data.accessToken})
+
             }else{
                 throw new Error('Enter all data')
-            }     
+            }    
+
         } catch (e) {
             showAlertHandler({
                 show: true,
@@ -64,7 +69,13 @@ function RegisterPage(props) {
     }
 
     return(
+        
         <div>
+            {
+            loading
+            ?   Modal(<Loader />)
+            :   null
+            }
             <InputsWithUserData
                 showPassword={true} 
                 stateForInputs={registerData} 

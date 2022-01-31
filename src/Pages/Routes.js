@@ -2,11 +2,11 @@ import React from 'react'
 import { connect } from 'react-redux';
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { BrowserRouter as Router } from 'react-router-dom';
-import PostEditPage from "./PostEditPage/PostEditPage";
 import HomePage from "./HomePage/HomePage";
 import LoginPage from "./LoginPage/LoginPage";
 import ProfilePage from "./ProfilePage/ProfilePage";
 import RegisterPage from "./RegisterPage/RegisterPage";
+import EditPage from './EditPage/EditPage';
 
 const RoutesList = (props) => {
 
@@ -28,8 +28,8 @@ const RoutesList = (props) => {
                         />
 
                         <Route 
-                            path='/post/:id' 
-                            element={<PostEditPage />} 
+                            path='/edit/:postType/:id' 
+                            element={<EditPage />} 
                         />
 
                         <Route 

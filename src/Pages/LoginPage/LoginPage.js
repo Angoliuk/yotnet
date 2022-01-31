@@ -6,15 +6,17 @@ import { PagesWrapper } from "../../hoc/PagesWrapper/PagesWrapper";
 import { useHttp } from "../../Hook/useHttp";
 import { login } from "../../ReduxStorage/actions/userActions";
 import validator from 'validator'
+import { Loader } from "../../Components/Loader/Loader";
+import { Modal } from "../../Components/Modal/Modal";
 
 function LoginPage(props) {
 
-    const {request} = useHttp()
+    const {request, loading} = useHttp()
     const {login, showAlertHandler} = props
 
     const [loginData, setLoginData] = useState({
-        email: '1@gmail.com',
-        password: '123123123',
+        email: '',
+        password: '',
     })
 
     const inputChangeHandler = (event) => {
@@ -26,15 +28,18 @@ function LoginPage(props) {
 
     const processLogin = async () => {
         try {
+            
             if (
             validator.isEmail(loginData.email) 
             && validator.isLength(loginData.password, {min: 6, max: undefined})
             ){
                 const data = await request('/login', 'POST', loginData)
                 login({...data.user, accessToken: data.accessToken})
+
             } else {
                 throw new Error('write something')
             }
+
         } catch (e) {
             showAlertHandler({
                 show: true,
@@ -46,6 +51,11 @@ function LoginPage(props) {
 
     return(
         <div>
+            {
+            loading
+            ?   Modal(<Loader />)
+            :   null
+            }
             <Input 
                 name='email' 
                 value={loginData.email} 
@@ -55,6 +65,7 @@ function LoginPage(props) {
 
             <Input 
                 name='password' 
+                type="password"
                 value={loginData.password} 
                 htmlForText="Password" 
                 onChange={inputChangeHandler}

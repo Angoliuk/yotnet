@@ -14,3 +14,13 @@
     justify-content: space-around;
     margin-top: 20px;
 }
+
+.isAnnouncementCheckbox{
+    width: 30px;
+    height: 30px;
+}
+
+.isAnnouncementBlock{
+    display: flex;
+    align-items: center;
+}

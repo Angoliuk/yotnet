@@ -19,8 +19,10 @@ function CommentCard(props) {
 
     const deleteComment = async () => {
         try {
+
             await request(`/comments/${commentId}`, 'DELETE', null)
             setComments(comments.filter((comment) => comment.id !== commentId))
+
         } catch (e) {
             showAlertHandler({
                 show: true,
@@ -39,12 +41,14 @@ function CommentCard(props) {
 
     const saveChangedComment = async () => {
         try {
+
             const changedComment = await request(`/664/comments/${commentId}`, 'PATCH', {...commentChanges, updatedAt: new Date()}, {'Authorization': `Bearer ${user.accessToken}`})
             const newComments = Array.from(comments)
             const commentIndex = comments.findIndex((comment) => comment.id === changedComment.id)
             newComments[commentIndex] = {...changedComment, user: user}
             setComments(newComments)
             setEditingComment(false)
+            
         } catch (e) {
             setEditingComment(false)
             showAlertHandler({

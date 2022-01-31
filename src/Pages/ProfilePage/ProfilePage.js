@@ -9,10 +9,12 @@ import { connect } from "react-redux";
 import { login } from "../../ReduxStorage/actions/userActions";
 import { Input } from "../../Components/Input/Input";
 import './ProfilePage.css'
+import { Loader } from "../../Components/Loader/Loader";
+import { Modal } from "../../Components/Modal/Modal";
 
 function ProfilePage(props) {
 
-    const {request} = useHttp()
+    const {request, loading} = useHttp()
     const {showAlertHandler, login, accessToken} = props
 
     const id = useParams().id
@@ -55,15 +57,14 @@ function ProfilePage(props) {
 
     const updateUserProfile = async () => {
         try {
+            
             if(
             validator.isEmail(userInfo.email) 
             && userInfo.lastname
             && userInfo.firstname
             && userInfo.age > 14
             ){
-                if (newPassword.length >= 6) {
-                    setUserInfo({...userInfo, password: newPassword})
-                }else if (newPassword.length < 6 && newPassword.length > 0){
+                if (newPassword.length < 6 && newPassword.length > 0){
                     showAlertHandler({
                         show: true,
                         text: `Minimal lenght of password - 6`,
@@ -71,14 +72,16 @@ function ProfilePage(props) {
                     })
                     return null
                 }
-                const updatedUser = await request(`/users/${id}`, 'PATCH', userInfo)
-                //password do not change
+
+                const updatedUser = await request(`/users/${id}`, 'PATCH', newPassword.length >=6 ? {...userInfo, password: newPassword} : userInfo )
                 login({...updatedUser, accessToken: accessToken})
+                
                 showAlertHandler({
                     show: true,
                     text: `Everything successfully saved`,
                     type: 'success',
                 })
+
             }else{
                 throw new Error('Enter all data')
             }     
@@ -97,6 +100,11 @@ function ProfilePage(props) {
 
     return(
         <div>
+            {
+            loading
+            ?   Modal(<Loader />)
+            :   null
+            }
             <p className="blockNameProfile">Information about you</p>
 
             <InputsWithUserData 
@@ -122,8 +130,7 @@ function ProfilePage(props) {
                 text='Save' 
                 name='saveButton' 
             /> 
-        </div>
-        
+        </div> 
     )
 }
 

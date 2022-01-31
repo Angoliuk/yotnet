@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { useHttp } from "../../Hook/useHttp";
@@ -8,6 +8,7 @@ import CommentCard from "../CommentCard/CommentCard";
 import { Textarea } from "../Textarea/Textarea";
 import './PostCard.css'
 import validator from "validator";
+import { Loader } from "../Loader/Loader";
 
 function PostCard(props) {
 
@@ -15,21 +16,25 @@ function PostCard(props) {
     const {posts, setPosts, userInfo, showAlertHandler, comments, addComments, postId} = props
     const post = posts.find((post) => post.id === postId)
     const createdAtDate = new Date(post.createdAt).toLocaleString()
-    const {request} = useHttp()
+    const {request, loading} = useHttp()
     const [newComment, setNewComment] = useState({
         text: ''
     })
 
     const dataRequest = useCallback( async (comments) =>{
         try {
+            
             const commentsFromBD = await request(`/comments?postId=${postId}&_sort=createdAt&_order=desc&_expand=user`, 'GET', null, {'Authorization': `Bearer ${userInfo.accessToken}`})
             if (!commentsFromBD) return null
+
             if (comments) {
                 const newComments = commentsFromBD.filter((commentFromBD) => comments.find((comment) => comment.id === commentFromBD.id) === undefined)
                 addComments(newComments)
+
             }else{
                 addComments(commentsFromBD)
             }
+
         } catch (e) {
             showAlertHandler({
                 show: true,
@@ -102,7 +107,7 @@ function PostCard(props) {
     const ButtonsForUserPosts = () => {
         return(
             <div className="ButtonsForUserPostsBlock">
-                <Link to={`/post/${postId}`}>
+                <Link to={`/edit/post/${postId}`}>
                     <Button
                         text='Edit'
                         name={`editButton${postId}`}
@@ -159,31 +164,38 @@ function PostCard(props) {
                         :   <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M21 12l-18 12v-24z"/></svg>
                     }
                 </p>
-                {showComments && comments
-                    ?   <div>
-                            {
-                            userInfo.accessToken
-                            ?   <div>
-                                    <Textarea 
-                                        name='text'
-                                        value={newComment.text}
-                                        onChange={newCommentInputHandler}
-                                        rows={5}
-                                    />
+                {
+                showComments
+                ?   <div>
+                        {
+                        userInfo.accessToken
+                        ?   <div>
+                                <Textarea 
+                                    name='text'
+                                    value={newComment.text}
+                                    onChange={newCommentInputHandler}
+                                    rows={5}
+                                />
 
-                                    <Button
-                                        text='comment'
-                                        name={`commentButton${postId}`}
-                                        className="commentButton"
-                                        classNameBlock="commentButtonBlock"
-                                        onClick={createNewComment}
-                                    />
-                                </div>
-                            :   null
-                            }
-                            <CommentsBlock />
-                        </div>
-                    :   null
+                                <Button
+                                    text='comment'
+                                    name={`commentButton${postId}`}
+                                    className="commentButton"
+                                    classNameBlock="commentButtonBlock"
+                                    onClick={createNewComment}
+                                />
+                            </div>
+                        :   null
+                        }
+                        {
+                        loading
+                        ?   <div className="postLoaderInCommentsBlock"><Loader /></div>
+                        :   comments && comments.length > 0
+                            ?   <CommentsBlock />
+                            :   <p className="textNoComments"> You can write first comment<svg className="svgNoComments" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 32 32"><path fill="none" stroke="#29abe2" stroke-linecap="round" stroke-linejoin="round" d="M23.5,27.5H6.5l-1-15.19a.76.76,0,0,1,.77-.81H10a1.11,1.11,0,0,1,.89.44l1.22,1.56H23.5v2"/><path fill="none" stroke="#29abe2" stroke-linecap="round" stroke-linejoin="round" d="M26.3,20.7l.84-3.2H9.25L6.5,27.5H23.41a1.42,1.42,0,0,0,1.37-1.06l.76-2.88"/><path fill="none" stroke="#29abe2" stroke-linecap="round" stroke-linejoin="round" d="M16.5,24.5h0a1.42,1.42,0,0,1,2,0h0"/><line x1="13.5" x2="14.5" y1="21.5" y2="21.5" fill="none" stroke="#29abe2" stroke-linecap="round" stroke-linejoin="round"/><line x1="20.5" x2="21.5" y1="21.5" y2="21.5" fill="none" stroke="#29abe2" stroke-linecap="round" stroke-linejoin="round"/><path fill="none" stroke="#29abe2" stroke-linecap="round" stroke-linejoin="round" d="M20.62,3.61C18.25,4,16.5,5.37,16.5,7a2.57,2.57,0,0,0,.7,1.7l-.7,2.8,2.86-1.43A8.12,8.12,0,0,0,22,10.5c3,0,5.5-1.57,5.5-3.5,0-1.6-1.69-2.95-4-3.37"/><line x1="21.25" x2="22.75" y1="6.25" y2="7.75" fill="none" stroke="#29abe2" stroke-linecap="round" stroke-linejoin="round"/><line x1="22.75" x2="21.25" y1="6.25" y2="7.75" fill="none" stroke="#29abe2" stroke-linecap="round" stroke-linejoin="round"/></svg></p>
+                        }
+                    </div>
+                :   null
                 }
             </div>
 
