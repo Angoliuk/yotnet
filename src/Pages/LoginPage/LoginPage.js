@@ -20,42 +20,43 @@ function LoginPage(props) {
     })
 
     const inputChangeHandler = (event) => {
+
         setLoginData({
             ...loginData,
              [event.target.name]: event.target.value
             })
+
     }
 
     const processLogin = async () => {
-        try {
-            
-            if (
-            validator.isEmail(loginData.email) 
-            && validator.isLength(loginData.password, {min: 6, max: undefined})
-            ){
-                const data = await request('/login', 'POST', loginData)
-                login({...data.user, accessToken: data.accessToken})
 
-            } else {
-                throw new Error('write something')
-            }
+        try {
+
+            if(!validator.isEmail(loginData.email)){throw new Error('Enter valid Email')}
+            if(!validator.isLength(loginData.password, {min: 6, max: undefined})){throw new Error('Too short password, minimal lenght - 6')}
+
+            const data = await request('/login', 'POST', loginData)
+            login({...data.user, accessToken: data.accessToken})
 
         } catch (e) {
             showAlertHandler({
                 show: true,
-                text: `Error, wrong info`,
+                text: `Error!!! ${e.message}`,
                 type: 'error',
             })
         }
+
     }
 
     return(
         <div>
+
             {
             loading
             ?   Modal(<Loader />)
             :   null
             }
+
             <Input 
                 name='email' 
                 value={loginData.email} 
@@ -76,6 +77,7 @@ function LoginPage(props) {
                 text="Login" 
                 name='loginButton' 
             />
+            
         </div>
     )
 }

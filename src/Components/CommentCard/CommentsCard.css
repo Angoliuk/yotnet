@@ -26,3 +26,15 @@
 .commentCard{
     margin-left: 15px;
 }
+
+.commentLoaderInCommentsBlock{
+    height: 100px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.commentLoaderInCommentsBlock > *{
+    position: static !important;
+}

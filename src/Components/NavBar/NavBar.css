@@ -28,7 +28,7 @@
     height: 60px;
 }
 
-.announcementBlock{
+.navBarAnnouncementBlock{
     background-color: #f0f3fc;
     position: fixed;
     top: 0;
@@ -44,25 +44,37 @@
     border: 1.5px solid black;
 }
 
-.announcementBlockBackground{
+.navBarAnnouncementBlockBackground{
     opacity: 0;
 }
 
-.announcementBlock::-webkit-scrollbar-track {
+.navBarAnnouncementBlock::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 10px;
 }
    
-.announcementBlock::-webkit-scrollbar-thumb {
+.navBarAnnouncementBlock::-webkit-scrollbar-thumb {
     background: #aaa;
     border-radius: 15px;
 }
 
-.announcementBlock::-webkit-scrollbar {
+.navBarAnnouncementBlock::-webkit-scrollbar {
     width: 10px;
 }
 
-.announcementsName{
+.navBarAnnouncementsName{
     font-size: 21px;
     font-weight: 700;
+}
+
+.navBarLoaderInAnnouncementsBlock{
+    height: 100px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.navBarAnnouncementLoaderInCommentsBlock > *{
+    position: static !important;
 }

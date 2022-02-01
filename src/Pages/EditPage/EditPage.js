@@ -12,7 +12,11 @@ import { Modal } from "../../Components/Modal/Modal";
 import { Loader } from "../../Components/Loader/Loader";
 
 function EditPage(props) {
+
     const {id, postType} = useParams()
+    const {request, loading} = useHttp()
+    const {showAlertHandler} = props
+    const navigate = useNavigate()
 
     const post = 
         postType === 'post'
@@ -24,30 +28,25 @@ function EditPage(props) {
         title: post.title,
     })
     
-    const {showAlertHandler} = props
-    const {request, loading} = useHttp()
-    const navigate = useNavigate()
-    
     const savePostChanges = async () => {
+
         try {
             
             if (postType === 'post') {
 
-                if (!validator.isLength(postChanges.body, {min: 1, max: 600}) 
-                    || !validator.isLength(postChanges.title, {min: 1, max: 150})
-                    ){throw new Error('Empty fields')}
+                if(!validator.isLength(postChanges.title, {min: 1, max: 150})){throw new Error('It`s required field, signs limit - 150')}
+                if(!validator.isLength(postChanges.body, {min: 1, max: 600})){throw new Error('It`s required field, signs limit - 600')}
                     
-                    await request(`/664/posts/${id}`, 'PATCH', {...postChanges, updatedAt: new Date()}, {'Authorization': `Bearer ${props.accessToken}`})
-                    navigate(-1)
+                await request(`/664/posts/${id}`, 'PATCH', {...postChanges, updatedAt: new Date()}, {'Authorization': `Bearer ${props.accessToken}`})
+                navigate(-1)
 
             } else if(postType === 'announcement') {
 
-                if (!validator.isLength(postChanges.body, {min: 1, max: 250}) 
-                    || !validator.isLength(postChanges.title, {min: 1, max: 100})
-                    ){throw new Error('Empty fields')}
-                    
-                    await request(`/664/announcements/${id}`, 'PATCH', {...postChanges, updatedAt: new Date()}, {'Authorization': `Bearer ${props.accessToken}`})
-                    navigate(-1)
+                if(!validator.isLength(postChanges.title, {min: 1, max: 150})){throw new Error('It`s required field, signs limit - 150')}
+                if(!validator.isLength(postChanges.body, {min: 1, max: 600})){throw new Error('It`s required field, signs limit - 600')}
+
+                await request(`/664/announcements/${id}`, 'PATCH', {...postChanges, updatedAt: new Date()}, {'Authorization': `Bearer ${props.accessToken}`})
+                navigate(-1)
 
             } else{
                 throw new Error('Unknown type of post')
@@ -56,26 +55,31 @@ function EditPage(props) {
         } catch (e) {
             showAlertHandler({
                 show: true,
-                text: 'Error, try to edit post again',
+                text: `Error!!! ${e.message}`,
                 type: 'error',
             })
         }
+
     }
 
     const postEditInputHandler = (event) => {
+
         setPostChanges({
             ...postChanges,
             [event.target.name]: event.target.value
         })
+        
     }
 
     return(
         <div className="editPostBlock">
+
             {
             loading
             ?   Modal(<Loader />)
             :   null
             }
+
             <Input 
                 name='title' 
                 value={postChanges.title} 
@@ -100,6 +104,7 @@ function EditPage(props) {
                 className="editPostButton button"
                 onClick={savePostChanges} 
             />
+
         </div>
     )
 }

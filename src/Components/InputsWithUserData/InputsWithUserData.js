@@ -5,11 +5,11 @@ import './InputsWithUserData.css'
 function InputsWithUserData(props) {
 
     const avatarLinks = ['https://preview.redd.it/yom0nq8tznsz.jpg?width=640&crop=smart&auto=webp&s=f71630cd970ede845f2c992ffc8ffe4f5c59f289','https://preview.redd.it/nnpgvr3260b41.jpg?width=640&crop=smart&auto=webp&s=922220e69118a0b46b56247ad5fb9af5654794a0','https://live.staticflickr.com/38/115048538_653a9c8251_n.jpg','https://as1.ftcdn.net/v2/jpg/02/46/81/76/1000_F_246817612_wzXPUIGvJNno61KneBgH4weaJsdZ0Gun.jpg']
-
     const {stateForInputs, onChangeInput, onChangeAvatar, showAvatarsBlock, showPassword} = props
 
     return(
         <div>
+
             <Input 
                 name='email' 
                 value={stateForInputs.email} 
@@ -30,7 +30,6 @@ function InputsWithUserData(props) {
             :   null
             }
             
-
             <Input 
                 name='firstname' 
                 value={stateForInputs.firstname} 
@@ -70,6 +69,7 @@ function InputsWithUserData(props) {
                 )
             :   null
             }
+
         </div>
     )
 }

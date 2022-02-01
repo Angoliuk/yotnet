@@ -13,6 +13,9 @@ import { Modal } from "../../Components/Modal/Modal";
 function RegisterPage(props) {
 
     const {request, loading} = useHttp()
+    const {login, showAlertHandler} = props
+    const [showAvatarsBlock ,setShowAvatarsBlock] = useState(false)
+
 
     const [registerData, setRegisterData] = useState({
         email: '',
@@ -23,49 +26,46 @@ function RegisterPage(props) {
         avatar: 'https://preview.redd.it/yom0nq8tznsz.jpg?width=640&crop=smart&auto=webp&s=f71630cd970ede845f2c992ffc8ffe4f5c59f289',
     })
 
-    const [showAvatarsBlock ,setShowAvatarsBlock] = useState(false)
-
-    const {login, showAlertHandler} = props
-
     const inputChangeHandler = (event) => {
+
         setRegisterData({
             ...registerData,
             [event.target.name]: event.target.value
         })
+
     }
 
     const avatarChangeHandler = (event) => {
+
         setRegisterData({
             ...registerData,
             avatar: event.target.src
         })
+
         setShowAvatarsBlock(!showAvatarsBlock)
+
     }
 
     const processRegister = async () => {
-        try {
-            
-            if(
-            validator.isEmail(registerData.email) 
-            && registerData.lastname
-            && registerData.firstname
-            && registerData.age > 14
-            && validator.isLength(registerData.password, {min: 6, max: undefined})
-            ){
-                const data = await request('/register', 'POST', registerData)
-                login({...data.user, accessToken: data.accessToken})
 
-            }else{
-                throw new Error('Enter all data')
-            }    
+        try {
+
+            if(!validator.isEmail(registerData.email)){throw new Error('Wrong Email')}
+            if(!validator.isLength(registerData.password, {min: 6, max: undefined})){throw new Error('Too short password, minimal lenght - 6')}
+            if(!registerData.lastname || !registerData.firstname){throw new Error('Enter your name')}
+            if(registerData.age < 14){throw new Error('You need to be at least 14')}
+
+            const data = await request('/register', 'POST', registerData)
+            login({...data.user, accessToken: data.accessToken})  
 
         } catch (e) {
             showAlertHandler({
                 show: true,
-                text: `Error, wrong info`,
+                text: `Error!!! ${e.message}`,
                 type: 'error',
             })
         }
+
     }
 
     return(
@@ -76,6 +76,7 @@ function RegisterPage(props) {
             ?   Modal(<Loader />)
             :   null
             }
+
             <InputsWithUserData
                 showPassword={true} 
                 stateForInputs={registerData} 
@@ -88,7 +89,8 @@ function RegisterPage(props) {
                 onClick={processRegister} 
                 text='Register' 
                 name='registerButton' 
-            />      
+            />  
+                
         </div>
     )
 }

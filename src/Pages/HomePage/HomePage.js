@@ -16,25 +16,8 @@ import { Loader } from "../../Components/Loader/Loader";
 function HomePage(props) {
 
     const {request, loading} = useHttp()
-
     const {userInfo, showAlertHandler, posts, addPosts, addAnnouncements} = props
     const [showNewPostBlock, setShowNewPostBlock] = useState(false)
-
-    const dataRequest = useCallback(async () => {
-        try {            
-            const data = await request(`/posts?_page=1&_limit=20&_expand=user&_sort=createdAt&_order=desc`, 'GET', null)
-            // &userId_like=${userId}
-            //user posts and announcements
-            addPosts(data)
-        } catch (e) {
-            showAlertHandler({
-                show: true,
-                text: 'Error, try to reload this page',
-                type: 'error',
-            })
-        }
-        
-    }, [request, userInfo.accessToken])
 
     const [newPost, setNewPost] = useState({
         title: '',
@@ -42,7 +25,30 @@ function HomePage(props) {
         isAnnouncement: false,
     })
 
+    const dataRequest = useCallback(async () => {
+
+        try {     
+
+            const data = await request(`/posts?_page=1&_limit=20&_expand=user&_sort=createdAt&_order=desc`, 'GET', null)
+            // &userId_like=${userId}
+            //user posts and announcements
+            addPosts(data)
+
+        } catch (e) {
+            showAlertHandler({
+                show: true,
+                text: `Error, try to reload this page. ${e.message}`,
+                type: 'error',
+            })
+        }
+
+        
+    }, [request, userInfo.accessToken])
+
+
+
     const newPostInputHandler = useCallback((event) => {
+
         event.target.name === "isAnnouncement"
         ?   setNewPost({
                 ...newPost,
@@ -56,15 +62,13 @@ function HomePage(props) {
     }, [newPost])
 
     const createNewPost = async () => {
+        
         try {
             
             if (newPost.isAnnouncement) {
 
-                if (
-                    !validator.isLength(newPost.title, {min: 1, max: 100})
-                    || !validator.isLength(newPost.body, {min: 1, max: 250})
-                    || !userInfo.id
-                ){throw new Error('write something')}
+                if(!validator.isLength(newPost.title, {min: 1, max: 100})){throw new Error('It`s required field, signs limit - 100')}
+                if(!validator.isLength(newPost.body, {min: 1, max: 250})){throw new Error('It`s required field, signs limit - 250')}
 
                 const newAnnouncementFromDB = await request('/664/announcements', 'POST', {title: newPost.title, body: newPost.body, createdAt: new Date(), updatedAt: new Date(), userId: userInfo.id}, {'Authorization': `Bearer ${userInfo.accessToken}`})
                 addAnnouncements([{
@@ -80,11 +84,8 @@ function HomePage(props) {
 
             } else {
 
-                if (
-                    !validator.isLength(newPost.title, {min: 1, max: 150})
-                    || !validator.isLength(newPost.body, {min: 1, max: 600})
-                    || !userInfo.id
-                ){throw new Error('write something')}
+                if(!validator.isLength(newPost.title, {min: 1, max: 150})){throw new Error('It`s required field, signs limit - 150')}
+                if(!validator.isLength(newPost.body, {min: 1, max: 600})){throw new Error('It`s required field, signs limit - 600')}
 
                 const newPostFromDB = await request('/664/posts', 'POST', {title: newPost.title, body: newPost.body, createdAt: new Date(), updatedAt: new Date(), userId: userInfo.id}, {'Authorization': `Bearer ${userInfo.accessToken}`})
                 addPosts([{
@@ -104,6 +105,7 @@ function HomePage(props) {
                 title: '',
                 body: '',
             })
+
         } catch (e) {
             setNewPost({
                 title: '',
@@ -112,7 +114,7 @@ function HomePage(props) {
             setShowNewPostBlock(false)
             showAlertHandler({
                 show: true,
-                text: 'Error, try to create post again',
+                text: `Error!!! ${e.message}`,
                 type: 'error',
             })
         }
@@ -134,6 +136,7 @@ function HomePage(props) {
 
     return(
         <>
+
             {
             userInfo.accessToken
             ?   <Button 
@@ -150,6 +153,7 @@ function HomePage(props) {
             showNewPostBlock
             ?   Modal(
                     <div className="createPostBlock">
+
                         <Input 
                             name='title' 
                             value={newPost.title} 
@@ -168,6 +172,7 @@ function HomePage(props) {
                         />
 
                         <div className="isAnnouncementBlock">
+
                             <input 
                                 onChange={newPostInputHandler} 
                                 placeholder='' 
@@ -176,8 +181,8 @@ function HomePage(props) {
                                 id="isAnnouncement"
                                 className="isAnnouncementCheckbox"
                             />
-
                             <label htmlFor="isAnnouncement">Post as announcement</label>
+
                         </div>
                         
                         <Button 
@@ -193,6 +198,7 @@ function HomePage(props) {
                             name='cancelCreatePostButton' 
                             className="cancelCreatePostButton button"
                         />
+                        
                     </div>
                 )
             :   null

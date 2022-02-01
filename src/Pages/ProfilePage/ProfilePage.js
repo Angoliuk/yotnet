@@ -15,7 +15,9 @@ import { Modal } from "../../Components/Modal/Modal";
 function ProfilePage(props) {
 
     const {request, loading} = useHttp()
-    const {showAlertHandler, login, accessToken} = props
+    const {showAlertHandler, login, accessToken, userId} = props
+    const [newPassword, setNewPassword] = useState('')
+    const [showAvatarsBlock, setShowAvatarsBlock] = useState(false)
 
     const id = useParams().id
     const [userInfo, setUserInfo] = useState({
@@ -26,72 +28,76 @@ function ProfilePage(props) {
         avatar: "https://picsum.photos/60",
     })
 
-    const [newPassword, setNewPassword] = useState('')
-
-    const [showAvatarsBlock, setShowAvatarsBlock] = useState(false)
-
     const dataRequest = useCallback( async() => {
-        const user = await request(`/users?id=${id}`, 'GET', null)
-        delete user[0].password
-        setUserInfo(user[0])
+
+        try {
+
+            const user = await request(`/users?id=${id}`, 'GET', null)
+            delete user[0].password
+            setUserInfo(user[0])
+
+        } catch (e) {
+            showAlertHandler({
+                show: true,
+                text: `Error, try to reload this page. ${e.message}`,
+                type: 'error',
+            })
+        }
+
     }, [id, request])
 
     const inputChangeHandler = (event) => {
+
         setUserInfo({
             ...userInfo,
             [event.target.name]: event.target.value
         })
+
     }
 
     const passwordInputChangeHandler = (event) => {
+
         setNewPassword(event.target.value)
+
     }
 
     const avatarChangeHandler = (event) => {
+
         setUserInfo({
             ...userInfo,
             avatar: event.target.src
         })
+
         setShowAvatarsBlock(!showAvatarsBlock)
+
     }
 
     const updateUserProfile = async () => {
+
         try {
+
+            if(!validator.isEmail(userInfo.email)){throw new Error('Enter valid Email')}
+            if(newPassword.length < 6 && newPassword.length > 0){throw new Error('Minimal lenght of password - 6')}
+            if(!userInfo.lastname || !userInfo.firstname){throw new Error('Enter your name')}
+            if(userInfo.age < 14){throw new Error('You need to be at least 14')}
+
+            const updatedUser = await request(`/640/users/${id}`, 'PATCH', newPassword.length >= 6 ? {...userInfo, password: newPassword} : userInfo, {'Authorization': `Bearer ${accessToken}`} )
+            login({...updatedUser, accessToken: accessToken})
             
-            if(
-            validator.isEmail(userInfo.email) 
-            && userInfo.lastname
-            && userInfo.firstname
-            && userInfo.age > 14
-            ){
-                if (newPassword.length < 6 && newPassword.length > 0){
-                    showAlertHandler({
-                        show: true,
-                        text: `Minimal lenght of password - 6`,
-                        type: 'error',
-                    })
-                    return null
-                }
+            showAlertHandler({
+                show: true,
+                text: `Everything successfully saved`,
+                type: 'success',
+            })
 
-                const updatedUser = await request(`/users/${id}`, 'PATCH', newPassword.length >=6 ? {...userInfo, password: newPassword} : userInfo )
-                login({...updatedUser, accessToken: accessToken})
-                
-                showAlertHandler({
-                    show: true,
-                    text: `Everything successfully saved`,
-                    type: 'success',
-                })
-
-            }else{
-                throw new Error('Enter all data')
-            }     
         } catch (e) {
             showAlertHandler({
                 show: true,
-                text: `Error, wrong info`,
+                text: `Error!!! ${e.message}`,
                 type: 'error',
             })
         }
+
     }
 
     useEffect(() => {
@@ -99,44 +105,69 @@ function ProfilePage(props) {
     }, [dataRequest])
 
     return(
-        <div>
+        <div className="profilePageMainBlock">
+
             {
             loading
             ?   Modal(<Loader />)
             :   null
             }
-            <p className="blockNameProfile">Information about you</p>
 
-            <InputsWithUserData 
-                showPassword={false}
-                stateForInputs={userInfo} 
-                onChangeInput={inputChangeHandler}
-                onChangeAvatar={avatarChangeHandler}
-                showAvatarsBlock={showAvatarsBlock}
-            />
+            <p className="blockNameProfile">Information about {userId === Number(id) ? 'you' : userInfo.firstname}</p>
 
-            <p className="blockNameProfile">Password</p>
+            {
+            userId === Number(id)
+            ?   <div>
 
-            <Input
-                name='password' 
-                value={newPassword} 
-                htmlForText="Password" 
-                onChange={passwordInputChangeHandler} 
-                type='password'
-            />
+                    <InputsWithUserData 
+                        showPassword={false}
+                        stateForInputs={userInfo} 
+                        onChangeInput={inputChangeHandler}
+                        onChangeAvatar={avatarChangeHandler}
+                        showAvatarsBlock={showAvatarsBlock}
+                    />
 
-            <Button 
-                onClick={updateUserProfile} 
-                text='Save' 
-                name='saveButton' 
-            /> 
+                    <p className="blockNameProfile">Password</p>
+
+                    <Input
+                        name='password' 
+                        value={newPassword} 
+                        htmlForText="Password" 
+                        onChange={passwordInputChangeHandler} 
+                        type='password'
+                    />
+
+                    <Button 
+                        onClick={updateUserProfile} 
+                        text='Save' 
+                        name='saveButton' 
+                    /> 
+
+                </div>
+            :   <div className='profilePageInfoBlock'>
+
+                    <div className="profilePageAvatarBlock">
+                        <img className="profilePageAvatar" alt='avatar' src={userInfo.avatar ? userInfo.avatar : "https://picsum.photos/200"} />
+                    </div>
+
+                    <div className="profilePageUserInfoBlock">
+                        <p>Fullname: {userInfo.firstname} {userInfo.lastname}</p>
+                        <p>Age: {userInfo.age}</p>
+                    </div>
+
+                </div>
+            }
+
+            
+
         </div> 
     )
 }
 
 function mapStateToProps(state) {
     return{
-        accessToken: state.userReducers.accessToken
+        accessToken: state.userReducers.accessToken,
+        userId: state.userReducers.id,
     }
 }
 
