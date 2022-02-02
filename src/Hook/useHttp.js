@@ -3,7 +3,6 @@ import {useState, useCallback} from 'react'
 export const useHttp = () => {
 
     const [loading, setLoading] = useState(false)
-    const [error, setError] = useState(null)
 
     const request = useCallback(async (url, method = 'GET', body = null, headers = {}) => {
 
@@ -16,13 +15,14 @@ export const useHttp = () => {
                     headers['content-Type'] = "application/json"
                 }
 
-                const responce = await fetch(`https://ekreative-json-server.herokuapp.com${url}`, {method,body,headers})
-                const data = await responce.json()
+                const response = await fetch(`https://ekreative-json-server.herokuapp.com${url}`, {method,body,headers})
+                const data = await response.json()
                 
-                if (!responce.ok) {
-                    console.log(responce)
+                if (!response.ok) {
                     setLoading(false)
-                    throw new Error(data.message || 'error')
+                    const newError = new Error(`${data}` || 'Unknown error')
+                    newError.name = `Error status ${response.status}`
+                    throw newError
                 }
 
                 setLoading(false)
@@ -31,13 +31,10 @@ export const useHttp = () => {
 
             } catch (e) {
                 setLoading(false)
-                setError(e.message)
                 throw e
             }
             
     }, [])
 
-    const clearError = () => setError(null)
-
-    return {loading, request, error, clearError}
+    return {loading, request}
 }

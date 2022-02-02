@@ -41,7 +41,7 @@ function LoginPage(props) {
         } catch (e) {
             showAlertHandler({
                 show: true,
-                text: `Error!!! ${e.message}`,
+                text: `${e}`,
                 type: 'error',
             })
         }

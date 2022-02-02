@@ -23,7 +23,7 @@ function AnnouncementCard(props) {
         } catch (e) {
             showAlertHandler({
                 show: true,
-                text: `Error, try to delete post again. ${e.message}`,
+                text: `Error, try to delete post again. ${e}`,
                 type: 'error',
             })
         }

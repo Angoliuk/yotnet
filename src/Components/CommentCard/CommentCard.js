@@ -29,7 +29,7 @@ function CommentCard(props) {
         } catch (e) {
             showAlertHandler({
                 show: true,
-                text: `Error, try to delete comment again. ${e.message}`,
+                text: `Error, try to delete comment again. ${e}`,
                 type: 'error',
             })
         }
@@ -59,7 +59,7 @@ function CommentCard(props) {
             setEditingComment(false)
             showAlertHandler({
                 show: true,
-                text: `Error!!! ${e.message}`,
+                text: `${e}`,
                 type: 'error',
             })
         }

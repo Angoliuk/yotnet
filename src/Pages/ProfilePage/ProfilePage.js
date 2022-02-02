@@ -39,7 +39,7 @@ function ProfilePage(props) {
         } catch (e) {
             showAlertHandler({
                 show: true,
-                text: `Error, try to reload this page. ${e.message}`,
+                text: `Error, try to reload this page. ${e}`,
                 type: 'error',
             })
         }
@@ -93,7 +93,7 @@ function ProfilePage(props) {
         } catch (e) {
             showAlertHandler({
                 show: true,
-                text: `Error!!! ${e.message}`,
+                text: `${e}`,
                 type: 'error',
             })
         }
