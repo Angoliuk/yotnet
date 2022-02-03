@@ -17,7 +17,7 @@ export const useHttp = () => {
 
                 const response = await fetch(`https://ekreative-json-server.herokuapp.com${url}`, {method,body,headers})
                 const data = await response.json()
-                
+
                 if (!response.ok) {
                     setLoading(false)
                     const newError = new Error(`${data}` || 'Unknown error')
@@ -26,7 +26,7 @@ export const useHttp = () => {
                 }
 
                 setLoading(false)
-
+                
                 return data
 
             } catch (e) {

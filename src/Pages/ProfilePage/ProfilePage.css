@@ -1,7 +1,6 @@
-.blockNameProfile{
+.blockName{
     font-weight: 700;
     font-size: 21px;
-    margin: 0px 15px;
 }
 
 .profilePageAvatar{
@@ -19,4 +18,22 @@
 
 .profilePageUserInfoBlock{
     margin-left: 25px;
+}
+
+.emptyInfoScetionProfilePage{
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.chooseInfoTypeBlock{
+    margin-right: 60px;
+}
+
+.profilePagePostsMainBlock{
+    width: 100%;
+}
+
+.profilePageMainBlock{
+    width: 80%;
+    display: flex;
 }

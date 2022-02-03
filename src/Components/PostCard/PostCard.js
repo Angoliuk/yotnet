@@ -12,11 +12,13 @@ import { Loader } from "../Loader/Loader";
 
 function PostCard(props) {
 
-    const {request, loading} = useHttp()
+    const {request} = useHttp()
     const {posts, setPosts, userInfo, showAlertHandler, comments, addComments, postId} = props
     const [showComments, setShowComments] = useState(false)
     const post = posts.find((post) => post.id === postId)
     const createdAtDate = new Date(post.createdAt).toLocaleString()
+    const [loadingPost, setLoadingPost] = useState(false)
+    const [loadingComments, setLoadingComment] = useState(false)
 
     const [newComment, setNewComment] = useState({
         text: ''
@@ -25,12 +27,14 @@ function PostCard(props) {
     const dataRequest = useCallback( async (comments) =>{
         try {
             
+            setLoadingComment(true)
             const commentsFromBD = await request(`/comments?postId=${postId}&_sort=createdAt&_order=desc&_expand=user`, 'GET', null)
             if (!commentsFromBD) return null
 
             if (comments) {
                 const newComments = commentsFromBD.filter((commentFromBD) => comments.find((comment) => comment.id === commentFromBD.id) === undefined)
                 addComments(newComments)
+            setLoadingComment(false)
 
             }else{
                 addComments(commentsFromBD)
@@ -67,6 +71,7 @@ function PostCard(props) {
     const createNewComment = async () => {
         try {
 
+            setLoadingComment(true)
             if(!validator.isLength(newComment.text, {min: 1, max: 1000})){throw new Error('It`s required field, signs limit - 1000')}
 
             const newCommentFromBD = await request(`/664/comments`, 'POST', {body: newComment.text, createdAt: new Date(), updatedAt: new Date(), postId: postId, userId: userInfo.id}, {'Authorization': `Bearer ${userInfo.accessToken}`})
@@ -85,6 +90,7 @@ function PostCard(props) {
                 ...newComment,
                 text: '',
             })
+            setLoadingComment(false)
 
         } catch (e) {
             showAlertHandler({
@@ -98,8 +104,10 @@ function PostCard(props) {
     const deletePost = async () => {
         try {
 
+            setLoadingPost(true)
             await request(`/664/posts/${postId}`, 'DELETE', null, {'Authorization': `Bearer ${userInfo.accessToken}`})
             setPosts(posts.filter((post) => post.id !== postId))
+            setLoadingPost(false)
 
         } catch (e) {
             showAlertHandler({
@@ -143,6 +151,9 @@ function PostCard(props) {
     }, [comments, postId, userInfo.id])
 
     return(
+        loadingPost
+        ?   <div className="postLoaderInCommentsBlock"><Loader /></div>
+        :
         <div className="postCard">
             <div className="postInfoBlock">
                 <div className="postAuthorInfoBlock">
@@ -209,7 +220,7 @@ function PostCard(props) {
                         }
 
                         {
-                        loading
+                        loadingComments
                         ?   comments.filter((comment) => comment.postId === postId).length > 0
                             ?   <div>
 

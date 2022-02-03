@@ -7,7 +7,7 @@ import PostCard from "../../Components/PostCard/PostCard";
 import { Textarea } from "../../Components/Textarea/Textarea";
 import { PagesWrapper } from "../../hoc/PagesWrapper/PagesWrapper";
 import { useHttp } from "../../Hook/useHttp";
-import { addPosts } from "../../ReduxStorage/actions/postActions";
+import { addPosts, addToEndPosts } from "../../ReduxStorage/actions/postActions";
 import './HomePage.css'
 import validator from 'validator'
 import { addAnnouncements } from "../../ReduxStorage/actions/announcementActions";
@@ -15,9 +15,12 @@ import { Loader } from "../../Components/Loader/Loader";
 
 function HomePage(props) {
 
-    const {request, loading} = useHttp()
-    const {userInfo, showAlertHandler, posts, addPosts, addAnnouncements} = props
+    const {request} = useHttp()
+    const {userInfo, showAlertHandler, posts, addToEndPosts, addAnnouncements, addPosts} = props
     const [showNewPostBlock, setShowNewPostBlock] = useState(false)
+    const [pageNum, setPageNum] = useState(1)
+    const [loadNewPosts, setLoadNewPosts] = useState(true)
+    const [creatingNewPost, setCreatingNewPost] = useState(false)
 
     const [newPost, setNewPost] = useState({
         title: '',
@@ -29,11 +32,16 @@ function HomePage(props) {
 
         try {     
 
-            const data = await request(`/posts?_page=1&_limit=20&_expand=user&_sort=createdAt&_order=desc`, 'GET', null)
-            // &userId_like=${userId}
-            //user posts and announcements
-            addPosts(data)
+            const postsFromDB = await request(`/posts?_page=${pageNum}&_limit=10&_expand=user&_sort=createdAt&_order=desc`, 'GET', null)
+            if (!postsFromDB) return null
 
+            const newPosts = postsFromDB.filter((postFromDB) => posts.find((post) => post.id === postFromDB.id) === undefined)
+            if(!newPosts) return null
+            
+            addToEndPosts(newPosts)
+            setPageNum(prevState => prevState + 1)
+            setTimeout(() => setLoadNewPosts(false), 2000)
+            
         } catch (e) {
             showAlertHandler({
                 show: true,
@@ -43,9 +51,29 @@ function HomePage(props) {
         }
 
         
-    }, [request, userInfo.accessToken])
+    }, [request, loadNewPosts])
 
+    useEffect(() => {
+        if (!loadNewPosts) {return null}
+        dataRequest()
+    }, [dataRequest, loadNewPosts])
 
+    useEffect(() => {
+        document.addEventListener('scroll', scrollHandler)
+        return function () {
+            document.removeEventListener('scroll', scrollHandler)
+        }
+    }, [])
+
+    const scrollHandler = (e) => {
+
+        if (e.target.documentElement.scrollHeight - (window.innerHeight + e.target.documentElement.scrollTop) < 100) {
+            
+            setLoadNewPosts(true)
+
+        }
+
+    }
 
     const newPostInputHandler = useCallback((event) => {
 
@@ -64,6 +92,8 @@ function HomePage(props) {
     const createNewPost = async () => {
         
         try {
+
+            setCreatingNewPost(true)
             
             if (newPost.isAnnouncement) {
 
@@ -105,6 +135,7 @@ function HomePage(props) {
                 title: '',
                 body: '',
             })
+            setCreatingNewPost(false)
 
         } catch (e) {
             setNewPost({
@@ -120,7 +151,7 @@ function HomePage(props) {
         }
     }
 
-    const Posts = useCallback(() => {
+    const PostsBlock = useCallback(() => {
         return(
             posts.map((post, i) => {
                 return(
@@ -129,10 +160,6 @@ function HomePage(props) {
             })
         )
     }, [posts])
-
-    useEffect(() => {
-        dataRequest()
-    }, [dataRequest])
 
     return(
         <>
@@ -205,11 +232,19 @@ function HomePage(props) {
             }
 
             {
-            posts && !loading
-            ?   <Posts />
-            :   Modal(<Loader />)
-                
+            creatingNewPost
+            ?   Modal(<Loader />)
+            :   null
+            }   
+
+            <PostsBlock />
+
+            {
+            !loadNewPosts
+            ?   <div className="homeLoaderInPostsBlock"><Loader /></div>
+            :   null
             }
+
         </>
     )
 }
@@ -223,6 +258,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return{
+        addToEndPosts: (newPosts) => dispatch(addToEndPosts(newPosts)),
         addPosts: (newPosts) => dispatch(addPosts(newPosts)),
         addAnnouncements: (newAnnouncements) => dispatch(addAnnouncements(newAnnouncements)),
     }

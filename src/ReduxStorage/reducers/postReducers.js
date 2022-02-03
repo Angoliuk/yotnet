@@ -1,4 +1,4 @@
-import { ADD_COMMENTS, ADD_POSTS, UPDATE_COMMENTS, UPDATE_POSTS } from "../actions/actionsTypes"
+import { ADD_COMMENTS, ADD_POSTS, ADD_TO_END_POSTS, UPDATE_COMMENTS, UPDATE_POSTS } from "../actions/actionsTypes"
 
 const initialState = {
     posts: [],
@@ -29,6 +29,12 @@ export default function postReducers(state = initialState, action) {
             return{
                 ...state,
                 posts: [...action.payload, ...state.posts],
+            }
+        
+        case ADD_TO_END_POSTS:
+            return{
+                ...state,
+                posts: [ ...state.posts, ...action.payload],
             }
     
         default:

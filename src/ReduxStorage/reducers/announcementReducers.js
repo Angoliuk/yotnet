@@ -1,4 +1,4 @@
-import { ADD_ANNOUNCEMENTS, UPDATE_ANNOUNCEMENTS } from "../actions/actionsTypes";
+import { ADD_ANNOUNCEMENTS, ADD_TO_END_ANNOUNCEMENTS, UPDATE_ANNOUNCEMENTS } from "../actions/actionsTypes";
 
 
 const initialState = {
@@ -10,13 +10,19 @@ export default function announcementReducers(state = initialState, action) {
         case ADD_ANNOUNCEMENTS:
             return{
                 ...state,
-                announcements: [...state.announcements, ...action.payload]
+                announcements: [ ...action.payload, ...state.announcements]
             } 
 
         case UPDATE_ANNOUNCEMENTS:
             return{
                 ...state,
                 announcements: action.payload
+            }
+
+        case ADD_TO_END_ANNOUNCEMENTS:
+            return{
+                ...state,
+                announcements: [...state.announcements, ...action.payload],
             }
     
         default:

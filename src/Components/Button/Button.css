@@ -84,3 +84,11 @@
     background-color: #f14e4e;
     padding: 5px 0px;
 }
+
+.chooseInfoTypeBlockProfilePage{
+    margin: 20px;
+}
+
+.chooseInfoTypeButtonProfilePageActive{
+    background-color: #005baa
+}

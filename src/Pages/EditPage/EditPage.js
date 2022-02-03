@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Button } from "../../Components/Button/Button";
 import { Input } from "../../Components/Input/Input";
 import { Textarea } from "../../Components/Textarea/Textarea";
@@ -16,7 +16,6 @@ function EditPage(props) {
     const {id, postType} = useParams()
     const {request, loading} = useHttp()
     const {showAlertHandler} = props
-    const navigate = useNavigate()
 
     const post = 
         postType === 'post'
@@ -38,7 +37,7 @@ function EditPage(props) {
                 if(!validator.isLength(postChanges.body, {min: 1, max: 600})){throw new Error('It`s required field, signs limit - 600')}
                     
                 await request(`/664/posts/${id}`, 'PATCH', {...postChanges, updatedAt: new Date()}, {'Authorization': `Bearer ${props.accessToken}`})
-                navigate(-1)
+                window.location.reload();
 
             } else if(postType === 'announcement') {
 
@@ -46,7 +45,7 @@ function EditPage(props) {
                 if(!validator.isLength(postChanges.body, {min: 1, max: 600})){throw new Error('It`s required field, signs limit - 600')}
 
                 await request(`/664/announcements/${id}`, 'PATCH', {...postChanges, updatedAt: new Date()}, {'Authorization': `Bearer ${props.accessToken}`})
-                navigate(-1)
+                window.location.reload();
 
             } else{
                 throw new Error('Unknown type of post')

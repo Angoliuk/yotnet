@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { logout } from "../../ReduxStorage/actions/userActions";
-import { setAnnouncements } from "../../ReduxStorage/actions/announcementActions";
+import { addAnnouncements, addToEndAnnouncements } from "../../ReduxStorage/actions/announcementActions";
 import { Modal } from "../Modal/Modal";
 import { useHttp } from "../../Hook/useHttp"
 import './NavBar.css'
@@ -12,22 +12,31 @@ import { Loader } from "../Loader/Loader";
 function NavBar(props) {
 
     const {request, loading} = useHttp()
-    const {isAuth, id, logout, avatar, setAnnouncements, announcements, showAlertHandler, accessToken} = props
+    const {isAuth, id, logout, avatar, addAnnouncements, announcements, showAlertHandler, addToEndAnnouncements} = props
     const [showAnnouncement, setShowAnnouncement] = useState(false)
+    const [pageNum, setPageNum] = useState(1)
+    const [loadNewAnnouncements, setLoadNewAnnouncements] = useState(true)
 
     const showAnnouncementHandler = async() => {
 
         if (!showAnnouncement) {dataRequest()}
-
         setShowAnnouncement(!showAnnouncement)
 
     }
 
-    const dataRequest = async() => {
+    const dataRequest = useCallback(async() => {
         try {
 
-            const announcementsFromDB = await request(`/664/announcements?_page=1&_limit=20&_expand=user&_sort=createdAt&_order=desc`, 'GET', null, {'Authorization': `Bearer ${accessToken}`})
-            setAnnouncements(announcementsFromDB)
+            const announcementsFromDB = await request(`/announcements?_page=${pageNum}&_limit=20&_expand=user&_sort=createdAt&_order=desc`, 'GET', null)
+
+            if (!announcementsFromDB) return null
+
+            const newAnnouncements = announcementsFromDB.filter((announcementFromDB) => announcements.find((announcement) => announcement.id === announcementFromDB.id) === undefined)
+
+            if(!newAnnouncements) return null
+            addToEndAnnouncements(newAnnouncements)
+            // setPageNum(prevState => prevState + 1)
+            // setLoadNewAnnouncements(false)
             
         } catch (e) {
             showAlertHandler({
@@ -36,7 +45,22 @@ function NavBar(props) {
                 type: 'error',
             })
         }
+    }, [request, announcements, addAnnouncements])
+
+    const scrollHandler = (e) => {
+
+        if (e.target.scrollHeight - (e.target.scrollTop + e.target.offsetHeight) < 200 ) {
+            
+            setLoadNewAnnouncements(true)
+
+        }
+
     }
+
+    // useEffect(() => {
+    //     if(!loadNewAnnouncements) return null
+    //     dataRequest()
+    // }, [loadNewAnnouncements, dataRequest])
 
     return(
         isAuth
@@ -48,7 +72,7 @@ function NavBar(props) {
                 {
                 showAnnouncement
                 ?   Modal(
-                        <div className="navBarAnnouncementBlock">
+                        <div onScroll={scrollHandler} id="navBarAnnouncementBlock" className="navBarAnnouncementBlock">
 
                             <p className="navBarAnnouncementsName">Announcements for you</p>
                             <hr />
@@ -59,7 +83,7 @@ function NavBar(props) {
                             :   announcements && announcements.length > 0
                                 ?    announcements.map((announcement) => {
                                         return(
-                                            <AnnouncementCard key={announcement.id} announcementId={announcement.id} />
+                                            <AnnouncementCard key={announcement.id+id} announcementId={announcement.id} />
                                         )})
                                 :   null
                             }
@@ -91,14 +115,14 @@ function mapStateToProps(state) {
         id: state.userReducers.id,
         avatar: state.userReducers.avatar,
         announcements: state.announcementReducers.announcements,
-        accessToken: state.userReducers.accessToken,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return{
         logout: () => dispatch(logout()),
-        setAnnouncements: (announcements) => dispatch(setAnnouncements(announcements)),
+        addAnnouncements: (announcements) => dispatch(addAnnouncements(announcements)),
+        addToEndAnnouncements: (announcements) => dispatch(addToEndAnnouncements(announcements)),
     }
 }
 
