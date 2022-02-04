@@ -8,6 +8,12 @@
     z-index: 1;
 }
 
+@media screen and (max-width: 1000px) {
+    .createPostBlock{
+        width: 75.6%;
+    }
+}
+
 .postTypesBlock{
     width: 100%;
     display: flex;
@@ -35,4 +41,8 @@
 
 .homeLoaderInPostsBlock > * {
     position: static;
+}
+
+.postsBlockWrapper{
+    width: 100%;
 }

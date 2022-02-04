@@ -8,6 +8,7 @@ import { login } from "../../ReduxStorage/actions/userActions";
 import validator from 'validator'
 import { Loader } from "../../Components/Loader/Loader";
 import { Modal } from "../../Components/Modal/Modal";
+import './LoginPage.css'
 
 function LoginPage(props) {
 
@@ -49,7 +50,7 @@ function LoginPage(props) {
     }
 
     return(
-        <div>
+        <div className="loginPageMainBlock">
 
             {
             loading
@@ -62,6 +63,7 @@ function LoginPage(props) {
                 value={loginData.email} 
                 htmlForText="Email" 
                 onChange={inputChangeHandler} 
+                className="input inputLoginPage"
             />
 
             <Input 
@@ -70,6 +72,7 @@ function LoginPage(props) {
                 value={loginData.password} 
                 htmlForText="Password" 
                 onChange={inputChangeHandler}
+                className="input inputLoginPage"
             />
 
             <Button 

@@ -22,7 +22,7 @@ export function PagesWrapper(Component) {
                 :    null
                 }   
 
-                <NavBar />
+                <NavBar showAlertHandler={(alert) => {setShowAlert(alert)}} />
 
                 <div className='mainWrapper'>
                     <Component showAlertHandler={(alert) => {setShowAlert(alert)}} {...props} />

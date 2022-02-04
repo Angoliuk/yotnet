@@ -15,6 +15,7 @@ function CommentCard(props) {
     const [editingComment, setEditingComment] = useState(false)
     const comment = comments.find((comment) => comment.id === commentId)
     const createdAtDate = new Date(comment.createdAt).toLocaleString()
+    const [showButtonsForUserComments, setShowButtonsForUserComments] = useState(false)
 
     const [commentChanges, setCommentChanges] = useState({
         body: comment.body
@@ -65,6 +66,35 @@ function CommentCard(props) {
         }
     }
 
+    const showButtonsForUserCommentsHandler = () => {
+
+        setShowButtonsForUserComments(!showButtonsForUserComments)
+
+    }
+
+    const ButtonsForUserComments = () => {
+        return(
+            <div className="ButtonsForUserCommentsBlock">
+
+                <Button
+                    text='Edit'
+                    name={`editButton${commentId}`}
+                    className="editButton button"
+                    classNameBlock="editButtonBlock"
+                    onClick={() => {setEditingComment(true); setShowButtonsForUserComments(false)}}
+                />
+
+                <Button 
+                    text='Delete'
+                    name={`deleteButton${commentId}`}
+                    className="deleteButton button"
+                    onClick={deleteComment}
+                />
+
+            </div>
+        )
+    }
+
     return(
         loading
         ?   <div className="commentLoaderInCommentsBlock"><Loader /></div>
@@ -83,28 +113,23 @@ function CommentCard(props) {
 
                     </div>
 
-                    {
-                    userId === comment.user.id && editingComment === false
-                    ?   <div className="ButtonsForUserPostsBlock">
+                    <div className="ButtonsForUserCommentsMainBlock">
 
-                            <Button
-                                text='Edit'
-                                name={`editButton${commentId}`}
-                                className="editButton button"
-                                classNameBlock="editButtonBlock"
-                                onClick={() => setEditingComment(true)}
-                            />
+                        {
+                        userId === comment.user.id && editingComment === false
+                        ?   <Button text='…' name={`showButtonsForUserCommentsText${commentId}`} className="button showButtonsForUserPostsText" onClick={showButtonsForUserCommentsHandler}>
+                                ... 
+                            </Button>
+                        :   null
+                        }
 
-                            <Button 
-                                text='Delete'
-                                name={`deleteButton${commentId}`}
-                                className="deleteButton button"
-                                onClick={deleteComment}
-                            />
+                        {
+                        showButtonsForUserComments
+                        ?    <ButtonsForUserComments />
+                        :   null
+                        }
 
-                        </div>
-                    :   null
-                    }
+                    </div>
 
                 </div>
 

@@ -19,6 +19,7 @@ function PostCard(props) {
     const createdAtDate = new Date(post.createdAt).toLocaleString()
     const [loadingPost, setLoadingPost] = useState(false)
     const [loadingComments, setLoadingComment] = useState(false)
+    const [showButtonsForUserPosts, setShowButtonsForUserPosts] = useState(false)
 
     const [newComment, setNewComment] = useState({
         text: ''
@@ -32,15 +33,18 @@ function PostCard(props) {
             if (!commentsFromBD) return null
 
             if (comments) {
+
                 const newComments = commentsFromBD.filter((commentFromBD) => comments.find((comment) => comment.id === commentFromBD.id) === undefined)
                 addComments(newComments)
-            setLoadingComment(false)
 
             }else{
                 addComments(commentsFromBD)
             }
 
+            setLoadingComment(false)
+
         } catch (e) {
+            setLoadingComment(false)
             showAlertHandler({
                 show: true,
                 text: `Error, try to reload this page. ${e}`,
@@ -93,6 +97,7 @@ function PostCard(props) {
             setLoadingComment(false)
 
         } catch (e) {
+            setLoadingComment(false)
             showAlertHandler({
                 show: true,
                 text: `${e}`,
@@ -110,12 +115,19 @@ function PostCard(props) {
             setLoadingPost(false)
 
         } catch (e) {
+            setLoadingPost(false)
             showAlertHandler({
                 show: true,
                 text: `Error, try to delete post again. ${e}`,
                 type: 'error',
             })
         }
+    }
+
+    const showButtonsForUserPostsHandler = () => {
+
+        setShowButtonsForUserPosts(!showButtonsForUserPosts)
+
     }
 
     const ButtonsForUserPosts = () => {
@@ -169,11 +181,23 @@ function PostCard(props) {
 
                 </div>
 
-                {
-                userInfo.id === post.user.id
-                ?   <ButtonsForUserPosts />
-                :   null
-                }
+                <div className="ButtonsForUserPostsMainBlock">
+
+                    {
+                    userInfo.id === post.user.id
+                    ?   <Button text='…' name={`showButtonsForUserPostsText${postId}`} className="button showButtonsForUserPostsText" onClick={showButtonsForUserPostsHandler}>
+                            ... 
+                        </Button>
+                    :   null
+                    }
+
+                    {
+                    showButtonsForUserPosts
+                    ?   <ButtonsForUserPosts />
+                    :   null
+                    }
+
+                </div>
 
             </div>
 
@@ -204,7 +228,7 @@ function PostCard(props) {
                                     name='text'
                                     value={newComment.text}
                                     onChange={newCommentInputHandler}
-                                    rows={5}
+                                    rows={7}
                                 />
 
                                 <Button

@@ -33,16 +33,16 @@ function EditPage(props) {
             
             if (postType === 'post') {
 
-                if(!validator.isLength(postChanges.title, {min: 1, max: 150})){throw new Error('It`s required field, signs limit - 150')}
-                if(!validator.isLength(postChanges.body, {min: 1, max: 600})){throw new Error('It`s required field, signs limit - 600')}
+                if(!validator.isLength(postChanges.title, {min: 1, max: 1000})){throw new Error('It`s required field, signs limit - 1000')}
+                if(!validator.isLength(postChanges.body, {min: 1, max: 3000})){throw new Error('It`s required field, signs limit - 3000')}
                     
                 await request(`/664/posts/${id}`, 'PATCH', {...postChanges, updatedAt: new Date()}, {'Authorization': `Bearer ${props.accessToken}`})
                 window.location.reload();
 
             } else if(postType === 'announcement') {
 
-                if(!validator.isLength(postChanges.title, {min: 1, max: 150})){throw new Error('It`s required field, signs limit - 150')}
-                if(!validator.isLength(postChanges.body, {min: 1, max: 600})){throw new Error('It`s required field, signs limit - 600')}
+                if(!validator.isLength(postChanges.title, {min: 1, max: 500})){throw new Error('It`s required field, signs limit - 500')}
+                if(!validator.isLength(postChanges.body, {min: 1, max: 1500})){throw new Error('It`s required field, signs limit - 1500')}
 
                 await request(`/664/announcements/${id}`, 'PATCH', {...postChanges, updatedAt: new Date()}, {'Authorization': `Bearer ${props.accessToken}`})
                 window.location.reload();

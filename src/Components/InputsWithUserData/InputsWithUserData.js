@@ -15,6 +15,7 @@ function InputsWithUserData(props) {
                 value={stateForInputs.email} 
                 htmlForText="Email" 
                 onChange={onChangeInput} 
+                className="input personalInfoProfilePageInput"
                 type='email' 
             />
 
@@ -25,6 +26,7 @@ function InputsWithUserData(props) {
                     value={stateForInputs.password} 
                     htmlForText="Password" 
                     onChange={onChangeInput} 
+                    className="input personalInfoProfilePageInput"
                     type='password' 
                 />
             :   null
@@ -35,6 +37,7 @@ function InputsWithUserData(props) {
                 value={stateForInputs.firstname} 
                 htmlForText="Firstname" 
                 onChange={onChangeInput} 
+                className="input personalInfoProfilePageInput"
             />
 
             <Input 
@@ -42,6 +45,7 @@ function InputsWithUserData(props) {
                 value={stateForInputs.lastname} 
                 htmlForText="Lastname" 
                 onChange={onChangeInput} 
+                className="input personalInfoProfilePageInput"
             />
 
             <Input 
@@ -49,6 +53,7 @@ function InputsWithUserData(props) {
                 value={stateForInputs.age} 
                 htmlForText="Age" 
                 onChange={onChangeInput} 
+                className="input personalInfoProfilePageInput"
                 type='number' 
             />
 

@@ -68,9 +68,8 @@ function RegisterPage(props) {
 
     }
 
-    return(
-        
-        <div>
+    return(  
+        <div className="registerPageMainBlock">
             {
             loading
             ?   Modal(<Loader />)

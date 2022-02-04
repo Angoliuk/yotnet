@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import { useHttp } from "../../Hook/useHttp";
 import './AnnouncementCard.css'
@@ -11,6 +11,7 @@ function AnnouncementCard(props) {
 
     const {request, loading} = useHttp()
     const {showAlertHandler, announcementId, announcements, setAnnouncements, userInfo} = props
+    const [showButtonsForUserPosts, setShowButtonsForUserPosts] = useState(false)
     const announcement = announcements.find((announ) => announ.id === announcementId)
     const createdAtDate = new Date(announcement.createdAt).toLocaleString()
 
@@ -31,7 +32,7 @@ function AnnouncementCard(props) {
 
     const ButtonsForUserPosts = () => {
         return(
-            <div className="ButtonsForUserAnnouncementBlock">
+            <div className="ButtonsForUserAnnouncementsBlock">
 
                 <Link to={`/edit/announcement/${announcementId}`}>
                     <Button
@@ -53,6 +54,12 @@ function AnnouncementCard(props) {
         )
     }
 
+    const showButtonsForUserAnnouncementsHandler = () => {
+
+        setShowButtonsForUserPosts(!showButtonsForUserPosts)
+
+    }
+
     return(
         loading
         ?   <div className="announcementLoaderInCommentsBlock"><Loader /></div>
@@ -71,11 +78,23 @@ function AnnouncementCard(props) {
 
                     </div>
 
-                    {
-                    userInfo.id === announcement.user.id
-                    ?   <ButtonsForUserPosts />
-                    :   null
-                    }
+                    <div className="ButtonsForUserAnnouncementsMainBlock">
+
+                        {
+                        userInfo.id === announcement.user.id
+                        ?   <Button text='…' name={`showButtonsForUserAnnouncementsText${announcementId}`} className="button showButtonsForUserPostsText" onClick={showButtonsForUserAnnouncementsHandler}>
+                                ... 
+                            </Button>
+                        :   null
+                        }
+
+                        {
+                        showButtonsForUserPosts
+                        ?   <ButtonsForUserPosts />
+                        :   null
+                        }
+
+                    </div>
 
                 </div>
 

@@ -156,6 +156,7 @@ function ProfilePage(props) {
                             name='password' 
                             value={newPassword} 
                             htmlForText="Password" 
+                            className="input personalInfoProfilePageInput"
                             onChange={passwordInputChangeHandler} 
                             type='password'
                         />
@@ -163,7 +164,8 @@ function ProfilePage(props) {
                         <Button 
                             onClick={updateUserProfile} 
                             text='Save' 
-                            name='saveButton' 
+                            name='saveButton'
+                            className="button personalInfoProfilePageButton" 
                         /> 
 
                     </div>

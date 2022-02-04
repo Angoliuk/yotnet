@@ -33,7 +33,53 @@
     width: 100%;
 }
 
+.profilePagePersonalMainBlock{
+    width: 60%;
+}
+
 .profilePageMainBlock{
     width: 80%;
     display: flex;
+}
+
+@media screen and (max-width: 1300px) {
+
+    .profilePageMainBlock{
+        width: 100%;
+    }
+
+}
+
+@media screen and (max-width: 830px) {
+
+    .profilePageMainBlock{
+        flex-direction: column;
+    }
+
+    .chooseInfoTypeBlock{
+        margin-right: 0px;
+        display: flex;
+    }
+
+    .profilePagePersonalMainBlock{
+        margin-left: 15px;
+    }
+
+    .profilePagePersonalMainBlock{
+        width: 90%;
+    }
+
+}
+
+@media screen and (max-width: 670px) {
+
+    .chooseInfoTypeBlock{
+        flex-direction: column;
+    }
+
+    .chooseInfoTypeBlockProfilePage{
+        margin-top: 0px;
+        margin-left: 0px;
+    }
+
 }

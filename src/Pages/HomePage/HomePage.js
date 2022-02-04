@@ -97,8 +97,8 @@ function HomePage(props) {
             
             if (newPost.isAnnouncement) {
 
-                if(!validator.isLength(newPost.title, {min: 1, max: 100})){throw new Error('It`s required field, signs limit - 100')}
-                if(!validator.isLength(newPost.body, {min: 1, max: 250})){throw new Error('It`s required field, signs limit - 250')}
+                if(!validator.isLength(newPost.title, {min: 1, max: 500})){throw new Error('It`s required field, signs limit - 500')}
+                if(!validator.isLength(newPost.body, {min: 1, max: 1500})){throw new Error('It`s required field, signs limit - 1500')}
 
                 const newAnnouncementFromDB = await request('/664/announcements', 'POST', {title: newPost.title, body: newPost.body, createdAt: new Date(), updatedAt: new Date(), userId: userInfo.id}, {'Authorization': `Bearer ${userInfo.accessToken}`})
                 addAnnouncements([{
@@ -114,8 +114,8 @@ function HomePage(props) {
 
             } else {
 
-                if(!validator.isLength(newPost.title, {min: 1, max: 150})){throw new Error('It`s required field, signs limit - 150')}
-                if(!validator.isLength(newPost.body, {min: 1, max: 600})){throw new Error('It`s required field, signs limit - 600')}
+                if(!validator.isLength(newPost.title, {min: 1, max: 1000})){throw new Error('It`s required field, signs limit - 1000')}
+                if(!validator.isLength(newPost.body, {min: 1, max: 3000})){throw new Error('It`s required field, signs limit - 3000')}
 
                 const newPostFromDB = await request('/664/posts', 'POST', {title: newPost.title, body: newPost.body, createdAt: new Date(), updatedAt: new Date(), userId: userInfo.id}, {'Authorization': `Bearer ${userInfo.accessToken}`})
                 addPosts([{
@@ -142,6 +142,7 @@ function HomePage(props) {
                 title: '',
                 body: '',
             })
+            setCreatingNewPost(false)
             setShowNewPostBlock(false)
             showAlertHandler({
                 show: true,
@@ -187,13 +188,14 @@ function HomePage(props) {
                             placeholder="Title"
                             className="createPostInput input" 
                             onChange={newPostInputHandler} 
+                            classNameBlock="createPostInputBlock"
                         />
 
                         <Textarea 
                             name='body'
                             value={newPost.body}
                             onChange={newPostInputHandler}
-                            rows={5}
+                            rows={15}
                             className="createPostTextarea textarea"
                             placeholder="What`s on your mind?"
                         />
@@ -237,7 +239,11 @@ function HomePage(props) {
             :   null
             }   
 
-            <PostsBlock />
+            <div className="postsBlockWrapper">
+
+                <PostsBlock />
+
+            </div>
 
             {
             !loadNewPosts

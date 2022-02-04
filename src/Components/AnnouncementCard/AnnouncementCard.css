@@ -5,6 +5,11 @@
     margin-bottom: -25px;
 }
 
+.announcementCard{
+    box-sizing: border-box;
+    width: 100%;
+}
+
 .announcementAuthorInfoBlock{
     display: flex;
     justify-content: space-between;
@@ -41,4 +46,27 @@
 
 .announcementLoaderInCommentsBlock > *{
     position: static !important;
+}
+
+.ButtonsForUserAnnouncementsBlock{
+    padding: 2px;
+    background-color: rgb(0, 0, 0);
+    position: absolute;
+    margin: 8px 0px 0px 0px;
+}
+
+.ButtonsForUserAnnouncementsBlock button{
+    width: 70px;
+    height: 30px;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+}
+
+.ButtonsForUserAnnouncementsBlock a{
+    text-decoration: none;
+}
+
+.ButtonsForUserAnnouncementsBlock div{
+    margin: 0;
 }

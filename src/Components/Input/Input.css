@@ -8,7 +8,8 @@
 }
 
 .createPostInput{
-    width: 96.5%;
+    box-sizing:border-box;
+    width:100%;
     margin: 0px 0px 15px 0px;
 }
 
@@ -16,4 +17,16 @@
     width: 95.7%;
     margin: 20px 0px 0px 0px;
     padding: 2%;
+}
+
+.personalInfoProfilePageInput{
+    box-sizing: border-box;
+    margin: 10px 0px;
+    width: 100%;
+}
+
+.inputLoginPage{
+    box-sizing: border-box;
+    width: 100%;
+    margin-left: 0px;
 }
