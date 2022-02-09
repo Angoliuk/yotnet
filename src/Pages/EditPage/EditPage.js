@@ -120,7 +120,7 @@ function EditPage(props) {
                 name='body'
                 value={postChanges.body}
                 onChange={postEditInputHandler}
-                rows={5}
+                rows={15}
                 className="editPostTextarea textarea"
                 placeholder="What`s on your mind?"
             />

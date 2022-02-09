@@ -14,9 +14,9 @@
 }
 
 .editPostInput{
-    width: 95.7%;
+    box-sizing:border-box;
+    width: 100%;
     margin: 20px 0px 0px 0px;
-    padding: 2%;
 }
 
 .personalInfoProfilePageInput{
