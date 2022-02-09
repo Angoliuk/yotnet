@@ -1,21 +1,23 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Button } from "../../Components/Button/Button";
+import { Button } from "../../Components/Common/Button/Button";
 import { PagesWrapper } from "../../hoc/PagesWrapper/PagesWrapper";
 import { useHttp } from "../../Hook/useHttp";
 import { login } from "../../ReduxStorage/actions/userActions";
 import validator from 'validator';
 import './RegisterPage.css'
-import InputsWithUserData from "../../Components/InputsWithUserData/InputsWithUserData";
-import { Loader } from "../../Components/Loader/Loader";
-import { Modal } from "../../Components/Modal/Modal";
+import InputsWithUserData from "../../Components/Common/InputsWithUserData/InputsWithUserData";
+import { Loader } from "../../Components/Common/Loader/Loader";
+import { Modal } from "../../Components/Common/Modal/Modal";
+import { useNavigate } from "react-router-dom";
 
 function RegisterPage(props) {
 
     const {request, loading} = useHttp()
     const {login, showAlertHandler} = props
-    const [showAvatarsBlock ,setShowAvatarsBlock] = useState(false)
+    const navigate = useNavigate()
 
+    const [showAvatarsBlock ,setShowAvatarsBlock] = useState(false)
 
     const [registerData, setRegisterData] = useState({
         email: '',
@@ -55,8 +57,14 @@ function RegisterPage(props) {
             if(!registerData.lastname || !registerData.firstname){throw new Error('Enter your name')}
             if(registerData.age < 14){throw new Error('You need to be at least 14')}
 
-            const data = await request('/register', 'POST', registerData)
+            const data = await request(
+                '/register', 
+                'POST', 
+                registerData
+            )
+
             login({...data.user, accessToken: data.accessToken})  
+            navigate('/home')
 
         } catch (e) {
             showAlertHandler({
@@ -70,6 +78,7 @@ function RegisterPage(props) {
 
     return(  
         <div className="registerPageMainBlock">
+            
             {
             loading
             ?   Modal(<Loader />)

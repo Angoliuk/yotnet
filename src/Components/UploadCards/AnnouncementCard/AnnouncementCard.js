@@ -1,24 +1,32 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { useHttp } from "../../Hook/useHttp";
+import { useHttp } from "../../../Hook/useHttp";
 import './AnnouncementCard.css'
-import { setAnnouncements } from "../../ReduxStorage/actions/announcementActions";
+import { setAnnouncements } from "../../../ReduxStorage/actions/announcementActions";
 import { Link, NavLink } from "react-router-dom";
-import { Button } from "../Button/Button";
-import { Loader } from "../Loader/Loader";
+import { Button } from "../../Common/Button/Button";
+import { Loader } from "../../Common/Loader/Loader";
 
 function AnnouncementCard(props) {
 
     const {request, loading} = useHttp()
     const {showAlertHandler, announcementId, announcements, setAnnouncements, userInfo} = props
-    const [showButtonsForUserPosts, setShowButtonsForUserPosts] = useState(false)
+
+    const [showButtonsForUserAnnouncements, setShowButtonsForUserAnnouncements] = useState(false)
+
     const announcement = announcements.find((announ) => announ.id === announcementId)
     const createdAtDate = new Date(announcement.createdAt).toLocaleString()
 
     const deleteAnnouncement = async () => {
         try {
             
-            await request(`/664/announcements/${announcementId}`, 'DELETE', null, {'Authorization': `Bearer ${userInfo.accessToken}`})
+            await request(
+                `/664/announcements/${announcementId}`, 
+                'DELETE', 
+                null, 
+                {'Authorization': `Bearer ${userInfo.accessToken}`}
+            )
+            
             setAnnouncements(announcements.filter((announcement) => announcement.id !== announcementId))
 
         } catch (e) {
@@ -56,9 +64,24 @@ function AnnouncementCard(props) {
 
     const showButtonsForUserAnnouncementsHandler = () => {
 
-        setShowButtonsForUserPosts(!showButtonsForUserPosts)
+        setShowButtonsForUserAnnouncements(!showButtonsForUserAnnouncements)
 
     }
+
+    const clickHandler = useCallback(() => {
+        
+        if(!showButtonsForUserAnnouncements) return null
+
+        showButtonsForUserAnnouncementsHandler()
+
+    }, [showButtonsForUserAnnouncements])  
+
+    useEffect(() => {
+        document.addEventListener('click', clickHandler)
+        return function () {
+            document.removeEventListener('click', clickHandler)
+        }
+    }, [clickHandler, showButtonsForUserAnnouncements])
 
     return(
         loading
@@ -89,7 +112,7 @@ function AnnouncementCard(props) {
                         }
 
                         {
-                        showButtonsForUserPosts
+                        showButtonsForUserAnnouncements
                         ?   <ButtonsForUserPosts />
                         :   null
                         }

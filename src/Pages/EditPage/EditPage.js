@@ -1,65 +1,32 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { useParams } from "react-router-dom";
-import { Button } from "../../Components/Button/Button";
-import { Input } from "../../Components/Input/Input";
-import { Textarea } from "../../Components/Textarea/Textarea";
+import { useNavigate, useParams } from "react-router-dom";
+import { Button } from "../../Components/Common/Button/Button";
+import { Input } from "../../Components/Common/Input/Input";
+import { Textarea } from "../../Components/Common/Textarea/Textarea";
 import { PagesWrapper } from "../../hoc/PagesWrapper/PagesWrapper";
 import { useHttp } from "../../Hook/useHttp";
 import validator from 'validator'
 import './EditPage.css'
-import { Modal } from "../../Components/Modal/Modal";
-import { Loader } from "../../Components/Loader/Loader";
+import { Modal } from "../../Components/Common/Modal/Modal";
+import { Loader } from "../../Components/Common/Loader/Loader";
 
 function EditPage(props) {
 
-    const {id, postType} = useParams()
+    const {id, uploadType} = useParams()
     const {request, loading} = useHttp()
-    const {showAlertHandler} = props
+    const {showAlertHandler, accessToken, posts, announcements} = props
+    const navigate = useNavigate()
 
-    const post = 
-        postType === 'post'
-        ?   props.posts.find((post) => Number(id) === post.id)
-        :   props.announcements.find((announcement) => Number(id) === announcement.id)
+    const upload = 
+        uploadType === 'post'
+        ?   posts.find((post) => Number(id) === post.id)
+        :   announcements.find((announcement) => Number(id) === announcement.id)
         
     const [postChanges, setPostChanges] = useState({
-        body: post.body,
-        title: post.title,
+        body: upload.body,
+        title: upload.title,
     })
-    
-    const savePostChanges = async () => {
-
-        try {
-            
-            if (postType === 'post') {
-
-                if(!validator.isLength(postChanges.title, {min: 1, max: 1000})){throw new Error('It`s required field, signs limit - 1000')}
-                if(!validator.isLength(postChanges.body, {min: 1, max: 3000})){throw new Error('It`s required field, signs limit - 3000')}
-                    
-                await request(`/664/posts/${id}`, 'PATCH', {...postChanges, updatedAt: new Date()}, {'Authorization': `Bearer ${props.accessToken}`})
-                window.location.reload();
-
-            } else if(postType === 'announcement') {
-
-                if(!validator.isLength(postChanges.title, {min: 1, max: 500})){throw new Error('It`s required field, signs limit - 500')}
-                if(!validator.isLength(postChanges.body, {min: 1, max: 1500})){throw new Error('It`s required field, signs limit - 1500')}
-
-                await request(`/664/announcements/${id}`, 'PATCH', {...postChanges, updatedAt: new Date()}, {'Authorization': `Bearer ${props.accessToken}`})
-                window.location.reload();
-
-            } else{
-                throw new Error('Unknown type of post')
-            }
-            
-        } catch (e) {
-            showAlertHandler({
-                show: true,
-                text: `${e}`,
-                type: 'error',
-            })
-        }
-
-    }
 
     const postEditInputHandler = (event) => {
 
@@ -68,6 +35,68 @@ function EditPage(props) {
             [event.target.name]: event.target.value
         })
         
+    }
+
+    const savePostChanges = async () => {
+
+        if(!validator.isLength(postChanges.title, {min: 1, max: 1000})){throw new Error('It`s required field, signs limit - 1000')}
+        if(!validator.isLength(postChanges.body, {min: 1, max: 3000})){throw new Error('It`s required field, signs limit - 3000')}
+            
+        await request(
+            `/664/posts/${id}`, 
+            'PATCH', 
+            {
+                ...postChanges, 
+                updatedAt: new Date()
+            }, 
+            {'Authorization': `Bearer ${accessToken}`}
+        )
+
+        navigate('/')
+
+    }
+
+    const saveAnnouncementChanges = async () => {
+
+        if(!validator.isLength(postChanges.title, {min: 1, max: 500})){throw new Error('It`s required field, signs limit - 500')}
+        if(!validator.isLength(postChanges.body, {min: 1, max: 1500})){throw new Error('It`s required field, signs limit - 1500')}
+
+        await request(
+            `/664/announcements/${id}`, 
+            'PATCH', 
+            {
+                ...postChanges, 
+                updatedAt: new Date()
+            }, 
+            {'Authorization': `Bearer ${accessToken}`}
+        )
+
+    }
+    
+    const saveUploadChanges = async () => {
+
+        try {
+            
+            if (uploadType === 'post') {
+
+                savePostChanges()
+
+            } else if(uploadType === 'announcement') {
+
+                saveAnnouncementChanges()
+
+            } else{
+                throw new Error('Unknown type of post')
+            }
+
+        } catch (e) {
+            showAlertHandler({
+                show: true,
+                text: `${e}`,
+                type: 'error',
+            })
+        }
+
     }
 
     return(
@@ -101,7 +130,7 @@ function EditPage(props) {
                 name='savePostButton'
                 classNameBlock="editPostButtonBlock"
                 className="editPostButton button"
-                onClick={savePostChanges} 
+                onClick={saveUploadChanges} 
             />
 
         </div>

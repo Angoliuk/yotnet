@@ -14,54 +14,54 @@ const RoutesList = (props) => {
         <Router>
             {
             props.isAuth
-                ?
-                    <Routes>
+            ?
+                <Routes>
 
-                        <Route 
-                            path='/home' 
-                            element={<HomePage />} 
-                        />
+                    <Route 
+                        path='/home' 
+                        element={<HomePage />} 
+                    />
 
-                        <Route 
-                            path='/profile/:id' 
-                            element={<ProfilePage />} 
-                        />
+                    <Route 
+                        path='/profile/:id' 
+                        element={<ProfilePage />} 
+                    />
 
-                        <Route 
-                            path='/edit/:postType/:id' 
-                            element={<EditPage />} 
-                        />
+                    <Route 
+                        path='/edit/:uploadType/:id' 
+                        element={<EditPage />} 
+                    />
 
-                        <Route 
-                            path="*" 
-                            element={<Navigate to='/home' />} 
-                        />
+                    <Route 
+                        path="*" 
+                        element={<Navigate to='/home' />} 
+                    />
 
-                    </Routes>
-                :
-                    <Routes>
+                </Routes>
+            :
+                <Routes>
 
-                        <Route 
-                            path='/home' 
-                            element={<HomePage />} 
-                        />
+                    <Route 
+                        path='/home' 
+                        element={<HomePage />} 
+                    />
 
-                        <Route 
-                            path='/login' 
-                            element={<LoginPage />} 
-                        />
+                    <Route 
+                        path='/login' 
+                        element={<LoginPage />} 
+                    />
 
-                        <Route 
-                            path='/register' 
-                            element={<RegisterPage />} 
-                        />
+                    <Route 
+                        path='/register' 
+                        element={<RegisterPage />} 
+                    />
 
-                        <Route 
-                            path="*" 
-                            element={<Navigate to='/home' />} 
-                        />
+                    <Route 
+                        path="*" 
+                        element={<Navigate to='/home' />} 
+                    />
 
-                    </Routes>
+                </Routes>
             }
             
         </Router>

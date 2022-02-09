@@ -1,46 +1,41 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Button } from "../../Components/Button/Button";
-import { Input } from "../../Components/Input/Input";
-import { Modal } from "../../Components/Modal/Modal";
-import PostCard from "../../Components/PostCard/PostCard";
-import { Textarea } from "../../Components/Textarea/Textarea";
 import { PagesWrapper } from "../../hoc/PagesWrapper/PagesWrapper";
 import { useHttp } from "../../Hook/useHttp";
-import { addPosts, addToEndPosts } from "../../ReduxStorage/actions/postActions";
+import { addToEndPosts } from "../../ReduxStorage/actions/postActions";
 import './HomePage.css'
-import validator from 'validator'
-import { addAnnouncements } from "../../ReduxStorage/actions/announcementActions";
-import { Loader } from "../../Components/Loader/Loader";
+import { Loader } from "../../Components/Common/Loader/Loader";
+import NewUploadBlock from "../../Components/UploadBlocks/NewUploadBlock/NewUploadBlock";
+import PostsBlock from "../../Components/UploadBlocks/PostsBlock/PostsBlock";
 
 function HomePage(props) {
 
     const {request} = useHttp()
-    const {userInfo, showAlertHandler, posts, addToEndPosts, addAnnouncements, addPosts} = props
-    const [showNewPostBlock, setShowNewPostBlock] = useState(false)
+    const {showAlertHandler, posts, addToEndPosts} = props
+
     const [pageNum, setPageNum] = useState(1)
     const [loadNewPosts, setLoadNewPosts] = useState(true)
-    const [creatingNewPost, setCreatingNewPost] = useState(false)
-
-    const [newPost, setNewPost] = useState({
-        title: '',
-        body: '',
-        isAnnouncement: false,
-    })
 
     const dataRequest = useCallback(async () => {
 
         try {     
 
-            const postsFromDB = await request(`/posts?_page=${pageNum}&_limit=10&_expand=user&_sort=createdAt&_order=desc`, 'GET', null)
+            const postsFromDB = await request(
+                `/posts?_page=${pageNum}&_limit=10&_expand=user&_sort=createdAt&_order=desc`, 
+                'GET', 
+                null
+            )
+
             if (!postsFromDB) return null
 
             const newPosts = postsFromDB.filter((postFromDB) => posts.find((post) => post.id === postFromDB.id) === undefined)
+            //filter posts that are already in storage
+
             if(!newPosts) return null
             
             addToEndPosts(newPosts)
             setPageNum(prevState => prevState + 1)
-            setTimeout(() => setLoadNewPosts(false), 2000)
+            setLoadNewPosts(false)
             
         } catch (e) {
             showAlertHandler({
@@ -49,10 +44,10 @@ function HomePage(props) {
                 type: 'error',
             })
         }
-
-        
+    
     }, [request, loadNewPosts])
 
+    //load new posts when you scroll to the end of page
     useEffect(() => {
         if (!loadNewPosts) {return null}
         dataRequest()
@@ -66,187 +61,20 @@ function HomePage(props) {
     }, [])
 
     const scrollHandler = (e) => {
-
-        if (e.target.documentElement.scrollHeight - (window.innerHeight + e.target.documentElement.scrollTop) < 100) {
-            
-            setLoadNewPosts(true)
-
-        }
+        
+        if (e.target.documentElement.scrollHeight - (window.innerHeight + e.target.documentElement.scrollTop) < 100) setLoadNewPosts(true)
 
     }
-
-    const newPostInputHandler = useCallback((event) => {
-
-        event.target.name === "isAnnouncement"
-        ?   setNewPost({
-                ...newPost,
-                [event.target.name]: event.target.checked
-            })
-        :   setNewPost({
-                ...newPost,
-                [event.target.name]: event.target.value
-            })
-        
-    }, [newPost])
-
-    const createNewPost = async () => {
-        
-        try {
-
-            setCreatingNewPost(true)
-            
-            if (newPost.isAnnouncement) {
-
-                if(!validator.isLength(newPost.title, {min: 1, max: 500})){throw new Error('It`s required field, signs limit - 500')}
-                if(!validator.isLength(newPost.body, {min: 1, max: 1500})){throw new Error('It`s required field, signs limit - 1500')}
-
-                const newAnnouncementFromDB = await request('/664/announcements', 'POST', {title: newPost.title, body: newPost.body, createdAt: new Date(), updatedAt: new Date(), userId: userInfo.id}, {'Authorization': `Bearer ${userInfo.accessToken}`})
-                addAnnouncements([{
-                    ...newAnnouncementFromDB,
-                    user: {
-                        id: userInfo.id, 
-                        firstname: userInfo.firstname, 
-                        lastname: userInfo.lastname, 
-                        email: userInfo.email, 
-                        age: userInfo.age,
-                    }
-                }])
-
-            } else {
-
-                if(!validator.isLength(newPost.title, {min: 1, max: 1000})){throw new Error('It`s required field, signs limit - 1000')}
-                if(!validator.isLength(newPost.body, {min: 1, max: 3000})){throw new Error('It`s required field, signs limit - 3000')}
-
-                const newPostFromDB = await request('/664/posts', 'POST', {title: newPost.title, body: newPost.body, createdAt: new Date(), updatedAt: new Date(), userId: userInfo.id}, {'Authorization': `Bearer ${userInfo.accessToken}`})
-                addPosts([{
-                    ...newPostFromDB,
-                    user: {
-                        id: userInfo.id, 
-                        firstname: userInfo.firstname, 
-                        lastname: userInfo.lastname, 
-                        email: userInfo.email, 
-                        age: userInfo.age,
-                    }
-                }])
-            }
-
-            setShowNewPostBlock(false)
-            setNewPost({
-                title: '',
-                body: '',
-            })
-            setCreatingNewPost(false)
-
-        } catch (e) {
-            setNewPost({
-                title: '',
-                body: '',
-            })
-            setCreatingNewPost(false)
-            setShowNewPostBlock(false)
-            showAlertHandler({
-                show: true,
-                text: `${e}`,
-                type: 'error',
-            })
-        }
-    }
-
-    const PostsBlock = useCallback(() => {
-        return(
-            posts.map((post, i) => {
-                return(
-                    <PostCard showAlertHandler={showAlertHandler} key={i} postId={post.id} />
-                )
-            })
-        )
-    }, [posts])
+    //
 
     return(
         <>
 
-            {
-            userInfo.accessToken
-            ?   <Button 
-                    text='What`s on your mind?'
-                    name='showNewPostBlock'
-                    classNameBlock="showNewPostBlockButtonBlock"
-                    className="showNewPostBlockButton button"
-                    onClick={() =>setShowNewPostBlock(!showNewPostBlock)} 
-                />
-            :   null
-            }
+            <NewUploadBlock showAlertHandler={showAlertHandler} />
+            <PostsBlock showAlertHandler={showAlertHandler} />
 
             {
-            showNewPostBlock
-            ?   Modal(
-                    <div className="createPostBlock">
-
-                        <Input 
-                            name='title' 
-                            value={newPost.title} 
-                            placeholder="Title"
-                            className="createPostInput input" 
-                            onChange={newPostInputHandler} 
-                            classNameBlock="createPostInputBlock"
-                        />
-
-                        <Textarea 
-                            name='body'
-                            value={newPost.body}
-                            onChange={newPostInputHandler}
-                            rows={15}
-                            className="createPostTextarea textarea"
-                            placeholder="What`s on your mind?"
-                        />
-
-                        <div className="isAnnouncementBlock">
-
-                            <input 
-                                onChange={newPostInputHandler} 
-                                placeholder='' 
-                                type="checkbox"
-                                name='isAnnouncement' 
-                                id="isAnnouncement"
-                                className="isAnnouncementCheckbox"
-                            />
-                            <label htmlFor="isAnnouncement">Post as announcement</label>
-
-                        </div>
-                        
-                        <Button 
-                            onClick={createNewPost} 
-                            text='Create' 
-                            name='createPostButton' 
-                            className="createPostButton button"
-                        />
-
-                        <Button 
-                            onClick={() => setShowNewPostBlock(false)} 
-                            text='Cancel' 
-                            name='cancelCreatePostButton' 
-                            className="cancelCreatePostButton button"
-                        />
-                        
-                    </div>
-                )
-            :   null
-            }
-
-            {
-            creatingNewPost
-            ?   Modal(<Loader />)
-            :   null
-            }   
-
-            <div className="postsBlockWrapper">
-
-                <PostsBlock />
-
-            </div>
-
-            {
-            !loadNewPosts
+            loadNewPosts
             ?   <div className="homeLoaderInPostsBlock"><Loader /></div>
             :   null
             }
@@ -257,7 +85,6 @@ function HomePage(props) {
 
 function mapStateToProps(state) {
     return{
-        userInfo: state.userReducers,
         posts: state.postReducers.posts,
     }
 }
@@ -265,8 +92,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return{
         addToEndPosts: (newPosts) => dispatch(addToEndPosts(newPosts)),
-        addPosts: (newPosts) => dispatch(addPosts(newPosts)),
-        addAnnouncements: (newAnnouncements) => dispatch(addAnnouncements(newAnnouncements)),
     }
 }
 

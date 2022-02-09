@@ -1,20 +1,22 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
-import { useHttp } from "../../Hook/useHttp";
-import { setComments } from "../../ReduxStorage/actions/postActions";
-import { Button } from "../Button/Button";
-import { Loader } from "../Loader/Loader";
-import { Textarea } from "../Textarea/Textarea";
+import { useHttp } from "../../../Hook/useHttp";
+import { setComments } from "../../../ReduxStorage/actions/postActions";
+import { Button } from "../../Common/Button/Button";
+import { Loader } from "../../Common/Loader/Loader";
+import { Textarea } from "../../Common/Textarea/Textarea";
 import './CommentsCard.css'
 
 function CommentCard(props) {
 
     const {request, loading} = useHttp()
     const {showAlertHandler, comments, setComments, userId, user, commentId} = props
-    const [editingComment, setEditingComment] = useState(false)
+
     const comment = comments.find((comment) => comment.id === commentId)
     const createdAtDate = new Date(comment.createdAt).toLocaleString()
+
+    const [editingComment, setEditingComment] = useState(false)
     const [showButtonsForUserComments, setShowButtonsForUserComments] = useState(false)
 
     const [commentChanges, setCommentChanges] = useState({
@@ -24,7 +26,12 @@ function CommentCard(props) {
     const deleteComment = async () => {
         try {
 
-            await request(`/comments/${commentId}`, 'DELETE', null)
+            await request(
+                `/comments/${commentId}`, 
+                'DELETE', 
+                null
+            )
+
             setComments(comments.filter((comment) => comment.id !== commentId))
 
         } catch (e) {
@@ -48,7 +55,16 @@ function CommentCard(props) {
     const saveChangedComment = async () => {
         try {
 
-            const changedComment = await request(`/664/comments/${commentId}`, 'PATCH', {...commentChanges, updatedAt: new Date()}, {'Authorization': `Bearer ${user.accessToken}`})
+            const changedComment = await request(
+                `/664/comments/${commentId}`, 
+                'PATCH', 
+                {
+                    ...commentChanges, 
+                    updatedAt: new Date()
+                }, 
+                {'Authorization': `Bearer ${user.accessToken}`}
+            )
+
             const newComments = Array.from(comments)
             const commentIndex = comments.findIndex((comment) => comment.id === changedComment.id)
 
@@ -58,6 +74,7 @@ function CommentCard(props) {
             
         } catch (e) {
             setEditingComment(false)
+            
             showAlertHandler({
                 show: true,
                 text: `${e}`,
@@ -94,6 +111,21 @@ function CommentCard(props) {
             </div>
         )
     }
+
+    const clickHandler = useCallback(() => {
+        
+        if(!showButtonsForUserComments) return null
+
+        showButtonsForUserCommentsHandler()
+
+    }, [showButtonsForUserComments])  
+
+    useEffect(() => {
+        document.addEventListener('click', clickHandler)
+        return function () {
+            document.removeEventListener('click', clickHandler)
+        }
+    }, [clickHandler, showButtonsForUserComments])
 
     return(
         loading

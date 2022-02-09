@@ -1,40 +1,5 @@
-.blockName{
-    font-weight: 700;
-    font-size: 21px;
-}
-
-.profilePageAvatar{
-    width: 200px;
-    height: 200px;
-    border-radius: 5px;
-    border: 2px solid black;
-}
-
-.profilePageInfoBlock{
-    display: flex;
-    align-items: center;
-    margin-top: 30px;
-}
-
-.profilePageUserInfoBlock{
-    margin-left: 25px;
-}
-
-.emptyInfoScetionProfilePage{
-    font-size: 20px;
-    font-weight: 600;
-}
-
 .chooseInfoTypeBlock{
     margin-right: 60px;
-}
-
-.profilePagePostsMainBlock{
-    width: 100%;
-}
-
-.profilePagePersonalMainBlock{
-    width: 60%;
 }
 
 .profilePageMainBlock{
@@ -59,14 +24,6 @@
     .chooseInfoTypeBlock{
         margin-right: 0px;
         display: flex;
-    }
-
-    .profilePagePersonalMainBlock{
-        margin-left: 15px;
-    }
-
-    .profilePagePersonalMainBlock{
-        width: 90%;
     }
 
 }

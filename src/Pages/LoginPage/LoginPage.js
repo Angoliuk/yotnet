@@ -1,19 +1,21 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Button } from "../../Components/Button/Button";
-import { Input } from "../../Components/Input/Input";
+import { Button } from "../../Components/Common/Button/Button";
+import { Input } from "../../Components/Common/Input/Input";
 import { PagesWrapper } from "../../hoc/PagesWrapper/PagesWrapper";
 import { useHttp } from "../../Hook/useHttp";
 import { login } from "../../ReduxStorage/actions/userActions";
 import validator from 'validator'
-import { Loader } from "../../Components/Loader/Loader";
-import { Modal } from "../../Components/Modal/Modal";
+import { Loader } from "../../Components/Common/Loader/Loader";
+import { Modal } from "../../Components/Common/Modal/Modal";
 import './LoginPage.css'
+import { useNavigate } from "react-router-dom";
 
 function LoginPage(props) {
 
     const {request, loading} = useHttp()
     const {login, showAlertHandler} = props
+    const navigate = useNavigate()
 
     const [loginData, setLoginData] = useState({
         email: '',
@@ -36,8 +38,14 @@ function LoginPage(props) {
             if(!validator.isEmail(loginData.email)){throw new Error('Enter valid Email')}
             if(!validator.isLength(loginData.password, {min: 6, max: undefined})){throw new Error('Too short password, minimal lenght - 6')}
 
-            const data = await request('/login', 'POST', loginData)
+            const data = await request(
+                '/login',
+                'POST', 
+                loginData
+            )
+            
             login({...data.user, accessToken: data.accessToken})
+            navigate('/home')
 
         } catch (e) {
             showAlertHandler({

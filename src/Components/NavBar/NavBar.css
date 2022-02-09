@@ -29,10 +29,6 @@ nav.loggedNavBar > *{
     border-radius: 10px;
 }
 
-.navElemAnnouncements{
-    padding: 2px 0px;
-}
-
 .navElemLogout:hover{
     border-radius: 100%;
 }
@@ -55,26 +51,7 @@ nav.loggedNavBar > *{
     height: 60px;
 }
 
-.navBarAnnouncementBlock{
-    background-color: #f0f3fc;
-    position: fixed;
-    top: 0;
-    right: 0;
-    margin-right: 15%;
-    margin-top: 77px;
-    z-index: 1;
-    width: 400px;
-    height: 600px;
-    overflow-y: scroll;
-    padding: 20px;
-    border-radius: 5px;
-    border: 1.5px solid black;
-}
-
 @media screen and (max-width: 680px) {
-    .navBarAnnouncementBlock{
-       margin-right: 10%;
-    }
     .loggedNavBar{
         justify-content: center;
     }
@@ -87,48 +64,7 @@ nav.loggedNavBar > *{
 }
 
 @media screen and (max-width: 550px) {
-    .navBarAnnouncementBlock{
-        width: 250px;
-        height: 400px;
-        margin-right: 10px;
-    }
-
     nav.loggedNavBar > *{
         margin: 0px 2px;
     }
-}
-
-.navBarAnnouncementBlockBackground{
-    opacity: 0;
-}
-
-.navBarAnnouncementBlock::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
-}
-   
-.navBarAnnouncementBlock::-webkit-scrollbar-thumb {
-    background: #aaa;
-    border-radius: 15px;
-}
-
-.navBarAnnouncementBlock::-webkit-scrollbar {
-    width: 10px;
-}
-
-.navBarAnnouncementsName{
-    font-size: 21px;
-    font-weight: 700;
-}
-
-.navBarLoaderInAnnouncementsBlock{
-    height: 100px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.navBarAnnouncementLoaderInCommentsBlock > *{
-    position: static !important;
 }

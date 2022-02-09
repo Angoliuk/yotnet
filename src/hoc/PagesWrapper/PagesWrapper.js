@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Alert } from "../../Components/Alert/Alert";
+import { Alert } from "../../Components/Common/Alert/Alert";
 import NavBar from "../../Components/NavBar/NavBar";
 import './PagesWrapper.css'
 
