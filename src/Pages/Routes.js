@@ -1,68 +1,73 @@
-import React from 'react'
+import React, { Suspense, lazy } from 'react'
 import { connect } from 'react-redux';
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { BrowserRouter as Router } from 'react-router-dom';
-import HomePage from "./HomePage/HomePage";
-import LoginPage from "./LoginPage/LoginPage";
-import ProfilePage from "./ProfilePage/ProfilePage";
-import RegisterPage from "./RegisterPage/RegisterPage";
-import EditPage from './EditPage/EditPage';
+import { Loader } from '../Components/Common/Loader/Loader';
+import { Modal } from '../Components/Common/Modal/Modal';
 
+const HomePage = lazy(() => import("./HomePage/HomePage")) ;
+const LoginPage = lazy(() => import("./LoginPage/LoginPage")) ;
+const ProfilePage = lazy(() => import("./ProfilePage/ProfilePage")) ;
+const RegisterPage = lazy(() => import("./RegisterPage/RegisterPage")) ;
+const EditPage = lazy(() => import("./EditPage/EditPage")) ;
+ 
 const RoutesList = (props) => {
-
+ 
     return(
         <Router>
-            {
-            props.isAuth
-            ?
-                <Routes>
+            <Suspense fallback={Modal(<Loader />)}>
 
-                    <Route 
-                        path='/home' 
-                        element={<HomePage />} 
-                    />
+                {
+                props.isAuth
+                ?   <Routes>
 
-                    <Route 
-                        path='/profile/:id' 
-                        element={<ProfilePage />} 
-                    />
+                        <Route 
+                            path='/home' 
+                            element={<HomePage />} 
+                        />
 
-                    <Route 
-                        path='/edit/:uploadType/:id' 
-                        element={<EditPage />} 
-                    />
+                        <Route 
+                            path='/profile/:id' 
+                            element={<ProfilePage />} 
+                        />
 
-                    <Route 
-                        path="*" 
-                        element={<Navigate to='/home' />} 
-                    />
+                        <Route 
+                            path='/edit/:uploadType/:id' 
+                            element={<EditPage />} 
+                        />
 
-                </Routes>
-            :
-                <Routes>
+                        <Route 
+                            path="*" 
+                            element={<Navigate to='/home' />} 
+                        />
 
-                    <Route 
-                        path='/home' 
-                        element={<HomePage />} 
-                    />
+                    </Routes>
+                :   <Routes>
 
-                    <Route 
-                        path='/login' 
-                        element={<LoginPage />} 
-                    />
+                        <Route 
+                            path='/home' 
+                            element={<HomePage />} 
+                        />
 
-                    <Route 
-                        path='/register' 
-                        element={<RegisterPage />} 
-                    />
+                        <Route 
+                            path='/login' 
+                            element={<LoginPage />} 
+                        />
 
-                    <Route 
-                        path="*" 
-                        element={<Navigate to='/home' />} 
-                    />
+                        <Route 
+                            path='/register' 
+                            element={<RegisterPage />} 
+                        />
 
-                </Routes>
-            }
+                        <Route 
+                            path="*" 
+                            element={<Navigate to='/home' />} 
+                        />
+
+                    </Routes>
+                }
+
+            </Suspense>
             
         </Router>
     )
