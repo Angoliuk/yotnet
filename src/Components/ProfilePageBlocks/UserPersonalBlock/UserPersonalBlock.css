@@ -1,36 +1,36 @@
-.profilePagePersonalMainBlock{
+.profilePagePersonalBlock{
     width: 60%;
 }
 
-.blockName{
+.profilePagePersonalName{
     font-weight: 700;
     font-size: 21px;
 }
 
-.profilePageInfoBlock{
+.profilePagePersonalInfoBlock{
     display: flex;
     align-items: center;
     margin-top: 30px;
 }
 
-.profilePageAvatar{
+.profilePagePersonalAvatar{
     width: 200px;
     height: 200px;
     border-radius: 5px;
     border: 2px solid black;
 }
 
-.profilePageUserInfoBlock{
+.profilePagePersonalInfo{
     margin-left: 25px;
 }
 
 @media screen and (max-width: 830px) {
 
-    .profilePagePersonalMainBlock{
+    .profilePagePersonalBlock{
         margin-left: 15px;
     }
 
-    .profilePagePersonalMainBlock{
+    .profilePagePersonalBlock{
         width: 90%;
     }
 

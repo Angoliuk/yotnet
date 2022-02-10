@@ -85,9 +85,9 @@ const UserPersonalBlock = (props) => {
 
 
     return(
-        <div className="profilePagePersonalMainBlock">
+        <div className="profilePagePersonalBlock">
 
-            <p className="blockName">Information about {userId === Number(id) ? 'you' : user.firstname}</p>
+            <p className="profilePagePersonalName">Information about {userId === Number(id) ? 'you' : user.firstname}</p>
 
             {
             userId === Number(id)
@@ -118,13 +118,13 @@ const UserPersonalBlock = (props) => {
                     /> 
 
                 </div>
-            :   <div className='profilePageInfoBlock'>
-
-                    <div className="profilePageAvatarBlock">
-                        <img className="profilePageAvatar" alt='avatar' src={user.avatar ? user.avatar : "https://picsum.photos/200"} />
+            :   <div className='profilePagePersonalInfoBlock'>
+                
+                    <div>
+                        <img className="profilePagePersonalAvatar" alt='avatar' src={user.avatar ? user.avatar : "https://picsum.photos/200"} />
                     </div>
 
-                    <div className="profilePageUserInfoBlock">
+                    <div className="profilePagePersonalInfo">
                         <p>Fullname: {user.firstname} {user.lastname}</p>
                         <p>Age: {user.age}</p>
                     </div>

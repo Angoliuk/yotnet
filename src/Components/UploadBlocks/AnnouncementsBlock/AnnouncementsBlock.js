@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { addAnnouncements, addToEndAnnouncements } from "../../../ReduxStorage/actions/announcementActions";
 import { Modal } from "../../Common/Modal/Modal";
@@ -9,16 +9,22 @@ import { Loader } from "../../Common/Loader/Loader";
 
 const AnnouncementsBlock = (props) => {
 
-    const {request, loading} = useHttp()
-    const {id, addAnnouncements, announcements, showAlertHandler, addToEndAnnouncements} = props
+    const {request, loading, xTotalCount} = useHttp()
+    const {id, announcements, showAlertHandler, addToEndAnnouncements} = props
 
     const [showAnnouncement, setShowAnnouncement] = useState(false)
     const [pageNum, setPageNum] = useState(1)
-    // const [loadNewAnnouncements, setLoadNewAnnouncements] = useState(true)
+    const [loadNewAnnouncements, setLoadNewAnnouncements] = useState(false)
 
     const showAnnouncementHandler = async() => {
 
-        if (!showAnnouncement) {dataRequest()}
+        if (!showAnnouncement) {
+
+            dataRequest()
+            setLoadNewAnnouncements(true)
+
+        }
+
         setShowAnnouncement(!showAnnouncement)
 
     }
@@ -26,16 +32,19 @@ const AnnouncementsBlock = (props) => {
     const dataRequest = useCallback(async() => {
         try {
 
-            const announcementsFromDB = await request(`/announcements?_page=${pageNum}&_limit=20&_expand=user&_sort=createdAt&_order=desc`, 'GET', null)
+            if (!loadNewAnnouncements) {return null}
+
+            const announcementsFromDB = await request(`/announcements?_page=${pageNum}&_limit=10&_expand=user&_sort=createdAt&_order=desc`, 'GET', null)
 
             if (!announcementsFromDB) return null
 
             const newAnnouncements = announcementsFromDB.filter((announcementFromDB) => announcements.find((announcement) => announcement.id === announcementFromDB.id) === undefined)
+            //filter announcements that are already in storage
 
             if(!newAnnouncements) return null
+
             addToEndAnnouncements(newAnnouncements)
-            // setPageNum(prevState => prevState + 1)
-            // setLoadNewAnnouncements(false)
+            setTimeout(setLoadNewAnnouncements(false), 4000)
             
         } catch (e) {
             showAlertHandler({
@@ -44,33 +53,34 @@ const AnnouncementsBlock = (props) => {
                 type: 'error',
             })
         }
-    }, [request, announcements, addAnnouncements])
+    }, [request, addToEndAnnouncements, showAlertHandler, pageNum, loadNewAnnouncements])
 
-    const scrollHandler = (e) => {
+    //load new announcements when scroll to the bottom of the page 
+    useEffect(() => {
+        dataRequest()
+    }, [dataRequest])
 
-        if (e.target.scrollHeight - (e.target.scrollTop + e.target.offsetHeight) < 200 ) {
-            
-            // setLoadNewAnnouncements(true)
+    const scrollHandler = useCallback((e) => {
 
+        if (e.target.scrollHeight - (e.target.scrollTop + e.target.offsetHeight) < 10 && xTotalCount > pageNum*10) {
+            setLoadNewAnnouncements(true)
+            setPageNum(prevState => prevState + 1)
         }
 
-    }
+    }, [xTotalCount, pageNum])
 
-        // useEffect(() => {
-    //     if(!loadNewAnnouncements) return null
-    //     dataRequest()
-    // }, [loadNewAnnouncements, dataRequest])
+    const AnnouncementsListBlock = useCallback(() => {
 
-    const AnnouncementsListBlock = () => {
         return( 
             announcements && announcements.length > 0
             ?    announcements.map((announcement) => {
                     return(
                         <AnnouncementCard showAlertHandler={showAlertHandler} key={announcement.id+id} announcementId={announcement.id} />
                     )})
-            :   <p>Announcements for not found</p>
+            :   <p>Announcements not found</p>
         )
-    }
+
+    }, [announcements, id, showAlertHandler])
 
     return(
         <>
@@ -82,15 +92,17 @@ const AnnouncementsBlock = (props) => {
             {
             showAnnouncement
             ?   Modal(
-                    <div onScroll={scrollHandler} id="navBarAnnouncementBlock" className="navBarAnnouncementBlock">
+                    <div onScroll={scrollHandler} id="navBarAnnouncementsBlock" className="navBarAnnouncementsBlock">
 
                         <p className="navBarAnnouncementsName">Announcements for you</p>
                         <hr />
 
+                        <AnnouncementsListBlock />
+
                         {
-                        loading
-                        ?   <div className="navBarLoaderInAnnouncementsBlock"><Loader /></div>
-                        :   <AnnouncementsListBlock />
+                        loadNewAnnouncements || loading
+                        ?   <div className="navBarAnnouncementsBlockLoader"><Loader /></div>
+                        :   null
                         }
 
                     </div>,

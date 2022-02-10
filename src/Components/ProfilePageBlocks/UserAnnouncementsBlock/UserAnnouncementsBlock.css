@@ -3,11 +3,11 @@
     font-size: 21px;
 }
 
-.emptyInfoSectionProfilePage{
+.profilePageAnnouncementsEmptySection{
     font-size: 20px;
     font-weight: 600;
 }
 
-.profilePageAnnouncementsMainBlock{
+.profilePageAnnouncementsBlockName{
     width: 100%;
 }

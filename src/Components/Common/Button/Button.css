@@ -158,3 +158,18 @@
     color: #fff;
     
 }
+
+/* .showButtonsForUserPostsText{
+    font-size: 30px;
+    margin-right: 10px;
+} */
+
+@media screen and (max-width: 670px) {
+
+    .chooseInfoTypeBlockProfilePage{
+        margin-top: 0px;
+        margin-left: 0px;
+    }
+
+}
+

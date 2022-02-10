@@ -13,9 +13,9 @@ function UserPostsBlock(props) {
 
     return(
         userPosts.length > 0
-        ?   <div className="profilePagePostsMainBlock">
+        ?   <div className="profilePagePostsBlock">
 
-                <p className="blockName">{userId === Number(id) ? 'Your' : userInfo.firstname} posts</p>
+                <p className="profilePagePostsName">{userId === Number(id) ? 'Your' : userInfo.firstname} posts</p>
 
                 {
                 userPosts.map((post, i) => {
@@ -27,7 +27,7 @@ function UserPostsBlock(props) {
 
             </div>
         
-        :    <p className="emptyInfoSectionProfilePage">It`s time to create your first post</p>
+        :    <p className="profilePagePostsEmptySection">It`s time to create your first post</p>
     )
 }
 

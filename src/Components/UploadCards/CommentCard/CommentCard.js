@@ -91,7 +91,7 @@ function CommentCard(props) {
 
     const ButtonsForUserComments = () => {
         return(
-            <div className="ButtonsForUserCommentsBlock">
+            <div className="buttonsForUserCommentCard">
 
                 <Button
                     text='Edit'
@@ -111,7 +111,7 @@ function CommentCard(props) {
             </div>
         )
     }
-
+    
     const clickHandler = useCallback(() => {
         
         if(!showButtonsForUserComments) return null
@@ -129,12 +129,12 @@ function CommentCard(props) {
 
     return(
         loading
-        ?   <div className="commentLoaderInCommentsBlock"><Loader /></div>
+        ?   <div className="commentLoaderInCommentCard"><Loader /></div>
         :   <div className="commentCard">
                 <div className="commentInfoBlock">
                     <div className="commentAuthorInfoBlock">
 
-                        <div className="commentAuthorPicBlock">
+                        <div>
                             <NavLink to={`/profile/${comment.userId}`}><img alt='author pic' className="commentAuthorPic"  src={comment?.user?.avatar ? comment.user.avatar : "https://picsum.photos/60"}/></ NavLink>
                         </div>
 
@@ -145,7 +145,7 @@ function CommentCard(props) {
 
                     </div>
 
-                    <div className="ButtonsForUserCommentsMainBlock">
+                    <div>
 
                         {
                         userId === comment.user.id && editingComment === false
@@ -160,12 +160,12 @@ function CommentCard(props) {
                         ?    <ButtonsForUserComments />
                         :   null
                         }
-
+                        
                     </div>
 
                 </div>
 
-                <div className="commentMainBlock">
+                <div>
 
                     {
                     userId === comment.user.id && editingComment
@@ -187,7 +187,7 @@ function CommentCard(props) {
                             />
 
                         </>
-                    :   <p>{comment.body}</p>
+                    :   <p className="commentBody">{comment.body}</p>
                     }
 
                 </div>

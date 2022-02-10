@@ -40,7 +40,7 @@ function AnnouncementCard(props) {
 
     const ButtonsForUserPosts = () => {
         return(
-            <div className="ButtonsForUserAnnouncementsBlock">
+            <div className="buttonsForUserAnnouncementsBlock">
 
                 <Link to={`/edit/announcement/${announcementId}`}>
                     <Button
@@ -94,14 +94,14 @@ function AnnouncementCard(props) {
                             <NavLink to={`/profile/${announcement.userId}`}><img alt='author pic' className="announcementAuthorPic"  src={announcement?.user?.avatar ? announcement.user.avatar : "https://picsum.photos/60"}/></NavLink>
                         </div>
 
-                        <div className="announcementInfoTextBlock">
+                        <div>
                             <p>{announcement.user.firstname} {announcement.user.lastname}</p>
                             <p className="announcementDate">{createdAtDate}</p>
                         </div>
 
                     </div>
 
-                    <div className="ButtonsForUserAnnouncementsMainBlock">
+                    <div>
 
                         {
                         userInfo.id === announcement.user.id
@@ -121,9 +121,9 @@ function AnnouncementCard(props) {
 
                 </div>
 
-                <div className="announcementMainBlock">
+                <div className="announcementCardContentBlock">
                     <h3>{announcement.title}</h3>
-                    <p>{announcement.body}</p>
+                    <p className="announcementBody">{announcement.body}</p>
                 </div>
 
                 <hr />

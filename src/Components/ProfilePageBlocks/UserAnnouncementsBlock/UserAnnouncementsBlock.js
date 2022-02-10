@@ -13,9 +13,9 @@ function UserAnnouncementsBlock(props) {
 
     return(
         userAnnouncements && userAnnouncements.length > 0
-        ?   <div className="profilePageAnnouncementsMainBlock">
+        ?   <div className="profilePageAnnouncementsBlock">
 
-                <p className="blockName">{userId === Number(id) ? 'Your' : userInfo.firstname} announcements</p>
+                <p className="profilePageAnnouncementsBlockName">{userId === Number(id) ? 'Your' : userInfo.firstname} announcements</p>
 
                 {
                 userAnnouncements.map((announcement) => {
@@ -27,7 +27,7 @@ function UserAnnouncementsBlock(props) {
 
             </div>
         
-        :    <p className="emptyInfoSectionProfilePage">It`s time to create your first announcement</p>
+        :    <p className="profilePageAnnouncementsEmptySection">It`s time to create your first announcement</p>
     )
 }
 

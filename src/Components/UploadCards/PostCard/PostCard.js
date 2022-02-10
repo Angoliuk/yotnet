@@ -95,7 +95,7 @@ function PostCard(props) {
     const ButtonsForUserPosts = () => {
 
         return(
-            <div className="ButtonsForUserPostsBlock">
+            <div className="buttonsForUserPostsBlock">
 
                 <Link to={`/edit/post/${postId}`}>
                     <Button
@@ -147,13 +147,13 @@ function PostCard(props) {
 
     return(
         loadingPost
-        ?   <div className="postLoaderInCommentsBlock"><Loader /></div>
+        ?   <div className="loaderInPostCard"><Loader /></div>
         :   <div className="postCard">
                 <div className="postInfoBlock">
 
                     <div className="postAuthorInfoBlock">
 
-                        <div className="postAuthorPicBlock">
+                        <div>
                             <NavLink to={`/profile/${post.userId}`}><img alt='author pic' className="postAuthorPic"  src={post?.user?.avatar ? post.user.avatar : "https://picsum.photos/60"}/></ NavLink>
                         </div>
 
@@ -164,8 +164,8 @@ function PostCard(props) {
 
                     </div>
 
-                    <div className="ButtonsForUserPostsMainBlock">
-
+                    <div>
+                        
                         {
                         userInfo.id === post.user.id
                         ?   <Button text='…' name={`showButtonsForUserPostsText${postId}`} className="button showButtonsForUserPostsText" onClick={showButtonsForUserPostsHandler}>
@@ -184,9 +184,9 @@ function PostCard(props) {
 
                 </div>
 
-                <div className="postMainBlock">
+                <div className="postCardContentBlock">
                     <h3>{post.title}</h3>
-                    <p>{post.body}</p>
+                    <p className="postBody">{post.body}</p>
                 </div>
 
                 <div>
@@ -201,19 +201,18 @@ function PostCard(props) {
                     </p>
 
                     {
-                    showComments
+                    showComments && !loadingComments
                     ?   <CommentsBlock showAlertHandler={showAlertHandler} postId={postId} />
                     :   null
                     }
 
                     {
                     loadingComments
-                    ?   <div className="postLoaderInCommentsBlock"><Loader /></div>
+                    ?   <div className="loaderInPostCard"><Loader /></div>
                     :   null
                     }
 
                 </div>
-                
             </div>
     )
 }

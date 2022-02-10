@@ -16,7 +16,7 @@
     padding: 2px 0px;
 }
 
-.navBarAnnouncementBlock{
+.navBarAnnouncementsBlock{
     background-color: #f0f3fc;
     position: fixed;
     top: 0;
@@ -33,30 +33,30 @@
 }
 
 @media screen and (max-width: 680px) {
-    .navBarAnnouncementBlock{
+    .navBarAnnouncementsBlock{
        margin-right: 10%;
     }
 }
 
 @media screen and (max-width: 550px) {
-    .navBarAnnouncementBlock{
+    .navBarAnnouncementsBlock{
         width: 250px;
         height: 400px;
         margin-right: 10px;
     }
 }
 
-.navBarAnnouncementBlock::-webkit-scrollbar-track {
+.navBarAnnouncementsBlock::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 10px;
 }
    
-.navBarAnnouncementBlock::-webkit-scrollbar-thumb {
+.navBarAnnouncementsBlock::-webkit-scrollbar-thumb {
     background: #aaa;
     border-radius: 15px;
 }
 
-.navBarAnnouncementBlock::-webkit-scrollbar {
+.navBarAnnouncementsBlock::-webkit-scrollbar {
     width: 10px;
 }
 
@@ -65,7 +65,7 @@
     font-weight: 700;
 }
 
-.navBarLoaderInAnnouncementsBlock{
+.navBarAnnouncementsBlockLoader{
     height: 100px;
     width: 100%;
     display: flex;
@@ -73,6 +73,6 @@
     align-items: center;
 }
 
-.navBarLoaderInAnnouncementBlock > *{
+.navBarAnnouncementsBlockLoader > *{
     position: static !important;
 }

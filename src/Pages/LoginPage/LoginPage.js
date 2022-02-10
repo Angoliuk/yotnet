@@ -58,7 +58,7 @@ function LoginPage(props) {
     }
 
     return(
-        <div className="loginPageMainBlock">
+        <div className="loginPageBlock">
 
             {
             loading
