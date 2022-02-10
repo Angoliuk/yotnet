@@ -24,6 +24,7 @@ export default function announcementReducers(state = initialState, action) {
                 ...state,
                 announcements: [...state.announcements, ...action.payload],
             }
+            
         default:
             return state
     }

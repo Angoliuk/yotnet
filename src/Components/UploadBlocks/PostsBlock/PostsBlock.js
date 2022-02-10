@@ -78,7 +78,7 @@ const PostsBlock = (props) => {
             })
         )
 
-    }, [posts])
+    }, [posts, showAlertHandler])
 
     return(
         <div className="postsBlockWrapper">

@@ -10,12 +10,14 @@ import validator from 'validator'
 import './EditPage.css'
 import { Modal } from "../../Components/Common/Modal/Modal";
 import { Loader } from "../../Components/Common/Loader/Loader";
+import { setPosts } from "../../ReduxStorage/actions/postActions";
+import { setAnnouncements } from "../../ReduxStorage/actions/announcementActions";
 
 function EditPage(props) {
 
     const {id, uploadType} = useParams()
     const {request, loading} = useHttp()
-    const {showAlertHandler, accessToken, posts, announcements} = props
+    const {showAlertHandler, user, posts, announcements, setPosts, setAnnouncements} = props
     const navigate = useNavigate()
 
     const upload = 
@@ -42,15 +44,20 @@ function EditPage(props) {
         if(!validator.isLength(postChanges.title, {min: 1, max: 1000})){throw new Error('It`s required field, signs limit - 1000')}
         if(!validator.isLength(postChanges.body, {min: 1, max: 3000})){throw new Error('It`s required field, signs limit - 3000')}
             
-        await request(
+        const changedPost = await request(
             `/664/posts/${id}`, 
             'PATCH', 
             {
                 ...postChanges, 
                 updatedAt: new Date()
             }, 
-            {'Authorization': `Bearer ${accessToken}`}
+            {'Authorization': `Bearer ${user.accessToken}`}
         )
+
+        const newPosts = Array.from(posts)
+        const postIndex = posts.findIndex((post) => post.id === Number(id))
+        newPosts[postIndex] = {...changedPost, user: user}
+        setPosts(newPosts)
 
         navigate('/')
 
@@ -61,15 +68,22 @@ function EditPage(props) {
         if(!validator.isLength(postChanges.title, {min: 1, max: 500})){throw new Error('It`s required field, signs limit - 500')}
         if(!validator.isLength(postChanges.body, {min: 1, max: 1500})){throw new Error('It`s required field, signs limit - 1500')}
 
-        await request(
+        const changedAnnouncement = await request(
             `/664/announcements/${id}`, 
             'PATCH', 
             {
                 ...postChanges, 
                 updatedAt: new Date()
             }, 
-            {'Authorization': `Bearer ${accessToken}`}
+            {'Authorization': `Bearer ${user.accessToken}`}
         )
+
+        const newAnnouncements = Array.from(announcements)
+        const announcementIndex = announcements.findIndex((announcement) => announcement.id === Number(id))
+        newAnnouncements[announcementIndex] = {...changedAnnouncement, user: user}
+        setAnnouncements(newAnnouncements)
+
+        navigate('/')
 
     }
     
@@ -141,8 +155,15 @@ function mapStateToProps(state) {
     return{
         posts: state.postReducers.posts,
         announcements: state.announcementReducers.announcements,
-        accessToken: state.userReducers.accessToken,
+        user: state.userReducers,
     }
 }
 
-export default connect(mapStateToProps)(PagesWrapper(EditPage))
+function mapDispatchToProps(dispatch) {
+    return{
+        setPosts: (posts) => dispatch(setPosts(posts)),
+        setAnnouncements: (announcements) => dispatch(setAnnouncements(announcements))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PagesWrapper(EditPage))

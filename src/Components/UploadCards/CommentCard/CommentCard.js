@@ -67,7 +67,6 @@ function CommentCard(props) {
 
             const newComments = Array.from(comments)
             const commentIndex = comments.findIndex((comment) => comment.id === changedComment.id)
-
             newComments[commentIndex] = {...changedComment, user: user}
             setComments(newComments)
             setEditingComment(false)
