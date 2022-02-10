@@ -62,11 +62,11 @@ function AnnouncementCard(props) {
         )
     }
 
-    const showButtonsForUserAnnouncementsHandler = () => {
+    const showButtonsForUserAnnouncementsHandler = useCallback(() => {
 
         setShowButtonsForUserAnnouncements(!showButtonsForUserAnnouncements)
 
-    }
+    }, [showButtonsForUserAnnouncements])
 
     const clickHandler = useCallback(() => {
         
@@ -74,7 +74,7 @@ function AnnouncementCard(props) {
 
         showButtonsForUserAnnouncementsHandler()
 
-    }, [showButtonsForUserAnnouncements])  
+    }, [showButtonsForUserAnnouncements, showButtonsForUserAnnouncementsHandler])  
 
     useEffect(() => {
         document.addEventListener('click', clickHandler)

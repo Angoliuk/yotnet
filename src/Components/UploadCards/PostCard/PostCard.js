@@ -57,7 +57,7 @@ function PostCard(props) {
             setLoadingComment(false)
         } 
 
-    }, [postId, request, addComments])
+    }, [postId, request, showAlertHandler, addComments])
 
     const deletePost = async () => {
 
@@ -86,11 +86,11 @@ function PostCard(props) {
         
     }
 
-    const showButtonsForUserPostsHandler = () => {
+    const showButtonsForUserPostsHandler = useCallback(() => {
 
         setShowButtonsForUserPosts(!showButtonsForUserPosts)
 
-    }
+    }, [showButtonsForUserPosts])
 
     const ButtonsForUserPosts = () => {
 
@@ -135,7 +135,7 @@ function PostCard(props) {
 
         showButtonsForUserPostsHandler()
 
-    }, [showButtonsForUserPosts])  
+    }, [showButtonsForUserPosts, showButtonsForUserPostsHandler])  
 
     useEffect(() => {
         document.addEventListener('click', clickHandler)

@@ -82,11 +82,11 @@ function CommentCard(props) {
         }
     }
 
-    const showButtonsForUserCommentsHandler = () => {
+    const showButtonsForUserCommentsHandler = useCallback(() => {
 
         setShowButtonsForUserComments(!showButtonsForUserComments)
 
-    }
+    }, [showButtonsForUserComments])
 
     const ButtonsForUserComments = () => {
         return(
@@ -117,7 +117,7 @@ function CommentCard(props) {
 
         showButtonsForUserCommentsHandler()
 
-    }, [showButtonsForUserComments])  
+    }, [showButtonsForUserComments, showButtonsForUserCommentsHandler])  
 
     useEffect(() => {
         document.addEventListener('click', clickHandler)
