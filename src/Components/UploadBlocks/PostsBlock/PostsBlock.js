@@ -5,10 +5,12 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useHttp } from "../../../Hook/useHttp";
 import { addToEndPosts } from "../../../ReduxStorage/actions/postActions";
 import { Loader } from "../../Common/Loader/Loader";
+import { usePostService } from "../../../Service/usePostService";
 
 const PostsBlock = (props) => {
   const { posts, showAlertHandler, addToEndPosts } = props;
-  const { request, xTotalCount } = useHttp();
+  const { xTotalCount } = usePostService();
+  const postService = usePostService();
 
   const [pageNum, setPageNum] = useState(1);
   const [loadNewPosts, setLoadNewPosts] = useState(true);
@@ -19,11 +21,7 @@ const PostsBlock = (props) => {
         return null;
       }
 
-      const postsFromDB = await request(
-        `/posts?_page=${pageNum}&_limit=10&_expand=user&_sort=createdAt&_order=desc`,
-        "GET",
-        null
-      );
+      const postsFromDB = await postService.getPosts(pageNum, 10);
 
       if (!postsFromDB) return null;
 
@@ -44,7 +42,7 @@ const PostsBlock = (props) => {
         type: "error",
       });
     }
-  }, [request, pageNum, showAlertHandler, addToEndPosts]);
+  }, [pageNum, showAlertHandler, addToEndPosts]);
 
   //load new posts when you scroll to the end of page
   useEffect(() => {

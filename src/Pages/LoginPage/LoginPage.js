@@ -10,9 +10,11 @@ import { Loader } from "../../Components/Common/Loader/Loader";
 import { Modal } from "../../Components/Common/Modal/Modal";
 import "./LoginPage.css";
 import { useNavigate } from "react-router-dom";
+import { useUserService } from "../../Service/useUserService";
 
 function LoginPage(props) {
-  const { request, loading } = useHttp();
+  const userService = useUserService();
+  const { loading } = useUserService();
   const { login, showAlertHandler } = props;
   const navigate = useNavigate();
 
@@ -37,9 +39,10 @@ function LoginPage(props) {
         throw new Error("Too short password, minimal lenght - 6");
       }
 
-      const data = await request("/login", "POST", loginData);
+      const data = await userService.login(loginData);
 
       login({ ...data.user, accessToken: data.accessToken });
+
       navigate("/home");
     } catch (e) {
       showAlertHandler({

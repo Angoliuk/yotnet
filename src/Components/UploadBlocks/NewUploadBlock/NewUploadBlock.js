@@ -10,9 +10,12 @@ import { addPosts } from "../../../ReduxStorage/actions/postActions";
 import { addAnnouncements } from "../../../ReduxStorage/actions/announcementActions";
 import { Loader } from "../../Common/Loader/Loader";
 import "./NewUploadBlock.css";
+import { usePostService } from "../../../Service/usePostService";
+import { useAnnouncementService } from "../../../Service/useAnnouncementService";
 
 const NewUploadBlock = (props) => {
-  const { request } = useHttp();
+  const postService = usePostService();
+  const announcementService = useAnnouncementService();
   const { userInfo, showAlertHandler, addAnnouncements, addPosts } = props;
 
   const [showNewPostBlock, setShowNewPostBlock] = useState(false);
@@ -47,9 +50,7 @@ const NewUploadBlock = (props) => {
       throw new Error("It`s required field, signs limit - 3000");
     }
 
-    const newPostFromDB = await request(
-      "/664/posts",
-      "POST",
+    const newPostFromDB = await postService.createPost(
       {
         title: newPost.title,
         body: newPost.body,
@@ -57,7 +58,7 @@ const NewUploadBlock = (props) => {
         updatedAt: new Date(),
         userId: userInfo.id,
       },
-      { Authorization: `Bearer ${userInfo.accessToken}` }
+      userInfo.accessToken
     );
 
     addPosts([
@@ -82,9 +83,7 @@ const NewUploadBlock = (props) => {
       throw new Error("It`s required field, signs limit - 1500");
     }
 
-    const newAnnouncementFromDB = await request(
-      "/664/announcements",
-      "POST",
+    const newAnnouncementFromDB = await announcementService.createAnnouncement(
       {
         title: newPost.title,
         body: newPost.body,
@@ -92,7 +91,7 @@ const NewUploadBlock = (props) => {
         updatedAt: new Date(),
         userId: userInfo.id,
       },
-      { Authorization: `Bearer ${userInfo.accessToken}` }
+      userInfo.accessToken
     );
 
     addAnnouncements([

@@ -10,9 +10,12 @@ import { Button } from "../../Common/Button/Button";
 import "./PostCard.css";
 import { Loader } from "../../Common/Loader/Loader";
 import CommentsBlock from "../../UploadBlocks/CommentsBlock/CommentsBlock";
+import { usePostService } from "../../../Service/usePostService";
+import { useCommentService } from "../../../Service/useCommentService";
 
 function PostCard(props) {
-  const { request } = useHttp();
+  const commentService = useCommentService();
+  const postService = usePostService();
   const {
     posts,
     setPosts,
@@ -36,11 +39,7 @@ function PostCard(props) {
       try {
         setLoadingComment(true);
 
-        const commentsFromBD = await request(
-          `/comments?postId=${postId}&_sort=createdAt&_order=desc&_expand=user`,
-          "GET",
-          null
-        );
+        const commentsFromBD = await commentService.getComments(postId);
 
         if (!commentsFromBD) return null;
 
@@ -65,16 +64,14 @@ function PostCard(props) {
         setLoadingComment(false);
       }
     },
-    [postId, request, showAlertHandler, addComments]
+    [postId, showAlertHandler, addComments]
   );
 
   const deletePost = async () => {
     try {
       setLoadingPost(true);
 
-      await request(`/664/posts/${postId}`, "DELETE", null, {
-        Authorization: `Bearer ${userInfo.accessToken}`,
-      });
+      await postService.deletePost(postId, userInfo.accessToken);
 
       setPosts(posts.filter((post) => post.id !== postId));
     } catch (e) {

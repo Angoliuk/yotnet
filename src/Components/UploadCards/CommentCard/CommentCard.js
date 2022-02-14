@@ -3,13 +3,15 @@ import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { useHttp } from "../../../Hook/useHttp";
 import { setComments } from "../../../ReduxStorage/actions/postActions";
+import { useCommentService } from "../../../Service/useCommentService";
 import { Button } from "../../Common/Button/Button";
 import { Loader } from "../../Common/Loader/Loader";
 import { Textarea } from "../../Common/Textarea/Textarea";
 import "./CommentsCard.css";
 
 function CommentCard(props) {
-  const { request, loading } = useHttp();
+  const commentService = useCommentService();
+  const { loading } = useCommentService();
   const { showAlertHandler, comments, setComments, userId, user, commentId } =
     props;
 
@@ -26,7 +28,7 @@ function CommentCard(props) {
 
   const deleteComment = async () => {
     try {
-      await request(`/comments/${commentId}`, "DELETE", null);
+      commentService.deleteComment(commentId);
 
       setComments(comments.filter((comment) => comment.id !== commentId));
     } catch (e) {
@@ -47,14 +49,10 @@ function CommentCard(props) {
 
   const saveChangedComment = async () => {
     try {
-      const changedComment = await request(
-        `/664/comments/${commentId}`,
-        "PATCH",
-        {
-          ...commentChanges,
-          updatedAt: new Date(),
-        },
-        { Authorization: `Bearer ${user.accessToken}` }
+      const changedComment = await commentService.patchComment(
+        commentId,
+        commentChanges,
+        user.accessToken
       );
 
       const newComments = Array.from(comments);

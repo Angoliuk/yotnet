@@ -12,9 +12,15 @@ import { addAnnouncements } from "../../ReduxStorage/actions/announcementActions
 import UserPersonalBlock from "../../Components/ProfilePageBlocks/UserPersonalBlock/UserPersonalBlock";
 import UserPostsBlock from "../../Components/ProfilePageBlocks/UserPostsBlock/UserPostsBlock";
 import UserAnnouncementsBlock from "../../Components/ProfilePageBlocks/UserAnnouncementsBlock/UserAnnouncementsBlock";
+import { usePostService } from "../../Service/usePostService";
+import { useAnnouncementService } from "../../Service/useAnnouncementService";
+import { useUserService } from "../../Service/useUserService";
 
 function ProfilePage(props) {
-  const { request, loading } = useHttp();
+  const { loading } = usePostService();
+  const postService = usePostService();
+  const userService = useUserService();
+  const announcementService = useAnnouncementService();
   const { showAlertHandler, addAnnouncements, addPosts, posts, announcements } =
     props;
   const [section, setSection] = useState("personal");
@@ -29,17 +35,13 @@ function ProfilePage(props) {
   });
 
   const personalDataRequest = useCallback(async () => {
-    const user = await request(`/users?id=${id}`, "GET", null);
+    const user = await userService(id);
     delete user[0].password;
     setUserInfo(user[0]);
-  }, [id, request]);
+  }, [id]);
 
   const postsDataRequest = useCallback(async () => {
-    const postsFromDB = await request(
-      `/posts?_expand=user&userId_like=${id}&_sort=createdAt&_order=desc`,
-      "GET",
-      null
-    );
+    const postsFromDB = await postService.getUserPosts(id);
     if (!postsFromDB) return null;
 
     const newPosts = postsFromDB.filter(
@@ -49,13 +51,11 @@ function ProfilePage(props) {
     if (!newPosts) return null;
 
     addPosts(newPosts);
-  }, [id, request, addPosts]);
+  }, [id, addPosts]);
 
   const announcemenetsDataRequest = useCallback(async () => {
-    const announcementsFromDB = await request(
-      `/announcements?_expand=user&userId_like=${id}&_sort=createdAt&_order=desc`,
-      "GET",
-      null
+    const announcementsFromDB = await announcementService.getUserAnnouncements(
+      id
     );
     if (!announcementsFromDB) return null;
 
@@ -68,7 +68,7 @@ function ProfilePage(props) {
     if (!newAnnouncements) return null;
 
     addAnnouncements(newAnnouncements);
-  }, [id, request, addAnnouncements]);
+  }, [id, addAnnouncements]);
 
   const dataRequest = useCallback(async () => {
     try {

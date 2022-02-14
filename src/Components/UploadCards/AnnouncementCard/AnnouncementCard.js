@@ -6,9 +6,11 @@ import { setAnnouncements } from "../../../ReduxStorage/actions/announcementActi
 import { Link, NavLink } from "react-router-dom";
 import { Button } from "../../Common/Button/Button";
 import { Loader } from "../../Common/Loader/Loader";
+import { useAnnouncementService } from "../../../Service/useAnnouncementService";
 
 function AnnouncementCard(props) {
-  const { request, loading } = useHttp();
+  const announcementService = useAnnouncementService();
+  const { loading } = useAnnouncementService();
   const {
     showAlertHandler,
     announcementId,
@@ -27,10 +29,10 @@ function AnnouncementCard(props) {
 
   const deleteAnnouncement = async () => {
     try {
-      await request(`/664/announcements/${announcementId}`, "DELETE", null, {
-        Authorization: `Bearer ${userInfo.accessToken}`,
-      });
-
+      await announcementService.deleteAnnouncement(
+        announcementId,
+        userInfo.accessToken
+      );
       setAnnouncements(
         announcements.filter(
           (announcement) => announcement.id !== announcementId

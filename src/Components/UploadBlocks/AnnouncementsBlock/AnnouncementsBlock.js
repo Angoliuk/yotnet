@@ -9,9 +9,12 @@ import { useHttp } from "../../../Hook/useHttp";
 import "./AnnouncementsBlock.css";
 import AnnouncementCard from "../../UploadCards/AnnouncementCard/AnnouncementCard";
 import { Loader } from "../../Common/Loader/Loader";
+import { useAnnouncementService } from "../../../Service/useAnnouncementService";
 
 const AnnouncementsBlock = (props) => {
-  const { request, loading, xTotalCount } = useHttp();
+  const announcementService = useAnnouncementService();
+  // console.log(announcementService.getAnnouncements(1, 10));
+  const { loading, xTotalCount } = useAnnouncementService();
   const { id, announcements, showAlertHandler, addToEndAnnouncements } = props;
 
   const [showAnnouncement, setShowAnnouncement] = useState(false);
@@ -33,10 +36,9 @@ const AnnouncementsBlock = (props) => {
         return null;
       }
 
-      const announcementsFromDB = await request(
-        `/announcements?_page=${pageNum}&_limit=10&_expand=user&_sort=createdAt&_order=desc`,
-        "GET",
-        null
+      const announcementsFromDB = await announcementService.getAnnouncements(
+        pageNum,
+        10
       );
 
       if (!announcementsFromDB) return null;
@@ -52,7 +54,7 @@ const AnnouncementsBlock = (props) => {
       if (!newAnnouncements) return null;
 
       addToEndAnnouncements(newAnnouncements);
-      setTimeout(setLoadNewAnnouncements(false), 4000);
+      setLoadNewAnnouncements(false);
     } catch (e) {
       showAlertHandler({
         show: true,
@@ -60,13 +62,7 @@ const AnnouncementsBlock = (props) => {
         type: "error",
       });
     }
-  }, [
-    request,
-    addToEndAnnouncements,
-    showAlertHandler,
-    pageNum,
-    loadNewAnnouncements,
-  ]);
+  }, [addToEndAnnouncements, showAlertHandler, pageNum, loadNewAnnouncements]);
 
   //load new announcements when scroll to the bottom of the page
   useEffect(() => {

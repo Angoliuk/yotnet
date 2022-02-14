@@ -8,9 +8,10 @@ import { login } from "../../../ReduxStorage/actions/userActions";
 import { Button } from "../../Common/Button/Button";
 import { Input } from "../../Common/Input/Input";
 import InputsWithUserData from "../../Common/InputsWithUserData/InputsWithUserData";
+import { useUserService } from "../../../Service/useUserService";
 
 const UserPersonalBlock = (props) => {
-  const { request } = useHttp();
+  const userService = useUserService();
   const { showAlertHandler, login, accessToken, userId, userInfo } = props;
   const id = useParams().id;
 
@@ -56,11 +57,10 @@ const UserPersonalBlock = (props) => {
         throw new Error("You need to be at least 14");
       }
 
-      const updatedUser = await request(
-        `/640/users/${id}`,
-        "PATCH",
+      const updatedUser = await userService.updateUser(
+        id,
         newPassword.length >= 6 ? { ...user, password: newPassword } : user,
-        { Authorization: `Bearer ${accessToken}` }
+        accessToken
       );
 
       login({ ...updatedUser, accessToken: accessToken });

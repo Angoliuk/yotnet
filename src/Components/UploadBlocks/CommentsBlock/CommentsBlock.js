@@ -8,9 +8,10 @@ import { Textarea } from "../../Common/Textarea/Textarea";
 import "./CommentsBlock.css";
 import validator from "validator";
 import { Loader } from "../../Common/Loader/Loader";
+import { useCommentService } from "../../../Service/useCommentService";
 
 const CommentsBlock = (props) => {
-  const { request } = useHttp();
+  const commentService = useCommentService();
   const { userInfo, showAlertHandler, comments, addComments, postId } = props;
 
   const [addingComments, setAddingComment] = useState(false);
@@ -33,9 +34,7 @@ const CommentsBlock = (props) => {
         throw new Error("It`s required field, signs limit - 1000");
       }
 
-      const newCommentFromBD = await request(
-        `/664/comments`,
-        "POST",
+      const newCommentFromBD = await commentService.createComment(
         {
           body: newComment.text,
           createdAt: new Date(),
@@ -43,7 +42,7 @@ const CommentsBlock = (props) => {
           postId: postId,
           userId: userInfo.id,
         },
-        { Authorization: `Bearer ${userInfo.accessToken}` }
+        userInfo.accessToken
       );
 
       addComments([

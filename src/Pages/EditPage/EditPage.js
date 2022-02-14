@@ -12,10 +12,14 @@ import { Modal } from "../../Components/Common/Modal/Modal";
 import { Loader } from "../../Components/Common/Loader/Loader";
 import { setPosts } from "../../ReduxStorage/actions/postActions";
 import { setAnnouncements } from "../../ReduxStorage/actions/announcementActions";
+import { useAnnouncementService } from "../../Service/useAnnouncementService";
+import { usePostService } from "../../Service/usePostService";
 
 function EditPage(props) {
   const { id, uploadType } = useParams();
-  const { request, loading } = useHttp();
+  const postService = usePostService();
+  const { loading } = usePostService();
+  const announcementService = useAnnouncementService();
   const {
     showAlertHandler,
     user,
@@ -51,14 +55,10 @@ function EditPage(props) {
       throw new Error("It`s required field, signs limit - 3000");
     }
 
-    const changedPost = await request(
-      `/664/posts/${id}`,
-      "PATCH",
-      {
-        ...postChanges,
-        updatedAt: new Date(),
-      },
-      { Authorization: `Bearer ${user.accessToken}` }
+    const changedPost = await postService.patchPost(
+      id,
+      postChanges,
+      user.accessToken
     );
 
     const newPosts = Array.from(posts);
@@ -77,14 +77,10 @@ function EditPage(props) {
       throw new Error("It`s required field, signs limit - 1500");
     }
 
-    const changedAnnouncement = await request(
-      `/664/announcements/${id}`,
-      "PATCH",
-      {
-        ...postChanges,
-        updatedAt: new Date(),
-      },
-      { Authorization: `Bearer ${user.accessToken}` }
+    const changedAnnouncement = await announcementService.patchAnnouncement(
+      id,
+      postChanges,
+      user.accessToken
     );
 
     const newAnnouncements = Array.from(announcements);
