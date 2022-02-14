@@ -2,13 +2,9 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Button } from "../../Components/Common/Button/Button";
 import { PagesWrapper } from "../../hoc/PagesWrapper/PagesWrapper";
-import { useHttp } from "../../Hook/useHttp";
-import { connect } from "react-redux";
 import "./ProfilePage.css";
 import { Loader } from "../../Components/Common/Loader/Loader";
 import { Modal } from "../../Components/Common/Modal/Modal";
-import { addPosts } from "../../ReduxStorage/actions/postActions";
-import { addAnnouncements } from "../../ReduxStorage/actions/announcementActions";
 import UserPersonalBlock from "../../Components/ProfilePageBlocks/UserPersonalBlock/UserPersonalBlock";
 import UserPostsBlock from "../../Components/ProfilePageBlocks/UserPostsBlock/UserPostsBlock";
 import UserAnnouncementsBlock from "../../Components/ProfilePageBlocks/UserAnnouncementsBlock/UserAnnouncementsBlock";
@@ -16,13 +12,12 @@ import { usePostService } from "../../Service/usePostService";
 import { useAnnouncementService } from "../../Service/useAnnouncementService";
 import { useUserService } from "../../Service/useUserService";
 
-function ProfilePage(props) {
+const ProfilePage = (props) => {
   const { loading } = usePostService();
   const postService = usePostService();
   const userService = useUserService();
   const announcementService = useAnnouncementService();
-  const { showAlertHandler, addAnnouncements, addPosts, posts, announcements } =
-    props;
+  const { showAlertHandler } = props;
   const [section, setSection] = useState("personal");
 
   const id = useParams().id;
@@ -41,34 +36,12 @@ function ProfilePage(props) {
   }, [id]);
 
   const postsDataRequest = useCallback(async () => {
-    const postsFromDB = await postService.getUserPosts(id);
-    if (!postsFromDB) return null;
-
-    const newPosts = postsFromDB.filter(
-      (postFromDB) =>
-        posts.find((post) => post.id === postFromDB.id) === undefined
-    );
-    if (!newPosts) return null;
-
-    addPosts(newPosts);
-  }, [id, addPosts]);
+    await postService.getUserPosts(id);
+  }, [id]);
 
   const announcemenetsDataRequest = useCallback(async () => {
-    const announcementsFromDB = await announcementService.getUserAnnouncements(
-      id
-    );
-    if (!announcementsFromDB) return null;
-
-    const newAnnouncements = announcementsFromDB.filter(
-      (announcementsFromDB) =>
-        announcements.find(
-          (announcement) => announcement.id === announcementsFromDB.id
-        ) === undefined
-    );
-    if (!newAnnouncements) return null;
-
-    addAnnouncements(newAnnouncements);
-  }, [id, addAnnouncements]);
+    await announcementService.getUserAnnouncements(id);
+  }, [id]);
 
   const dataRequest = useCallback(async () => {
     try {
@@ -123,7 +96,7 @@ function ProfilePage(props) {
 
   return (
     <div className="profilePageMainBlock">
-      {loading ? Modal(<Loader />) : null}
+      {loading && Modal(<Loader />)}
 
       <div className="chooseInfoTypeBlock">
         <Button
@@ -164,24 +137,6 @@ function ProfilePage(props) {
       <ChosenSectionBlock />
     </div>
   );
-}
+};
 
-function mapStateToProps(state) {
-  return {
-    posts: state.postReducers.posts,
-    announcements: state.announcementReducers.announcements,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    addPosts: (newPosts) => dispatch(addPosts(newPosts)),
-    addAnnouncements: (newAnnouncements) =>
-      dispatch(addAnnouncements(newAnnouncements)),
-  };
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PagesWrapper(ProfilePage));
+export default PagesWrapper(ProfilePage);

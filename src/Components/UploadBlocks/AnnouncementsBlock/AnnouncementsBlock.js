@@ -1,11 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
-import {
-  addAnnouncements,
-  addToEndAnnouncements,
-} from "../../../ReduxStorage/actions/announcementActions";
 import { Modal } from "../../Common/Modal/Modal";
-import { useHttp } from "../../../Hook/useHttp";
 import "./AnnouncementsBlock.css";
 import AnnouncementCard from "../../UploadCards/AnnouncementCard/AnnouncementCard";
 import { Loader } from "../../Common/Loader/Loader";
@@ -15,7 +10,7 @@ const AnnouncementsBlock = (props) => {
   const announcementService = useAnnouncementService();
   // console.log(announcementService.getAnnouncements(1, 10));
   const { loading, xTotalCount } = useAnnouncementService();
-  const { id, announcements, showAlertHandler, addToEndAnnouncements } = props;
+  const { id, announcements, showAlertHandler } = props;
 
   const [showAnnouncement, setShowAnnouncement] = useState(false);
   const [pageNum, setPageNum] = useState(1);
@@ -36,33 +31,17 @@ const AnnouncementsBlock = (props) => {
         return null;
       }
 
-      const announcementsFromDB = await announcementService.getAnnouncements(
-        pageNum,
-        10
-      );
-
-      if (!announcementsFromDB) return null;
-
-      const newAnnouncements = announcementsFromDB.filter(
-        (announcementFromDB) =>
-          announcements.find(
-            (announcement) => announcement.id === announcementFromDB.id
-          ) === undefined
-      );
-      //filter announcements that are already in storage
-
-      if (!newAnnouncements) return null;
-
-      addToEndAnnouncements(newAnnouncements);
-      setLoadNewAnnouncements(false);
+      await announcementService.getAnnouncements(pageNum, 10);
     } catch (e) {
       showAlertHandler({
         show: true,
         text: `Error, try to reload this page. ${e}`,
         type: "error",
       });
+    } finally {
+      setLoadNewAnnouncements(false);
     }
-  }, [addToEndAnnouncements, showAlertHandler, pageNum, loadNewAnnouncements]);
+  }, [showAlertHandler, pageNum, loadNewAnnouncements]);
 
   //load new announcements when scroll to the bottom of the page
   useEffect(() => {
@@ -160,46 +139,36 @@ const AnnouncementsBlock = (props) => {
         </svg>
       </p>
 
-      {showAnnouncement
-        ? Modal(
-            <div
-              onScroll={scrollHandler}
-              id="navBarAnnouncementsBlock"
-              className="navBarAnnouncementsBlock"
-            >
-              <p className="navBarAnnouncementsName">Announcements for you</p>
-              <hr />
+      {showAnnouncement &&
+        Modal(
+          <div
+            onScroll={scrollHandler}
+            id="navBarAnnouncementsBlock"
+            className="navBarAnnouncementsBlock"
+          >
+            <p className="navBarAnnouncementsName">Announcements for you</p>
+            <hr />
 
-              <AnnouncementsListBlock />
+            <AnnouncementsListBlock />
 
-              {loadNewAnnouncements || loading ? (
-                <div className="navBarAnnouncementsBlockLoader">
-                  <Loader />
-                </div>
-              ) : null}
-            </div>,
-            showAnnouncementHandler,
-            "modalBackground navBarAnnouncementBlockBackground"
-          )
-        : null}
+            {(loadNewAnnouncements || loading) && (
+              <div className="navBarAnnouncementsBlockLoader">
+                <Loader />
+              </div>
+            )}
+          </div>,
+          showAnnouncementHandler,
+          "modalBackground navBarAnnouncementBlockBackground"
+        )}
     </>
   );
 };
 
-function mapStateToProps(state) {
+const mapStateToProps = (state) => {
   return {
     id: state.userReducers.id,
     announcements: state.announcementReducers.announcements,
   };
-}
+};
 
-function mapDispatchToProps(dispatch) {
-  return {
-    addAnnouncements: (announcements) =>
-      dispatch(addAnnouncements(announcements)),
-    addToEndAnnouncements: (announcements) =>
-      dispatch(addToEndAnnouncements(announcements)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AnnouncementsBlock);
+export default connect(mapStateToProps)(AnnouncementsBlock);

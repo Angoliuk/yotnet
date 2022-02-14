@@ -5,13 +5,9 @@ import { Button } from "../../Components/Common/Button/Button";
 import { Input } from "../../Components/Common/Input/Input";
 import { Textarea } from "../../Components/Common/Textarea/Textarea";
 import { PagesWrapper } from "../../hoc/PagesWrapper/PagesWrapper";
-import { useHttp } from "../../Hook/useHttp";
-import validator from "validator";
 import "./EditPage.css";
 import { Modal } from "../../Components/Common/Modal/Modal";
 import { Loader } from "../../Components/Common/Loader/Loader";
-import { setPosts } from "../../ReduxStorage/actions/postActions";
-import { setAnnouncements } from "../../ReduxStorage/actions/announcementActions";
 import { useAnnouncementService } from "../../Service/useAnnouncementService";
 import { usePostService } from "../../Service/usePostService";
 
@@ -20,14 +16,7 @@ function EditPage(props) {
   const postService = usePostService();
   const { loading } = usePostService();
   const announcementService = useAnnouncementService();
-  const {
-    showAlertHandler,
-    user,
-    posts,
-    announcements,
-    setPosts,
-    setAnnouncements,
-  } = props;
+  const { showAlertHandler, user, posts, announcements } = props;
   const navigate = useNavigate();
 
   const upload =
@@ -48,50 +37,17 @@ function EditPage(props) {
   };
 
   const savePostChanges = async () => {
-    if (!validator.isLength(postChanges.title, { min: 1, max: 1000 })) {
-      throw new Error("It`s required field, signs limit - 1000");
-    }
-    if (!validator.isLength(postChanges.body, { min: 1, max: 3000 })) {
-      throw new Error("It`s required field, signs limit - 3000");
-    }
-
-    const changedPost = await postService.patchPost(
-      id,
-      postChanges,
-      user.accessToken
-    );
-
-    const newPosts = Array.from(posts);
-    const postIndex = posts.findIndex((post) => post.id === Number(id));
-    newPosts[postIndex] = { ...changedPost, user: user };
-    setPosts(newPosts);
-
+    await postService.patchPost(id, postChanges, user, user.accessToken);
     navigate("/");
   };
 
   const saveAnnouncementChanges = async () => {
-    if (!validator.isLength(postChanges.title, { min: 1, max: 500 })) {
-      throw new Error("It`s required field, signs limit - 500");
-    }
-    if (!validator.isLength(postChanges.body, { min: 1, max: 1500 })) {
-      throw new Error("It`s required field, signs limit - 1500");
-    }
-
-    const changedAnnouncement = await announcementService.patchAnnouncement(
+    await announcementService.patchAnnouncement(
       id,
       postChanges,
+      user,
       user.accessToken
     );
-
-    const newAnnouncements = Array.from(announcements);
-    const announcementIndex = announcements.findIndex(
-      (announcement) => announcement.id === Number(id)
-    );
-    newAnnouncements[announcementIndex] = {
-      ...changedAnnouncement,
-      user: user,
-    };
-    setAnnouncements(newAnnouncements);
 
     navigate("/");
   };
@@ -116,7 +72,7 @@ function EditPage(props) {
 
   return (
     <div className="editPostBlock">
-      {loading ? Modal(<Loader />) : null}
+      {loading && Modal(<Loader />)}
 
       <Input
         name="title"
@@ -146,23 +102,12 @@ function EditPage(props) {
   );
 }
 
-function mapStateToProps(state) {
+const mapStateToProps = (state) => {
   return {
     posts: state.postReducers.posts,
     announcements: state.announcementReducers.announcements,
     user: state.userReducers,
   };
-}
+};
 
-function mapDispatchToProps(dispatch) {
-  return {
-    setPosts: (posts) => dispatch(setPosts(posts)),
-    setAnnouncements: (announcements) =>
-      dispatch(setAnnouncements(announcements)),
-  };
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PagesWrapper(EditPage));
+export default connect(mapStateToProps)(PagesWrapper(EditPage));

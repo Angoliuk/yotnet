@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Link, NavLink } from "react-router-dom";
-import { useHttp } from "../../../Hook/useHttp";
+import { useHttp } from "../../../Service/useHttp";
 import {
   addComments,
   setPosts,
@@ -16,15 +16,7 @@ import { useCommentService } from "../../../Service/useCommentService";
 function PostCard(props) {
   const commentService = useCommentService();
   const postService = usePostService();
-  const {
-    posts,
-    setPosts,
-    userInfo,
-    showAlertHandler,
-    postId,
-    comments,
-    addComments,
-  } = props;
+  const { posts, userInfo, showAlertHandler, postId } = props;
 
   const [loadingPost, setLoadingPost] = useState(false);
   const [showButtonsForUserPosts, setShowButtonsForUserPosts] = useState(false);
@@ -34,46 +26,28 @@ function PostCard(props) {
   const post = posts.find((post) => post.id === postId);
   const createdAtDate = new Date(post.createdAt).toLocaleString();
 
-  const dataRequest = useCallback(
-    async (comments) => {
-      try {
-        setLoadingComment(true);
+  const dataRequest = useCallback(async () => {
+    //here were comments
+    try {
+      setLoadingComment(true);
 
-        const commentsFromBD = await commentService.getComments(postId);
-
-        if (!commentsFromBD) return null;
-
-        if (comments && comments.length > 0) {
-          const newComments = commentsFromBD.filter(
-            (commentFromBD) =>
-              comments.find((comment) => comment.id === commentFromBD.id) ===
-              undefined
-          );
-          //filter comments that are already in storage
-          addComments(newComments);
-        } else {
-          addComments(commentsFromBD);
-        }
-      } catch (e) {
-        showAlertHandler({
-          show: true,
-          text: `Error, try to reload this page. ${e}`,
-          type: "error",
-        });
-      } finally {
-        setLoadingComment(false);
-      }
-    },
-    [postId, showAlertHandler, addComments]
-  );
+      await commentService.getComments(postId);
+    } catch (e) {
+      showAlertHandler({
+        show: true,
+        text: `Error, try to reload this page. ${e}`,
+        type: "error",
+      });
+    } finally {
+      setLoadingComment(false);
+    }
+  }, [postId, showAlertHandler]);
 
   const deletePost = async () => {
     try {
       setLoadingPost(true);
 
       await postService.deletePost(postId, userInfo.accessToken);
-
-      setPosts(posts.filter((post) => post.id !== postId));
     } catch (e) {
       showAlertHandler({
         show: true,
@@ -115,7 +89,7 @@ function PostCard(props) {
     setShowComments(!showComments);
 
     if (!showComments) {
-      dataRequest(comments);
+      dataRequest();
     }
   };
 
@@ -209,33 +183,25 @@ function PostCard(props) {
           )}
         </p>
 
-        {showComments && !loadingComments ? (
+        {showComments && !loadingComments && (
           <CommentsBlock showAlertHandler={showAlertHandler} postId={postId} />
-        ) : null}
+        )}
 
-        {loadingComments ? (
+        {loadingComments && (
           <div className="loaderInPostCard">
             <Loader />
           </div>
-        ) : null}
+        )}
       </div>
     </div>
   );
 }
 
-function mapStateToProps(state) {
+const mapStateToProps = (state) => {
   return {
     userInfo: state.userReducers,
     posts: state.postReducers.posts,
-    comments: state.postReducers.comments,
   };
-}
+};
 
-function mapDispatchToProps(dispatch) {
-  return {
-    setPosts: (posts) => dispatch(setPosts(posts)),
-    addComments: (newComments) => dispatch(addComments(newComments)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(PostCard);
+export default connect(mapStateToProps)(PostCard);

@@ -72,26 +72,25 @@ function InputsWithUserData(props) {
         src={stateForInputs.avatar}
       />
 
-      {showAvatarsBlock
-        ? Modal(
-            <div className="avatarModalBlock">
-              {avatarLinks.map((avatar, i) => {
-                return (
-                  <div key={i}>
-                    <img
-                      onClick={onChangeAvatar}
-                      name="avatar"
-                      id={`avatar${i}`}
-                      className="avatarImg"
-                      src={avatar}
-                      alt="avatar pic"
-                    />
-                  </div>
-                );
-              })}
-            </div>
-          )
-        : null}
+      {showAvatarsBlock &&
+        Modal(
+          <div className="avatarModalBlock">
+            {avatarLinks.map((avatar, i) => {
+              return (
+                <div key={i}>
+                  <img
+                    onClick={onChangeAvatar}
+                    name="avatar"
+                    id={`avatar${i}`}
+                    className="avatarImg"
+                    src={avatar}
+                    alt="avatar pic"
+                  />
+                </div>
+              );
+            })}
+          </div>
+        )}
     </div>
   );
 }

@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { useHttp } from "../../../Hook/useHttp";
 import "./AnnouncementCard.css";
-import { setAnnouncements } from "../../../ReduxStorage/actions/announcementActions";
 import { Link, NavLink } from "react-router-dom";
 import { Button } from "../../Common/Button/Button";
 import { Loader } from "../../Common/Loader/Loader";
@@ -11,13 +9,7 @@ import { useAnnouncementService } from "../../../Service/useAnnouncementService"
 function AnnouncementCard(props) {
   const announcementService = useAnnouncementService();
   const { loading } = useAnnouncementService();
-  const {
-    showAlertHandler,
-    announcementId,
-    announcements,
-    setAnnouncements,
-    userInfo,
-  } = props;
+  const { showAlertHandler, announcementId, announcements, userInfo } = props;
 
   const [showButtonsForUserAnnouncements, setShowButtonsForUserAnnouncements] =
     useState(false);
@@ -32,11 +24,6 @@ function AnnouncementCard(props) {
       await announcementService.deleteAnnouncement(
         announcementId,
         userInfo.accessToken
-      );
-      setAnnouncements(
-        announcements.filter(
-          (announcement) => announcement.id !== announcementId
-        )
       );
     } catch (e) {
       showAlertHandler({
@@ -117,7 +104,7 @@ function AnnouncementCard(props) {
         </div>
 
         <div>
-          {userInfo.id === announcement.user.id ? (
+          {userInfo.id === announcement.user.id && (
             <Button
               text="…"
               name={`showButtonsForUserAnnouncementsText${announcementId}`}
@@ -126,9 +113,9 @@ function AnnouncementCard(props) {
             >
               ...
             </Button>
-          ) : null}
+          )}
 
-          {showButtonsForUserAnnouncements ? <ButtonsForUserPosts /> : null}
+          {showButtonsForUserAnnouncements && <ButtonsForUserPosts />}
         </div>
       </div>
 
@@ -142,18 +129,11 @@ function AnnouncementCard(props) {
   );
 }
 
-function mapStateToProps(state) {
+const mapStateToProps = (state) => {
   return {
     userInfo: state.userReducers,
     announcements: state.announcementReducers.announcements,
   };
-}
+};
 
-function mapDispatchToProps(dispatch) {
-  return {
-    setAnnouncements: (announcements) =>
-      dispatch(setAnnouncements(announcements)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AnnouncementCard);
+export default connect(mapStateToProps)(AnnouncementCard);

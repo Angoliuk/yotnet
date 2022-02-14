@@ -1,11 +1,7 @@
 import React, { useState } from "react";
-import { connect } from "react-redux";
 import { Button } from "../../Components/Common/Button/Button";
 import { Input } from "../../Components/Common/Input/Input";
 import { PagesWrapper } from "../../hoc/PagesWrapper/PagesWrapper";
-import { useHttp } from "../../Hook/useHttp";
-import { login } from "../../ReduxStorage/actions/userActions";
-import validator from "validator";
 import { Loader } from "../../Components/Common/Loader/Loader";
 import { Modal } from "../../Components/Common/Modal/Modal";
 import "./LoginPage.css";
@@ -15,7 +11,7 @@ import { useUserService } from "../../Service/useUserService";
 function LoginPage(props) {
   const userService = useUserService();
   const { loading } = useUserService();
-  const { login, showAlertHandler } = props;
+  const { showAlertHandler } = props;
   const navigate = useNavigate();
 
   const [loginData, setLoginData] = useState({
@@ -32,17 +28,7 @@ function LoginPage(props) {
 
   const processLogin = async () => {
     try {
-      if (!validator.isEmail(loginData.email)) {
-        throw new Error("Enter valid Email");
-      }
-      if (!validator.isLength(loginData.password, { min: 6, max: undefined })) {
-        throw new Error("Too short password, minimal lenght - 6");
-      }
-
-      const data = await userService.login(loginData);
-
-      login({ ...data.user, accessToken: data.accessToken });
-
+      await userService.processLogin(loginData);
       navigate("/home");
     } catch (e) {
       showAlertHandler({
@@ -55,7 +41,7 @@ function LoginPage(props) {
 
   return (
     <div className="loginPageBlock">
-      {loading ? Modal(<Loader />) : null}
+      {loading && Modal(<Loader />)}
 
       <Input
         name="email"
@@ -79,17 +65,4 @@ function LoginPage(props) {
   );
 }
 
-function mapStateToProps(state) {
-  return {};
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    login: (userInfo) => dispatch(login(userInfo)),
-  };
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PagesWrapper(LoginPage));
+export default PagesWrapper(LoginPage);

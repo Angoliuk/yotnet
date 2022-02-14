@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import validator from "validator";
 import { connect } from "react-redux";
 import "./UserPersonalBlock.css";
-import { useHttp } from "../../../Hook/useHttp";
+import { useHttp } from "../../../Service/useHttp";
 import { login } from "../../../ReduxStorage/actions/userActions";
 import { Button } from "../../Common/Button/Button";
 import { Input } from "../../Common/Input/Input";
@@ -12,7 +12,7 @@ import { useUserService } from "../../../Service/useUserService";
 
 const UserPersonalBlock = (props) => {
   const userService = useUserService();
-  const { showAlertHandler, login, accessToken, userId, userInfo } = props;
+  const { showAlertHandler, accessToken, userId, userInfo } = props;
   const id = useParams().id;
 
   const [newPassword, setNewPassword] = useState("");
@@ -44,26 +44,12 @@ const UserPersonalBlock = (props) => {
 
   const updateUserProfile = async () => {
     try {
-      if (!validator.isEmail(user.email)) {
-        throw new Error("Enter valid Email");
-      }
-      if (newPassword.length < 6 && newPassword.length > 0) {
-        throw new Error("Minimal lenght of password - 6");
-      }
-      if (!user.lastname || !user.firstname) {
-        throw new Error("Enter your name");
-      }
-      if (user.age < 14) {
-        throw new Error("You need to be at least 14");
-      }
-
-      const updatedUser = await userService.updateUser(
+      await userService.updateUser(
         id,
-        newPassword.length >= 6 ? { ...user, password: newPassword } : user,
+        { ...user, password: newPassword },
         accessToken
       );
 
-      login({ ...updatedUser, accessToken: accessToken });
       showAlertHandler({
         show: true,
         text: `Everything successfully saved`,
@@ -132,17 +118,11 @@ const UserPersonalBlock = (props) => {
   );
 };
 
-function mapStateToProps(state) {
+const mapStateToProps = (state) => {
   return {
     accessToken: state.userReducers.accessToken,
     userId: state.userReducers.id,
   };
-}
+};
 
-function mapDispatchToProps(dispatch) {
-  return {
-    login: (userInfo) => dispatch(login(userInfo)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(UserPersonalBlock);
+export default connect(mapStateToProps)(UserPersonalBlock);

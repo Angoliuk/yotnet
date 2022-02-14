@@ -2,13 +2,11 @@ import { connect } from "react-redux";
 import PostCard from "../../UploadCards/PostCard/PostCard";
 import "./PostsBlock.css";
 import React, { useCallback, useEffect, useState } from "react";
-import { useHttp } from "../../../Hook/useHttp";
-import { addToEndPosts } from "../../../ReduxStorage/actions/postActions";
 import { Loader } from "../../Common/Loader/Loader";
 import { usePostService } from "../../../Service/usePostService";
 
 const PostsBlock = (props) => {
-  const { posts, showAlertHandler, addToEndPosts } = props;
+  const { posts, showAlertHandler } = props;
   const { xTotalCount } = usePostService();
   const postService = usePostService();
 
@@ -21,28 +19,17 @@ const PostsBlock = (props) => {
         return null;
       }
 
-      const postsFromDB = await postService.getPosts(pageNum, 10);
-
-      if (!postsFromDB) return null;
-
-      const newPosts = postsFromDB.filter(
-        (postFromDB) =>
-          posts.find((post) => post.id === postFromDB.id) === undefined
-      );
-      //filter posts that are already in storage
-
-      if (!newPosts) return null;
-
-      addToEndPosts(newPosts);
-      setLoadNewPosts(false);
+      await postService.getPosts(pageNum, 10);
     } catch (e) {
       showAlertHandler({
         show: true,
         text: `Error, try to reload this page. ${e}`,
         type: "error",
       });
+    } finally {
+      setLoadNewPosts(false);
     }
-  }, [pageNum, showAlertHandler, addToEndPosts]);
+  }, [pageNum, showAlertHandler]);
 
   //load new posts when you scroll to the end of page
   useEffect(() => {
@@ -87,25 +74,19 @@ const PostsBlock = (props) => {
   return (
     <div className="postsBlockWrapper">
       <PostsListBlock />
-      {loadNewPosts ? (
+      {loadNewPosts && (
         <div className="homeLoaderInPostsBlock">
           <Loader />
         </div>
-      ) : null}
+      )}
     </div>
   );
 };
 
-function mapStateToProps(state) {
+const mapStateToProps = (state) => {
   return {
     posts: state.postReducers.posts,
   };
-}
+};
 
-function mapDispatchToProps(dispatch) {
-  return {
-    addToEndPosts: (newPosts) => dispatch(addToEndPosts(newPosts)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(PostsBlock);
+export default connect(mapStateToProps)(PostsBlock);

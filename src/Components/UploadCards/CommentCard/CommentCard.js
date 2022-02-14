@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
-import { useHttp } from "../../../Hook/useHttp";
-import { setComments } from "../../../ReduxStorage/actions/postActions";
 import { useCommentService } from "../../../Service/useCommentService";
 import { Button } from "../../Common/Button/Button";
 import { Loader } from "../../Common/Loader/Loader";
@@ -12,8 +10,7 @@ import "./CommentsCard.css";
 function CommentCard(props) {
   const commentService = useCommentService();
   const { loading } = useCommentService();
-  const { showAlertHandler, comments, setComments, userId, user, commentId } =
-    props;
+  const { showAlertHandler, comments, userId, user, commentId } = props;
 
   const comment = comments.find((comment) => comment.id === commentId);
   const createdAtDate = new Date(comment.createdAt).toLocaleString();
@@ -29,8 +26,6 @@ function CommentCard(props) {
   const deleteComment = async () => {
     try {
       commentService.deleteComment(commentId);
-
-      setComments(comments.filter((comment) => comment.id !== commentId));
     } catch (e) {
       showAlertHandler({
         show: true,
@@ -49,27 +44,20 @@ function CommentCard(props) {
 
   const saveChangedComment = async () => {
     try {
-      const changedComment = await commentService.patchComment(
+      await commentService.patchComment(
         commentId,
         commentChanges,
+        user,
         user.accessToken
       );
-
-      const newComments = Array.from(comments);
-      const commentIndex = comments.findIndex(
-        (comment) => comment.id === changedComment.id
-      );
-      newComments[commentIndex] = { ...changedComment, user: user };
-      setComments(newComments);
-      setEditingComment(false);
     } catch (e) {
-      setEditingComment(false);
-
       showAlertHandler({
         show: true,
         text: `${e}`,
         type: "error",
       });
+    } finally {
+      setEditingComment(false);
     }
   };
 
@@ -145,7 +133,7 @@ function CommentCard(props) {
         </div>
 
         <div>
-          {userId === comment.user.id && editingComment === false ? (
+          {userId === comment.user.id && editingComment === false && (
             <Button
               text="…"
               name={`showButtonsForUserCommentsText${commentId}`}
@@ -154,9 +142,9 @@ function CommentCard(props) {
             >
               ...
             </Button>
-          ) : null}
+          )}
 
-          {showButtonsForUserComments ? <ButtonsForUserComments /> : null}
+          {showButtonsForUserComments && <ButtonsForUserComments />}
         </div>
       </div>
 
@@ -186,17 +174,11 @@ function CommentCard(props) {
   );
 }
 
-function mapStateToProps(state) {
+const mapStateToProps = (state) => {
   return {
     comments: state.postReducers.comments,
     user: state.userReducers,
   };
-}
+};
 
-function mapDispatchToProps(dispatch) {
-  return {
-    setComments: (comments) => dispatch(setComments(comments)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(CommentCard);
+export default connect(mapStateToProps)(CommentCard);

@@ -1,13 +1,9 @@
 import React, { useCallback, useState } from "react";
 import { connect } from "react-redux";
-import validator from "validator";
-import { useHttp } from "../../../Hook/useHttp";
 import { Button } from "../../Common/Button/Button";
 import { Textarea } from "../../Common/Textarea/Textarea";
 import { Input } from "../../Common/Input/Input";
 import { Modal } from "../../Common/Modal/Modal";
-import { addPosts } from "../../../ReduxStorage/actions/postActions";
-import { addAnnouncements } from "../../../ReduxStorage/actions/announcementActions";
 import { Loader } from "../../Common/Loader/Loader";
 import "./NewUploadBlock.css";
 import { usePostService } from "../../../Service/usePostService";
@@ -16,7 +12,7 @@ import { useAnnouncementService } from "../../../Service/useAnnouncementService"
 const NewUploadBlock = (props) => {
   const postService = usePostService();
   const announcementService = useAnnouncementService();
-  const { userInfo, showAlertHandler, addAnnouncements, addPosts } = props;
+  const { userInfo, showAlertHandler } = props;
 
   const [showNewPostBlock, setShowNewPostBlock] = useState(false);
   const [creatingNewPost, setCreatingNewPost] = useState(false);
@@ -43,14 +39,7 @@ const NewUploadBlock = (props) => {
   );
 
   const createPost = async () => {
-    if (!validator.isLength(newPost.title, { min: 1, max: 1000 })) {
-      throw new Error("It`s required field, signs limit - 1000");
-    }
-    if (!validator.isLength(newPost.body, { min: 1, max: 3000 })) {
-      throw new Error("It`s required field, signs limit - 3000");
-    }
-
-    const newPostFromDB = await postService.createPost(
+    await postService.createPost(
       {
         title: newPost.title,
         body: newPost.body,
@@ -58,32 +47,13 @@ const NewUploadBlock = (props) => {
         updatedAt: new Date(),
         userId: userInfo.id,
       },
+      userInfo,
       userInfo.accessToken
     );
-
-    addPosts([
-      {
-        ...newPostFromDB,
-        user: {
-          id: userInfo.id,
-          firstname: userInfo.firstname,
-          lastname: userInfo.lastname,
-          email: userInfo.email,
-          age: userInfo.age,
-        },
-      },
-    ]);
   };
 
   const createAnnouncement = async () => {
-    if (!validator.isLength(newPost.title, { min: 1, max: 500 })) {
-      throw new Error("It`s required field, signs limit - 500");
-    }
-    if (!validator.isLength(newPost.body, { min: 1, max: 1500 })) {
-      throw new Error("It`s required field, signs limit - 1500");
-    }
-
-    const newAnnouncementFromDB = await announcementService.createAnnouncement(
+    await announcementService.createAnnouncement(
       {
         title: newPost.title,
         body: newPost.body,
@@ -91,21 +61,9 @@ const NewUploadBlock = (props) => {
         updatedAt: new Date(),
         userId: userInfo.id,
       },
+      userInfo,
       userInfo.accessToken
     );
-
-    addAnnouncements([
-      {
-        ...newAnnouncementFromDB,
-        user: {
-          id: userInfo.id,
-          firstname: userInfo.firstname,
-          lastname: userInfo.lastname,
-          email: userInfo.email,
-          age: userInfo.age,
-        },
-      },
-    ]);
   };
 
   const createNewPost = async () => {
@@ -131,9 +89,9 @@ const NewUploadBlock = (props) => {
 
   return (
     <>
-      {creatingNewPost ? Modal(<Loader />) : null}
+      {creatingNewPost && Modal(<Loader />)}
 
-      {userInfo.accessToken ? (
+      {userInfo.accessToken && (
         <Button
           text="What`s on your mind?"
           name="showNewPostBlock"
@@ -141,73 +99,64 @@ const NewUploadBlock = (props) => {
           className="showNewPostBlockButton button"
           onClick={() => setShowNewPostBlock(!showNewPostBlock)}
         />
-      ) : null}
+      )}
 
-      {showNewPostBlock
-        ? Modal(
-            <div className="createPostBlock">
-              <Input
-                name="title"
-                value={newPost.title}
-                placeholder="Title"
-                className="createPostInput input"
+      {showNewPostBlock &&
+        Modal(
+          <div className="createPostBlock">
+            <Input
+              name="title"
+              value={newPost.title}
+              placeholder="Title"
+              className="createPostInput input"
+              onChange={newPostInputHandler}
+              classNameBlock="createPostInputBlock"
+            />
+
+            <Textarea
+              name="body"
+              value={newPost.body}
+              onChange={newPostInputHandler}
+              rows={15}
+              className="createPostTextarea textarea"
+              placeholder="What`s on your mind?"
+            />
+
+            <div className="isAnnouncementBlock">
+              <input
                 onChange={newPostInputHandler}
-                classNameBlock="createPostInputBlock"
+                placeholder=""
+                type="checkbox"
+                name="isAnnouncement"
+                id="isAnnouncement"
+                className="isAnnouncementCheckbox"
               />
-
-              <Textarea
-                name="body"
-                value={newPost.body}
-                onChange={newPostInputHandler}
-                rows={15}
-                className="createPostTextarea textarea"
-                placeholder="What`s on your mind?"
-              />
-
-              <div className="isAnnouncementBlock">
-                <input
-                  onChange={newPostInputHandler}
-                  placeholder=""
-                  type="checkbox"
-                  name="isAnnouncement"
-                  id="isAnnouncement"
-                  className="isAnnouncementCheckbox"
-                />
-                <label htmlFor="isAnnouncement">Post as announcement</label>
-              </div>
-
-              <Button
-                onClick={createNewPost}
-                text="Create"
-                name="createPostButton"
-                className="createPostButton button"
-              />
-
-              <Button
-                onClick={() => setShowNewPostBlock(false)}
-                text="Cancel"
-                name="cancelCreatePostButton"
-                className="cancelCreatePostButton button"
-              />
+              <label htmlFor="isAnnouncement">Post as announcement</label>
             </div>
-          )
-        : null}
+
+            <Button
+              onClick={createNewPost}
+              text="Create"
+              name="createPostButton"
+              className="createPostButton button"
+            />
+
+            <Button
+              onClick={() => setShowNewPostBlock(false)}
+              text="Cancel"
+              name="cancelCreatePostButton"
+              className="cancelCreatePostButton button"
+            />
+          </div>
+        )}
     </>
   );
 };
 
-function mapStateToProps(state) {
+const mapStateToProps = (state) => {
   return {
     userInfo: state.userReducers,
   };
-}
+};
 
-function mapDispatchToProps(dispatch) {
-  return {
-    addPosts: (newPosts) => dispatch(addPosts(newPosts)),
-    addAnnouncements: (newAnnouncements) =>
-      dispatch(addAnnouncements(newAnnouncements)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(NewUploadBlock);
+export default connect(mapStateToProps)(NewUploadBlock);

@@ -34,11 +34,11 @@ function UserAnnouncementsBlock(props) {
   );
 }
 
-function mapStateToProps(state) {
+const mapStateToProps = (state) => {
   return {
     userId: state.userReducers.id,
     announcements: state.announcementReducers.announcements,
   };
-}
+};
 
 export default connect(mapStateToProps)(UserAnnouncementsBlock);

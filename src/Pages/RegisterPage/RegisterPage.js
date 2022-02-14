@@ -1,10 +1,6 @@
 import React, { useState } from "react";
-import { connect } from "react-redux";
 import { Button } from "../../Components/Common/Button/Button";
 import { PagesWrapper } from "../../hoc/PagesWrapper/PagesWrapper";
-import { useHttp } from "../../Hook/useHttp";
-import { login } from "../../ReduxStorage/actions/userActions";
-import validator from "validator";
 import "./RegisterPage.css";
 import InputsWithUserData from "../../Components/Common/InputsWithUserData/InputsWithUserData";
 import { Loader } from "../../Components/Common/Loader/Loader";
@@ -12,10 +8,10 @@ import { Modal } from "../../Components/Common/Modal/Modal";
 import { useNavigate } from "react-router-dom";
 import { useUserService } from "../../Service/useUserService";
 
-function RegisterPage(props) {
+const RegisterPage = (props) => {
   const userService = useUserService();
   const { loading } = useUserService();
-  const { login, showAlertHandler } = props;
+  const { showAlertHandler } = props;
   const navigate = useNavigate();
 
   const [showAvatarsBlock, setShowAvatarsBlock] = useState(false);
@@ -48,24 +44,7 @@ function RegisterPage(props) {
 
   const processRegister = async () => {
     try {
-      if (!validator.isEmail(registerData.email)) {
-        throw new Error("Wrong Email");
-      }
-      if (
-        !validator.isLength(registerData.password, { min: 6, max: undefined })
-      ) {
-        throw new Error("Too short password, minimal lenght - 6");
-      }
-      if (!registerData.lastname || !registerData.firstname) {
-        throw new Error("Enter your name");
-      }
-      if (registerData.age < 14) {
-        throw new Error("You need to be at least 14");
-      }
-
-      const data = await userService.register(registerData);
-
-      login({ ...data.user, accessToken: data.accessToken });
+      await userService.processRegister(registerData);
       navigate("/home");
     } catch (e) {
       showAlertHandler({
@@ -78,7 +57,7 @@ function RegisterPage(props) {
 
   return (
     <div className="registerPageMainBlock">
-      {loading ? Modal(<Loader />) : null}
+      {loading && Modal(<Loader />)}
 
       <InputsWithUserData
         showPassword={true}
@@ -91,19 +70,6 @@ function RegisterPage(props) {
       <Button onClick={processRegister} text="Register" name="registerButton" />
     </div>
   );
-}
+};
 
-function mapStateToProps(state) {
-  return {};
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    login: (userInfo) => dispatch(login(userInfo)),
-  };
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PagesWrapper(RegisterPage));
+export default PagesWrapper(RegisterPage);

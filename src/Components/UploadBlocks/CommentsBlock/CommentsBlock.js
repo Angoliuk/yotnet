@@ -1,18 +1,15 @@
 import React, { useCallback, useState } from "react";
 import { connect } from "react-redux";
-import { useHttp } from "../../../Hook/useHttp";
-import { addComments } from "../../../ReduxStorage/actions/postActions";
 import { Button } from "../../Common/Button/Button";
 import CommentCard from "../../UploadCards/CommentCard/CommentCard";
 import { Textarea } from "../../Common/Textarea/Textarea";
 import "./CommentsBlock.css";
-import validator from "validator";
 import { Loader } from "../../Common/Loader/Loader";
 import { useCommentService } from "../../../Service/useCommentService";
 
 const CommentsBlock = (props) => {
   const commentService = useCommentService();
-  const { userInfo, showAlertHandler, comments, addComments, postId } = props;
+  const { userInfo, showAlertHandler, comments, postId } = props;
 
   const [addingComments, setAddingComment] = useState(false);
 
@@ -30,11 +27,8 @@ const CommentsBlock = (props) => {
   const createNewComment = async () => {
     try {
       setAddingComment(true);
-      if (!validator.isLength(newComment.text, { min: 1, max: 1000 })) {
-        throw new Error("It`s required field, signs limit - 1000");
-      }
 
-      const newCommentFromBD = await commentService.createComment(
+      await commentService.createComment(
         {
           body: newComment.text,
           createdAt: new Date(),
@@ -42,26 +36,9 @@ const CommentsBlock = (props) => {
           postId: postId,
           userId: userInfo.id,
         },
+        userInfo,
         userInfo.accessToken
       );
-
-      addComments([
-        {
-          ...newCommentFromBD,
-          user: {
-            id: userInfo.id,
-            firstname: userInfo.firstname,
-            lastname: userInfo.lastname,
-            email: userInfo.email,
-            age: userInfo.age,
-          },
-        },
-      ]);
-
-      setNewComment({
-        ...newComment,
-        text: "",
-      });
     } catch (e) {
       showAlertHandler({
         show: true,
@@ -70,6 +47,10 @@ const CommentsBlock = (props) => {
       });
     } finally {
       setAddingComment(false);
+      setNewComment({
+        ...newComment,
+        text: "",
+      });
     }
   };
 
@@ -171,7 +152,7 @@ const CommentsBlock = (props) => {
 
   return (
     <div>
-      {userInfo.accessToken ? (
+      {userInfo.accessToken && (
         <div>
           <Textarea
             name="text"
@@ -188,30 +169,24 @@ const CommentsBlock = (props) => {
             onClick={createNewComment}
           />
         </div>
-      ) : null}
+      )}
 
-      {addingComments ? (
+      {addingComments && (
         <div className="commentLoaderInCommentsBlock">
           <Loader />
         </div>
-      ) : null}
+      )}
 
       <CommentsListBlock />
     </div>
   );
 };
 
-function mapStateToProps(state) {
+const mapStateToProps = (state) => {
   return {
     userInfo: state.userReducers,
     comments: state.postReducers.comments,
   };
-}
+};
 
-function mapDispatchToProps(dispatch) {
-  return {
-    addComments: (newComments) => dispatch(addComments(newComments)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(CommentsBlock);
+export default connect(mapStateToProps)(CommentsBlock);
