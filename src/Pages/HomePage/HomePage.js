@@ -4,17 +4,14 @@ import NewUploadBlock from "../../Components/UploadBlocks/NewUploadBlock/NewUplo
 import PostsBlock from "../../Components/UploadBlocks/PostsBlock/PostsBlock";
 
 function HomePage(props) {
+  const { showAlertHandler } = props;
 
-    const {showAlertHandler} = props
-
-    return(
-        <>
-
-            <NewUploadBlock showAlertHandler={showAlertHandler} />
-            <PostsBlock showAlertHandler={showAlertHandler} />
-
-        </>
-    )
+  return (
+    <>
+      <NewUploadBlock showAlertHandler={showAlertHandler} />
+      <PostsBlock showAlertHandler={showAlertHandler} />
+    </>
+  );
 }
 
-export default PagesWrapper(HomePage)
+export default PagesWrapper(HomePage);

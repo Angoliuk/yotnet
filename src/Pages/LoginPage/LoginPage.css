@@ -1,24 +1,20 @@
-.loginPageBlock{
-    margin: auto;
-    width: 40%;
+.loginPageBlock {
+  margin: auto;
+  width: 40%;
 }
 
-.loginPageBlock button{
-    margin-left: 0px;
+.loginPageBlock button {
+  margin-left: 0px;
 }
 
 @media screen and (max-width: 1100px) {
-    
-    .loginPageBlock{
-        width: 60%;
-    }
-
+  .loginPageBlock {
+    width: 60%;
+  }
 }
 
 @media screen and (max-width: 500px) {
-    
-    .loginPageBlock{
-        width: 80%;
-    }
-
+  .loginPageBlock {
+    width: 80%;
+  }
 }

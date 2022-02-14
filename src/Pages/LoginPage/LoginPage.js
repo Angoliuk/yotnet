@@ -5,104 +5,88 @@ import { Input } from "../../Components/Common/Input/Input";
 import { PagesWrapper } from "../../hoc/PagesWrapper/PagesWrapper";
 import { useHttp } from "../../Hook/useHttp";
 import { login } from "../../ReduxStorage/actions/userActions";
-import validator from 'validator'
+import validator from "validator";
 import { Loader } from "../../Components/Common/Loader/Loader";
 import { Modal } from "../../Components/Common/Modal/Modal";
-import './LoginPage.css'
+import "./LoginPage.css";
 import { useNavigate } from "react-router-dom";
 
 function LoginPage(props) {
+  const { request, loading } = useHttp();
+  const { login, showAlertHandler } = props;
+  const navigate = useNavigate();
 
-    const {request, loading} = useHttp()
-    const {login, showAlertHandler} = props
-    const navigate = useNavigate()
+  const [loginData, setLoginData] = useState({
+    email: "",
+    password: "",
+  });
 
-    const [loginData, setLoginData] = useState({
-        email: '',
-        password: '',
-    })
+  const inputChangeHandler = (event) => {
+    setLoginData({
+      ...loginData,
+      [event.target.name]: event.target.value,
+    });
+  };
 
-    const inputChangeHandler = (event) => {
+  const processLogin = async () => {
+    try {
+      if (!validator.isEmail(loginData.email)) {
+        throw new Error("Enter valid Email");
+      }
+      if (!validator.isLength(loginData.password, { min: 6, max: undefined })) {
+        throw new Error("Too short password, minimal lenght - 6");
+      }
 
-        setLoginData({
-            ...loginData,
-             [event.target.name]: event.target.value
-            })
+      const data = await request("/login", "POST", loginData);
 
+      login({ ...data.user, accessToken: data.accessToken });
+      navigate("/home");
+    } catch (e) {
+      showAlertHandler({
+        show: true,
+        text: `${e}`,
+        type: "error",
+      });
     }
+  };
 
-    const processLogin = async () => {
+  return (
+    <div className="loginPageBlock">
+      {loading ? Modal(<Loader />) : null}
 
-        try {
+      <Input
+        name="email"
+        value={loginData.email}
+        htmlForText="Email"
+        onChange={inputChangeHandler}
+        className="input inputLoginPage"
+      />
 
-            if(!validator.isEmail(loginData.email)){throw new Error('Enter valid Email')}
-            if(!validator.isLength(loginData.password, {min: 6, max: undefined})){throw new Error('Too short password, minimal lenght - 6')}
+      <Input
+        name="password"
+        type="password"
+        value={loginData.password}
+        htmlForText="Password"
+        onChange={inputChangeHandler}
+        className="input inputLoginPage"
+      />
 
-            const data = await request(
-                '/login',
-                'POST', 
-                loginData
-            )
-            
-            login({...data.user, accessToken: data.accessToken})
-            navigate('/home')
-
-        } catch (e) {
-            showAlertHandler({
-                show: true,
-                text: `${e}`,
-                type: 'error',
-            })
-        }
-
-    }
-
-    return(
-        <div className="loginPageBlock">
-
-            {
-            loading
-            ?   Modal(<Loader />)
-            :   null
-            }
-
-            <Input 
-                name='email' 
-                value={loginData.email} 
-                htmlForText="Email" 
-                onChange={inputChangeHandler} 
-                className="input inputLoginPage"
-            />
-
-            <Input 
-                name='password' 
-                type="password"
-                value={loginData.password} 
-                htmlForText="Password" 
-                onChange={inputChangeHandler}
-                className="input inputLoginPage"
-            />
-
-            <Button 
-                onClick={processLogin} 
-                text="Login" 
-                name='loginButton' 
-            />
-            
-        </div>
-    )
+      <Button onClick={processLogin} text="Login" name="loginButton" />
+    </div>
+  );
 }
 
 function mapStateToProps(state) {
-    return{
-
-    }
+  return {};
 }
 
 function mapDispatchToProps(dispatch) {
-    return{
-        login: (userInfo) => dispatch(login(userInfo))
-    }
+  return {
+    login: (userInfo) => dispatch(login(userInfo)),
+  };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PagesWrapper(LoginPage))
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PagesWrapper(LoginPage));

@@ -1,65 +1,65 @@
-.avatarModalBlock{
-    width: 600px;
-    border-radius: 20px;
-    height: 200px;
-    background-color: rgb(255, 255, 255);
-    z-index: 1;
-    position: fixed;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
+.avatarModalBlock {
+  width: 600px;
+  border-radius: 20px;
+  height: 200px;
+  background-color: rgb(255, 255, 255);
+  z-index: 1;
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
 }
 
-.avatarImg{
-    width: 120px;
-    height: 120px;
-    border-radius: 15%;
-    border: 2px solid black;
+.avatarImg {
+  width: 120px;
+  height: 120px;
+  border-radius: 15%;
+  border: 2px solid black;
 }
 
 @media screen and (max-width: 700px) {
-    .avatarModalBlock{
-        width: 80%;
-        height: 150px;
-    }
-    .avatarImg{
-        width: 100px;
-        height: 100px;
-        border-radius: 15px;
-    }
+  .avatarModalBlock {
+    width: 80%;
+    height: 150px;
+  }
+  .avatarImg {
+    width: 100px;
+    height: 100px;
+    border-radius: 15px;
+  }
 }
 
 @media screen and (max-width: 600px) {
-    .avatarModalBlock{
-        width: 90%;
-        height: 120px;
-    }
-    .avatarImg{
-        width: 85px;
-        height: 85px;
-        border-radius: 10px;
-    }
+  .avatarModalBlock {
+    width: 90%;
+    height: 120px;
+  }
+  .avatarImg {
+    width: 85px;
+    height: 85px;
+    border-radius: 10px;
+  }
 }
 
 @media screen and (max-width: 450px) {
-    .avatarModalBlock{
-        flex-wrap: wrap;
-        width: 300px;
-        height: 260px;
-    }
-    .avatarImg{
-        width: 97px;
-        margin: 5px 0px;
-        height: 97px;
-        border-radius: 10px;
-    }
+  .avatarModalBlock {
+    flex-wrap: wrap;
+    width: 300px;
+    height: 260px;
+  }
+  .avatarImg {
+    width: 97px;
+    margin: 5px 0px;
+    height: 97px;
+    border-radius: 10px;
+  }
 }
 
-.chosenAvatar{
-    margin: 15px 0px;
-    width: 190px;
-    height: 190px;
-    border-radius: 10px;
-    margin-left: 15px;
-    border: 2px solid black;
+.chosenAvatar {
+  margin: 15px 0px;
+  width: 190px;
+  height: 190px;
+  border-radius: 10px;
+  margin-left: 15px;
+  border: 2px solid black;
 }

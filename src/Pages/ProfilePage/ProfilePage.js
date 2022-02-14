@@ -4,7 +4,7 @@ import { Button } from "../../Components/Common/Button/Button";
 import { PagesWrapper } from "../../hoc/PagesWrapper/PagesWrapper";
 import { useHttp } from "../../Hook/useHttp";
 import { connect } from "react-redux";
-import './ProfilePage.css'
+import "./ProfilePage.css";
 import { Loader } from "../../Components/Common/Loader/Loader";
 import { Modal } from "../../Components/Common/Modal/Modal";
 import { addPosts } from "../../ReduxStorage/actions/postActions";
@@ -14,158 +14,174 @@ import UserPostsBlock from "../../Components/ProfilePageBlocks/UserPostsBlock/Us
 import UserAnnouncementsBlock from "../../Components/ProfilePageBlocks/UserAnnouncementsBlock/UserAnnouncementsBlock";
 
 function ProfilePage(props) {
+  const { request, loading } = useHttp();
+  const { showAlertHandler, addAnnouncements, addPosts, posts, announcements } =
+    props;
+  const [section, setSection] = useState("personal");
 
-    const {request, loading} = useHttp()
-    const {showAlertHandler, addAnnouncements, addPosts, posts, announcements} = props
-    const [section, setSection] = useState('personal')
+  const id = useParams().id;
+  const [userInfo, setUserInfo] = useState({
+    email: "",
+    firstname: "",
+    lastname: "",
+    age: 0,
+    avatar: "https://picsum.photos/60",
+  });
 
-    const id = useParams().id
-    const [userInfo, setUserInfo] = useState({
-        email: '',
-        firstname: '',
-        lastname: '',
-        age: 0,
-        avatar: "https://picsum.photos/60",
-    })
+  const personalDataRequest = useCallback(async () => {
+    const user = await request(`/users?id=${id}`, "GET", null);
+    delete user[0].password;
+    setUserInfo(user[0]);
+  }, [id, request]);
 
-    const personalDataRequest = useCallback( async () => {
+  const postsDataRequest = useCallback(async () => {
+    const postsFromDB = await request(
+      `/posts?_expand=user&userId_like=${id}&_sort=createdAt&_order=desc`,
+      "GET",
+      null
+    );
+    if (!postsFromDB) return null;
 
-        const user = await request(`/users?id=${id}`, 'GET', null)
-        delete user[0].password
-        setUserInfo(user[0])
+    const newPosts = postsFromDB.filter(
+      (postFromDB) =>
+        posts.find((post) => post.id === postFromDB.id) === undefined
+    );
+    if (!newPosts) return null;
 
-    }, [id, request])
+    addPosts(newPosts);
+  }, [id, request, addPosts]);
 
-    const postsDataRequest = useCallback( async () => {
+  const announcemenetsDataRequest = useCallback(async () => {
+    const announcementsFromDB = await request(
+      `/announcements?_expand=user&userId_like=${id}&_sort=createdAt&_order=desc`,
+      "GET",
+      null
+    );
+    if (!announcementsFromDB) return null;
 
-        const postsFromDB = await request(`/posts?_expand=user&userId_like=${id}&_sort=createdAt&_order=desc`, 'GET', null)
-        if (!postsFromDB) return null
+    const newAnnouncements = announcementsFromDB.filter(
+      (announcementsFromDB) =>
+        announcements.find(
+          (announcement) => announcement.id === announcementsFromDB.id
+        ) === undefined
+    );
+    if (!newAnnouncements) return null;
 
-        const newPosts = postsFromDB.filter((postFromDB) => posts.find((post) => post.id === postFromDB.id) === undefined)
-        if(!newPosts) return null
+    addAnnouncements(newAnnouncements);
+  }, [id, request, addAnnouncements]);
 
-        addPosts(newPosts)    
-
-    }, [id, request, addPosts])
-
-    const announcemenetsDataRequest = useCallback( async () => {
-
-        const announcementsFromDB = await request(`/announcements?_expand=user&userId_like=${id}&_sort=createdAt&_order=desc`, 'GET', null)
-        if (!announcementsFromDB) return null
-
-        const newAnnouncements = announcementsFromDB.filter((announcementsFromDB) => announcements.find((announcement) => announcement.id === announcementsFromDB.id) === undefined)
-        if(!newAnnouncements) return null
-
-        addAnnouncements(newAnnouncements)
-
-    }, [id, request, addAnnouncements])
-    
-    const dataRequest = useCallback( async() => {
-
-        try {
-
-            if (section === 'personal') {
-
-                personalDataRequest()
-
-            } else if(section === 'announcements'){
-
-                postsDataRequest()
-
-            }else if(section === 'posts'){
-
-                announcemenetsDataRequest()
-                  
-            }else{
-                throw new Error('unknown info section')
-            }
-            
-
-        } catch (e) {
-            showAlertHandler({
-                show: true,
-                text: `Error, try to reload this page. ${e}`,
-                type: 'error',
-            })
-        }
-
-    }, [section, announcemenetsDataRequest, postsDataRequest, personalDataRequest])
-
-    const changeSection = (e) => {
-        setSection(e.target.name)
+  const dataRequest = useCallback(async () => {
+    try {
+      if (section === "personal") {
+        personalDataRequest();
+      } else if (section === "announcements") {
+        postsDataRequest();
+      } else if (section === "posts") {
+        announcemenetsDataRequest();
+      } else {
+        throw new Error("unknown info section");
+      }
+    } catch (e) {
+      showAlertHandler({
+        show: true,
+        text: `Error, try to reload this page. ${e}`,
+        type: "error",
+      });
     }
+  }, [
+    section,
+    announcemenetsDataRequest,
+    postsDataRequest,
+    personalDataRequest,
+  ]);
 
-    const ChosenSectionBlock = useCallback(() =>{
+  const changeSection = (e) => {
+    setSection(e.target.name);
+  };
 
-        return(
-            {
-                'personal': <UserPersonalBlock showAlertHandler={showAlertHandler} userInfo={userInfo} />,
-                'posts': <UserPostsBlock showAlertHandler={showAlertHandler} userInfo={userInfo} />,
-                'announcements': <UserAnnouncementsBlock userInfo={userInfo} />,
-            }[section]
-        )
-        
-    }, [section, userInfo, showAlertHandler])
+  const ChosenSectionBlock = useCallback(() => {
+    return {
+      personal: (
+        <UserPersonalBlock
+          showAlertHandler={showAlertHandler}
+          userInfo={userInfo}
+        />
+      ),
+      posts: (
+        <UserPostsBlock
+          showAlertHandler={showAlertHandler}
+          userInfo={userInfo}
+        />
+      ),
+      announcements: <UserAnnouncementsBlock userInfo={userInfo} />,
+    }[section];
+  }, [section, userInfo, showAlertHandler]);
 
-    useEffect(() => {
-        dataRequest()
-    }, [dataRequest])
+  useEffect(() => {
+    dataRequest();
+  }, [dataRequest]);
 
-    return(
-        <div className="profilePageMainBlock">
+  return (
+    <div className="profilePageMainBlock">
+      {loading ? Modal(<Loader />) : null}
 
-            {
-            loading
-            ?   Modal(<Loader />)
-            :   null
-            }
+      <div className="chooseInfoTypeBlock">
+        <Button
+          onClick={changeSection}
+          text="personal"
+          name="personal"
+          classNameBlock="chooseInfoTypeBlockProfilePage"
+          className={`button chooseInfoTypeButtonProfilePage ${
+            section === "personal"
+              ? "chooseInfoTypeButtonProfilePageActive"
+              : ""
+          }`}
+        />
 
-            <div className="chooseInfoTypeBlock">
+        <Button
+          onClick={changeSection}
+          text="posts"
+          name="posts"
+          classNameBlock="chooseInfoTypeBlockProfilePage"
+          className={`button chooseInfoTypeButtonProfilePage ${
+            section === "posts" ? "chooseInfoTypeButtonProfilePageActive" : ""
+          }`}
+        />
 
-                <Button 
-                    onClick={changeSection} 
-                    text='personal' 
-                    name='personal' 
-                    classNameBlock="chooseInfoTypeBlockProfilePage"
-                    className={`button chooseInfoTypeButtonProfilePage ${section === 'personal' ? 'chooseInfoTypeButtonProfilePageActive' : ''}`}
-                /> 
+        <Button
+          onClick={changeSection}
+          text="announcements"
+          name="announcements"
+          classNameBlock="chooseInfoTypeBlockProfilePage"
+          className={`button chooseInfoTypeButtonProfilePage ${
+            section === "announcements"
+              ? "chooseInfoTypeButtonProfilePageActive"
+              : ""
+          }`}
+        />
+      </div>
 
-                <Button 
-                    onClick={changeSection} 
-                    text='posts' 
-                    name='posts' 
-                    classNameBlock="chooseInfoTypeBlockProfilePage"
-                    className={`button chooseInfoTypeButtonProfilePage ${section === 'posts' ? 'chooseInfoTypeButtonProfilePageActive' : ''}`}
-                /> 
-
-                <Button 
-                    onClick={changeSection} 
-                    text='announcements' 
-                    name='announcements' 
-                    classNameBlock="chooseInfoTypeBlockProfilePage"
-                    className={`button chooseInfoTypeButtonProfilePage ${section === 'announcements' ? 'chooseInfoTypeButtonProfilePageActive' : ''}`}
-                /> 
-
-            </div>
-
-            <ChosenSectionBlock />
-            
-        </div> 
-    )
+      <ChosenSectionBlock />
+    </div>
+  );
 }
 
 function mapStateToProps(state) {
-    return{
-        posts: state.postReducers.posts,
-        announcements: state.announcementReducers.announcements,
-    }
+  return {
+    posts: state.postReducers.posts,
+    announcements: state.announcementReducers.announcements,
+  };
 }
 
 function mapDispatchToProps(dispatch) {
-    return{
-        addPosts: (newPosts) => dispatch(addPosts(newPosts)),
-        addAnnouncements: (newAnnouncements) => dispatch(addAnnouncements(newAnnouncements)),
-    }
+  return {
+    addPosts: (newPosts) => dispatch(addPosts(newPosts)),
+    addAnnouncements: (newAnnouncements) =>
+      dispatch(addAnnouncements(newAnnouncements)),
+  };
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(PagesWrapper(ProfilePage))
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PagesWrapper(ProfilePage));

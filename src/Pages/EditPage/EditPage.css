@@ -1,22 +1,18 @@
-.editPostBlock{
-    width: 45%;
-    margin: auto;
+.editPostBlock {
+  width: 45%;
+  margin: auto;
 }
 
 @media screen and (max-width: 1500px) {
-
-    .editPostBlock{
-        width: 70%;
-        margin: auto;
-    }
-
+  .editPostBlock {
+    width: 70%;
+    margin: auto;
+  }
 }
 
 @media screen and (max-width: 600px) {
-
-    .editPostBlock{
-        width: 90%;
-        margin: auto;
-    }
-
+  .editPostBlock {
+    width: 90%;
+    margin: auto;
+  }
 }

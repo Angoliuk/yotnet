@@ -1,12 +1,20 @@
 import React from "react";
-import './Button.css'
+import "./Button.css";
 
-export function Button({name='button', text='button', onClick=() => {return null}, className='button', classNameBlock=''}) {
-    return(
-        <div className={classNameBlock}>
-            <button name={name} id={name} onClick={onClick} className={className}>
-                {text}
-            </button>
-        </div>
-    )
+export function Button({
+  name = "button",
+  text = "button",
+  onClick = () => {
+    return null;
+  },
+  className = "button",
+  classNameBlock = "",
+}) {
+  return (
+    <div className={classNameBlock}>
+      <button name={name} id={name} onClick={onClick} className={className}>
+        {text}
+      </button>
+    </div>
+  );
 }

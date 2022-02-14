@@ -1,15 +1,15 @@
-.postsBlockWrapper{
-    width: 100%;
+.postsBlockWrapper {
+  width: 100%;
 }
 
-.homeLoaderInPostsBlock{
-    width: 100%;
-    display: flex;
-    margin: 20px 20px 100px 20px;
-    justify-content: center;
-    z-index: 9;
+.homeLoaderInPostsBlock {
+  width: 100%;
+  display: flex;
+  margin: 20px 20px 100px 20px;
+  justify-content: center;
+  z-index: 9;
 }
 
 .homeLoaderInPostsBlock > * {
-    position: static;
+  position: static;
 }

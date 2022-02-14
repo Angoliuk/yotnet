@@ -1,8 +1,6 @@
 import React from "react";
-import './Loader.css'
+import "./Loader.css";
 
-export function Loader () {
-    return(
-        <span className='loader'></span>
-    )
+export function Loader() {
+  return <span className="loader"></span>;
 }
