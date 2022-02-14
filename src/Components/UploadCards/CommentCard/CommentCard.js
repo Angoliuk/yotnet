@@ -7,7 +7,7 @@ import { Loader } from "../../Common/Loader/Loader";
 import { Textarea } from "../../Common/Textarea/Textarea";
 import "./CommentsCard.css";
 
-function CommentCard(props) {
+const CommentCard = (props) => {
   const { showAlertHandler, comments, userId, user, commentId } = props;
   const commentService = useCommentService();
   const { loading } = useCommentService();
@@ -172,7 +172,7 @@ function CommentCard(props) {
       </div>
     </div>
   );
-}
+};
 
 const mapStateToProps = (state) => {
   return {

@@ -8,7 +8,7 @@ import CommentsBlock from "../../UploadBlocks/CommentsBlock/CommentsBlock";
 import { usePostService } from "../../../Service/usePostService";
 import { useCommentService } from "../../../Service/useCommentService";
 
-function PostCard(props) {
+const PostCard = (props) => {
   const { posts, userInfo, showAlertHandler, postId } = props;
   const commentService = useCommentService();
   const postService = usePostService();
@@ -188,7 +188,7 @@ function PostCard(props) {
       </div>
     </div>
   );
-}
+};
 
 const mapStateToProps = (state) => {
   return {

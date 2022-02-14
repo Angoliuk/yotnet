@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import "./UserPostsBlock.css";
 import PostCard from "../../UploadCards/PostCard/PostCard";
 
-function UserPostsBlock(props) {
+const UserPostsBlock = (props) => {
   const { showAlertHandler, userId, posts, userInfo } = props;
   const id = useParams().id;
 
@@ -33,13 +33,13 @@ function UserPostsBlock(props) {
       It`s time to create your first post
     </p>
   );
-}
+};
 
-function mapStateToProps(state) {
+const mapStateToProps = (state) => {
   return {
     userId: state.userReducers.id,
     posts: state.postReducers.posts,
   };
-}
+};
 
 export default connect(mapStateToProps)(UserPostsBlock);

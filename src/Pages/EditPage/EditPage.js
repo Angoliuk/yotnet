@@ -11,7 +11,7 @@ import { Loader } from "../../Components/Common/Loader/Loader";
 import { useAnnouncementService } from "../../Service/useAnnouncementService";
 import { usePostService } from "../../Service/usePostService";
 
-function EditPage(props) {
+const EditPage = (props) => {
   const { showAlertHandler, user, posts, announcements } = props;
   const navigate = useNavigate();
   const { id, uploadType } = useParams();
@@ -91,7 +91,7 @@ function EditPage(props) {
       />
     </div>
   );
-}
+};
 
 const mapStateToProps = (state) => {
   return {

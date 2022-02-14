@@ -1,7 +1,7 @@
 import React from "react";
 import "./Textarea.css";
 
-export function Textarea({
+export const Textarea = ({
   name = "textarea",
   value = "",
   onChange = () => {
@@ -11,7 +11,7 @@ export function Textarea({
   cols = null,
   className = "textarea",
   placeholder = "",
-}) {
+}) => {
   return (
     <textarea
       className={className}
@@ -24,4 +24,4 @@ export function Textarea({
       cols={cols}
     />
   );
-}
+};

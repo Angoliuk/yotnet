@@ -2,7 +2,7 @@ import { Input } from "../Input/Input";
 import { Modal } from "../Modal/Modal";
 import "./InputsWithUserData.css";
 
-function InputsWithUserData(props) {
+const InputsWithUserData = (props) => {
   const avatarLinks = [
     "https://preview.redd.it/yom0nq8tznsz.jpg?width=640&crop=smart&auto=webp&s=f71630cd970ede845f2c992ffc8ffe4f5c59f289",
     "https://preview.redd.it/nnpgvr3260b41.jpg?width=640&crop=smart&auto=webp&s=922220e69118a0b46b56247ad5fb9af5654794a0",
@@ -93,6 +93,6 @@ function InputsWithUserData(props) {
         )}
     </div>
   );
-}
+};
 
 export default InputsWithUserData;

@@ -1,7 +1,7 @@
 import React from "react";
 import "./Input.css";
 
-export function Input({
+export const Input = ({
   name = "input",
   value = "",
   onChange = () => {
@@ -11,7 +11,7 @@ export function Input({
   type = "text",
   className = "input",
   placeholder = "",
-}) {
+}) => {
   return (
     <div>
       <label htmlFor={name}>{htmlForText}</label>
@@ -26,4 +26,4 @@ export function Input({
       />
     </div>
   );
-}
+};

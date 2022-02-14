@@ -3,7 +3,7 @@ import { Alert } from "../../Components/Common/Alert/Alert";
 import NavBar from "../../Components/NavBar/NavBar";
 import "./PagesWrapper.css";
 
-export function PagesWrapper(Component) {
+export const PagesWrapper = (Component) => {
   const WrappingWithAlert = (props) => {
     const [showAlert, setShowAlert] = useState({
       show: false,
@@ -44,4 +44,4 @@ export function PagesWrapper(Component) {
   return (props) => {
     return WrappingWithAlert(props);
   };
-}
+};

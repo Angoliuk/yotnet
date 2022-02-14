@@ -6,7 +6,7 @@ import { Button } from "../../Common/Button/Button";
 import { Loader } from "../../Common/Loader/Loader";
 import { useAnnouncementService } from "../../../Service/useAnnouncementService";
 
-function AnnouncementCard(props) {
+const AnnouncementCard = (props) => {
   const { showAlertHandler, announcementId, announcements, userInfo } = props;
   const announcementService = useAnnouncementService();
   const { loading } = useAnnouncementService();
@@ -128,7 +128,7 @@ function AnnouncementCard(props) {
       <hr />
     </div>
   );
-}
+};
 
 const mapStateToProps = (state) => {
   return {

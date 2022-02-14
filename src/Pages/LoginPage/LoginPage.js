@@ -8,7 +8,7 @@ import "./LoginPage.css";
 import { useNavigate } from "react-router-dom";
 import { useUserService } from "../../Service/useUserService";
 
-function LoginPage(props) {
+const LoginPage = (props) => {
   const { showAlertHandler } = props;
   const navigate = useNavigate();
   const userService = useUserService();
@@ -63,6 +63,6 @@ function LoginPage(props) {
       <Button onClick={processLogin} text="Login" name="loginButton" />
     </div>
   );
-}
+};
 
 export default PagesWrapper(LoginPage);

@@ -1,7 +1,7 @@
 import React from "react";
 import "./Button.css";
 
-export function Button({
+export const Button = ({
   name = "button",
   text = "button",
   onClick = () => {
@@ -9,7 +9,7 @@ export function Button({
   },
   className = "button",
   classNameBlock = "",
-}) {
+}) => {
   return (
     <div className={classNameBlock}>
       <button name={name} id={name} onClick={onClick} className={className}>
@@ -17,4 +17,4 @@ export function Button({
       </button>
     </div>
   );
-}
+};

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import AnnouncementCard from "../../UploadCards/AnnouncementCard/AnnouncementCard";
 import "./UserAnnouncementsBlock.css";
 
-function UserAnnouncementsBlock(props) {
+const UserAnnouncementsBlock = (props) => {
   const { userId, announcements, userInfo } = props;
   const id = useParams().id;
 
@@ -32,7 +32,7 @@ function UserAnnouncementsBlock(props) {
       It`s time to create your first announcement
     </p>
   );
-}
+};
 
 const mapStateToProps = (state) => {
   return {
