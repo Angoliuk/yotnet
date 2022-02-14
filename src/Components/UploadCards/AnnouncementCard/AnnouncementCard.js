@@ -7,9 +7,11 @@ import { Loader } from "../../Common/Loader/Loader";
 import { useAnnouncementService } from "../../../Service/useAnnouncementService";
 
 function AnnouncementCard(props) {
+  const { showAlertHandler, announcementId, announcements, userInfo } = props;
   const announcementService = useAnnouncementService();
   const { loading } = useAnnouncementService();
-  const { showAlertHandler, announcementId, announcements, userInfo } = props;
+
+  const createdAtDate = new Date(announcement.createdAt).toLocaleString();
 
   const [showButtonsForUserAnnouncements, setShowButtonsForUserAnnouncements] =
     useState(false);
@@ -17,7 +19,6 @@ function AnnouncementCard(props) {
   const announcement = announcements.find(
     (announ) => announ.id === announcementId
   );
-  const createdAtDate = new Date(announcement.createdAt).toLocaleString();
 
   const deleteAnnouncement = async () => {
     try {

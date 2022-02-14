@@ -1,11 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Link, NavLink } from "react-router-dom";
-import { useHttp } from "../../../Service/useHttp";
-import {
-  addComments,
-  setPosts,
-} from "../../../ReduxStorage/actions/postActions";
 import { Button } from "../../Common/Button/Button";
 import "./PostCard.css";
 import { Loader } from "../../Common/Loader/Loader";
@@ -14,23 +9,22 @@ import { usePostService } from "../../../Service/usePostService";
 import { useCommentService } from "../../../Service/useCommentService";
 
 function PostCard(props) {
+  const { posts, userInfo, showAlertHandler, postId } = props;
   const commentService = useCommentService();
   const postService = usePostService();
-  const { posts, userInfo, showAlertHandler, postId } = props;
+
+  const post = posts.find((post) => post.id === postId);
+  const createdAtDate = new Date(post.createdAt).toLocaleString();
 
   const [loadingPost, setLoadingPost] = useState(false);
   const [showButtonsForUserPosts, setShowButtonsForUserPosts] = useState(false);
   const [loadingComments, setLoadingComment] = useState(false);
   const [showComments, setShowComments] = useState(false);
 
-  const post = posts.find((post) => post.id === postId);
-  const createdAtDate = new Date(post.createdAt).toLocaleString();
-
   const dataRequest = useCallback(async () => {
-    //here were comments
+    //here were comments in ()
     try {
       setLoadingComment(true);
-
       await commentService.getComments(postId);
     } catch (e) {
       showAlertHandler({
@@ -46,7 +40,6 @@ function PostCard(props) {
   const deletePost = async () => {
     try {
       setLoadingPost(true);
-
       await postService.deletePost(postId, userInfo.accessToken);
     } catch (e) {
       showAlertHandler({
@@ -139,7 +132,7 @@ function PostCard(props) {
         </div>
 
         <div>
-          {userInfo.id === post.user.id ? (
+          {userInfo.id === post.user.id && (
             <Button
               text="…"
               name={`showButtonsForUserPostsText${postId}`}
@@ -148,9 +141,9 @@ function PostCard(props) {
             >
               ...
             </Button>
-          ) : null}
+          )}
 
-          {showButtonsForUserPosts ? <ButtonsForUserPosts /> : null}
+          {showButtonsForUserPosts && <ButtonsForUserPosts />}
         </div>
       </div>
 

@@ -1,19 +1,16 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import validator from "validator";
 import { connect } from "react-redux";
 import "./UserPersonalBlock.css";
-import { useHttp } from "../../../Service/useHttp";
-import { login } from "../../../ReduxStorage/actions/userActions";
 import { Button } from "../../Common/Button/Button";
 import { Input } from "../../Common/Input/Input";
 import InputsWithUserData from "../../Common/InputsWithUserData/InputsWithUserData";
 import { useUserService } from "../../../Service/useUserService";
 
 const UserPersonalBlock = (props) => {
-  const userService = useUserService();
   const { showAlertHandler, accessToken, userId, userInfo } = props;
   const id = useParams().id;
+  const userService = useUserService();
 
   const [newPassword, setNewPassword] = useState("");
   const [showAvatarsBlock, setShowAvatarsBlock] = useState(false);
@@ -49,7 +46,6 @@ const UserPersonalBlock = (props) => {
         { ...user, password: newPassword },
         accessToken
       );
-
       showAlertHandler({
         show: true,
         text: `Everything successfully saved`,

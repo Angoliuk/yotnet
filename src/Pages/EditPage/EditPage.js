@@ -12,12 +12,12 @@ import { useAnnouncementService } from "../../Service/useAnnouncementService";
 import { usePostService } from "../../Service/usePostService";
 
 function EditPage(props) {
+  const { showAlertHandler, user, posts, announcements } = props;
+  const navigate = useNavigate();
   const { id, uploadType } = useParams();
   const postService = usePostService();
   const { loading } = usePostService();
   const announcementService = useAnnouncementService();
-  const { showAlertHandler, user, posts, announcements } = props;
-  const navigate = useNavigate();
 
   const upload =
     uploadType === "post"
@@ -36,28 +36,19 @@ function EditPage(props) {
     });
   };
 
-  const savePostChanges = async () => {
-    await postService.patchPost(id, postChanges, user, user.accessToken);
-    navigate("/");
-  };
-
-  const saveAnnouncementChanges = async () => {
-    await announcementService.patchAnnouncement(
-      id,
-      postChanges,
-      user,
-      user.accessToken
-    );
-
-    navigate("/");
-  };
-
   const saveUploadChanges = async () => {
     try {
       if (uploadType === "post") {
-        savePostChanges();
+        await postService.patchPost(id, postChanges, user, user.accessToken);
+        navigate("/");
       } else if (uploadType === "announcement") {
-        saveAnnouncementChanges();
+        await announcementService.patchAnnouncement(
+          id,
+          postChanges,
+          user,
+          user.accessToken
+        );
+        navigate("/");
       } else {
         throw new Error("Unknown type of post");
       }

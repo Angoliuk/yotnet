@@ -8,8 +8,8 @@ import { Loader } from "../../Common/Loader/Loader";
 import { useCommentService } from "../../../Service/useCommentService";
 
 const CommentsBlock = (props) => {
-  const commentService = useCommentService();
   const { userInfo, showAlertHandler, comments, postId } = props;
+  const commentService = useCommentService();
 
   const [addingComments, setAddingComment] = useState(false);
 
@@ -27,7 +27,6 @@ const CommentsBlock = (props) => {
   const createNewComment = async () => {
     try {
       setAddingComment(true);
-
       await commentService.createComment(
         {
           body: newComment.text,

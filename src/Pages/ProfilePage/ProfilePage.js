@@ -13,14 +13,15 @@ import { useAnnouncementService } from "../../Service/useAnnouncementService";
 import { useUserService } from "../../Service/useUserService";
 
 const ProfilePage = (props) => {
+  const { showAlertHandler } = props;
+  const id = useParams().id;
   const { loading } = usePostService();
   const postService = usePostService();
   const userService = useUserService();
   const announcementService = useAnnouncementService();
-  const { showAlertHandler } = props;
+
   const [section, setSection] = useState("personal");
 
-  const id = useParams().id;
   const [userInfo, setUserInfo] = useState({
     email: "",
     firstname: "",
@@ -29,28 +30,16 @@ const ProfilePage = (props) => {
     avatar: "https://picsum.photos/60",
   });
 
-  const personalDataRequest = useCallback(async () => {
-    const user = await userService(id);
-    delete user[0].password;
-    setUserInfo(user[0]);
-  }, [id]);
-
-  const postsDataRequest = useCallback(async () => {
-    await postService.getUserPosts(id);
-  }, [id]);
-
-  const announcemenetsDataRequest = useCallback(async () => {
-    await announcementService.getUserAnnouncements(id);
-  }, [id]);
-
   const dataRequest = useCallback(async () => {
     try {
       if (section === "personal") {
-        personalDataRequest();
+        const user = await userService.getUser(id);
+        delete user[0].password;
+        setUserInfo(user[0]);
       } else if (section === "announcements") {
-        postsDataRequest();
+        await postService.getUserPosts(id);
       } else if (section === "posts") {
-        announcemenetsDataRequest();
+        await announcementService.getUserAnnouncements(id);
       } else {
         throw new Error("unknown info section");
       }
@@ -61,12 +50,7 @@ const ProfilePage = (props) => {
         type: "error",
       });
     }
-  }, [
-    section,
-    announcemenetsDataRequest,
-    postsDataRequest,
-    personalDataRequest,
-  ]);
+  }, [section]);
 
   const changeSection = (e) => {
     setSection(e.target.name);

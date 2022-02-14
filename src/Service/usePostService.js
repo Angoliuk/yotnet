@@ -1,15 +1,16 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useHttp } from "./useHttp";
+import { useHttp } from "./Http/useHttp";
 import {
   addPosts,
   addToEndPosts,
   setPosts,
 } from "../ReduxStorage/actions/postActions";
-import validator from "validator";
+import { useValidator } from "./validator/useValidator";
 
 export const usePostService = () => {
   const { request, loading, xTotalCount } = useHttp();
   const dispatch = useDispatch();
+  const validatorService = useValidator();
   const posts = useSelector((state) => state.postReducers.posts);
   const getPosts = async (page, limit) => {
     const postsFromDB = await request(
@@ -55,12 +56,7 @@ export const usePostService = () => {
   };
 
   const patchPost = async (id, changes, user, token) => {
-    if (!validator.isLength(changes.title, { min: 1, max: 1000 })) {
-      throw new Error("It`s required field, signs limit - 1000");
-    }
-    if (!validator.isLength(changes.body, { min: 1, max: 3000 })) {
-      throw new Error("It`s required field, signs limit - 3000");
-    }
+    validatorService.validatePost(changes);
     await request(
       `/664/posts/${id}`,
       "PATCH",
@@ -77,12 +73,7 @@ export const usePostService = () => {
   };
 
   const createPost = async (post, user, token) => {
-    if (!validator.isLength(post.title, { min: 1, max: 1000 })) {
-      throw new Error("It`s required field, signs limit - 1000");
-    }
-    if (!validator.isLength(post.body, { min: 1, max: 3000 })) {
-      throw new Error("It`s required field, signs limit - 3000");
-    }
+    validatorService.validatePost(post);
     const newPostFromDB = await request("/664/posts", "POST", post, {
       Authorization: `Bearer ${token}`,
     });

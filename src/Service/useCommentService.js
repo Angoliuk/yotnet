@@ -1,11 +1,12 @@
 import { useDispatch, useSelector } from "react-redux";
 import { addComments, setComments } from "../ReduxStorage/actions/postActions";
-import { useHttp } from "./useHttp";
-import validator from "validator";
+import { useHttp } from "./Http/useHttp";
+import { useValidator } from "./validator/useValidator";
 
 export const useCommentService = () => {
   const { request, loading, xTotalCount } = useHttp();
   const dispatch = useDispatch();
+  const validatorService = useValidator();
   const comments = useSelector((state) => state.postReducers.comments);
   const getComments = async (id) => {
     const commentsFromDB = await request(
@@ -30,6 +31,7 @@ export const useCommentService = () => {
   };
 
   const patchComment = async (id, changes, user, token) => {
+    validatorService.validateComment(changes);
     const changedComment = await request(
       `/664/comments/${id}`,
       "PATCH",
@@ -48,9 +50,7 @@ export const useCommentService = () => {
   };
 
   const createComment = async (comment, user, token) => {
-    if (!validator.isLength(comment.text, { min: 1, max: 1000 })) {
-      throw new Error("It`s required field, signs limit - 1000");
-    }
+    validatorService.validateComment(comment);
     const newCommentFromDB = await request(`/664/comments`, "POST", comment, {
       Authorization: `Bearer ${token}`,
     });

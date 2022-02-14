@@ -30,7 +30,6 @@ const AnnouncementsBlock = (props) => {
       if (!loadNewAnnouncements) {
         return null;
       }
-
       await announcementService.getAnnouncements(pageNum, 10);
     } catch (e) {
       showAlertHandler({

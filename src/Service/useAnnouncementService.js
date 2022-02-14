@@ -1,15 +1,16 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useHttp } from "./useHttp";
+import { useHttp } from "./Http/useHttp";
 import {
   addAnnouncements,
   addToEndAnnouncements,
   setAnnouncements,
 } from "../ReduxStorage/actions/announcementActions";
-import validator from "validator";
+import { useValidator } from "./validator/useValidator";
 
 export const useAnnouncementService = () => {
   const { request, loading, xTotalCount } = useHttp();
   const dispatch = useDispatch();
+  const validatorService = useValidator();
   const announcements = useSelector(
     (state) => state.announcementReducers.announcements
   );
@@ -63,12 +64,7 @@ export const useAnnouncementService = () => {
   };
 
   const patchAnnouncement = async (id, changes, user, token) => {
-    if (!validator.isLength(changes.title, { min: 1, max: 500 })) {
-      throw new Error("It`s required field, signs limit - 500");
-    }
-    if (!validator.isLength(changes.body, { min: 1, max: 1500 })) {
-      throw new Error("It`s required field, signs limit - 1500");
-    }
+    validatorService.validateAnnouncement(changes);
     await request(
       `/664/announcements/${id}`,
       "PATCH",
@@ -90,12 +86,7 @@ export const useAnnouncementService = () => {
   };
 
   const createAnnouncement = async (announcement, user, token) => {
-    if (!validator.isLength(announcement.title, { min: 1, max: 500 })) {
-      throw new Error("It`s required field, signs limit - 500");
-    }
-    if (!validator.isLength(announcement.body, { min: 1, max: 1500 })) {
-      throw new Error("It`s required field, signs limit - 1500");
-    }
+    validatorService.validateAnnouncement(announcement);
     const newAnnouncementFromDB = await request(
       "/664/announcements",
       "POST",

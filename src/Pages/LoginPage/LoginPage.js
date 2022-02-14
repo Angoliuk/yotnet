@@ -9,10 +9,10 @@ import { useNavigate } from "react-router-dom";
 import { useUserService } from "../../Service/useUserService";
 
 function LoginPage(props) {
-  const userService = useUserService();
-  const { loading } = useUserService();
   const { showAlertHandler } = props;
   const navigate = useNavigate();
+  const userService = useUserService();
+  const { loading } = useUserService();
 
   const [loginData, setLoginData] = useState({
     email: "",

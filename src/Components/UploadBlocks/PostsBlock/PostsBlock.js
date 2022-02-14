@@ -18,7 +18,6 @@ const PostsBlock = (props) => {
       if (!loadNewPosts) {
         return null;
       }
-
       await postService.getPosts(pageNum, 10);
     } catch (e) {
       showAlertHandler({

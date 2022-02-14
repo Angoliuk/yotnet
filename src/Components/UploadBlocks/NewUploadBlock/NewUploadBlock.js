@@ -10,9 +10,9 @@ import { usePostService } from "../../../Service/usePostService";
 import { useAnnouncementService } from "../../../Service/useAnnouncementService";
 
 const NewUploadBlock = (props) => {
+  const { userInfo, showAlertHandler } = props;
   const postService = usePostService();
   const announcementService = useAnnouncementService();
-  const { userInfo, showAlertHandler } = props;
 
   const [showNewPostBlock, setShowNewPostBlock] = useState(false);
   const [creatingNewPost, setCreatingNewPost] = useState(false);
@@ -69,7 +69,6 @@ const NewUploadBlock = (props) => {
   const createNewPost = async () => {
     try {
       setCreatingNewPost(true);
-
       newPost.isAnnouncement ? createAnnouncement() : createPost();
     } catch (e) {
       showAlertHandler({
