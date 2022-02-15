@@ -13,7 +13,7 @@ export const PagesWrapper = (Component) => {
 
     return (
       <div>
-        {showAlert.show ? (
+        {showAlert.show && (
           <Alert
             onClick={() => {
               setShowAlert({ ...showAlert, show: false });
@@ -21,7 +21,7 @@ export const PagesWrapper = (Component) => {
             type={showAlert.type}
             text={showAlert.text}
           />
-        ) : null}
+        )}
 
         <NavBar
           showAlertHandler={(alert) => {

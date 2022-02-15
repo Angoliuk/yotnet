@@ -40,7 +40,7 @@ export const useValidator = () => {
   };
 
   const validateComment = (comment) => {
-    if (!validator.isLength(comment.text, { min: 1, max: 1000 })) {
+    if (!validator.isLength(comment.body, { min: 1, max: 1000 })) {
       throw new Error("It`s required field, signs limit - 1000");
     }
   };

@@ -10,7 +10,6 @@ import { useUserService } from "../../Service/useUserService";
 
 const RegisterPage = (props) => {
   const userService = useUserService();
-  const { loading } = useUserService();
   const { showAlertHandler } = props;
   const navigate = useNavigate();
 
@@ -57,7 +56,7 @@ const RegisterPage = (props) => {
 
   return (
     <div className="registerPageMainBlock">
-      {loading && Modal(<Loader />)}
+      {userService.userLoading && Modal(<Loader />)}
 
       <InputsWithUserData
         showPassword={true}

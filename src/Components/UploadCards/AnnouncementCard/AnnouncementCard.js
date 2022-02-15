@@ -9,9 +9,6 @@ import { useAnnouncementService } from "../../../Service/useAnnouncementService"
 const AnnouncementCard = (props) => {
   const { showAlertHandler, announcementId, announcements, userInfo } = props;
   const announcementService = useAnnouncementService();
-  const { loading } = useAnnouncementService();
-
-  const createdAtDate = new Date(announcement.createdAt).toLocaleString();
 
   const [showButtonsForUserAnnouncements, setShowButtonsForUserAnnouncements] =
     useState(false);
@@ -19,6 +16,7 @@ const AnnouncementCard = (props) => {
   const announcement = announcements.find(
     (announ) => announ.id === announcementId
   );
+  const createdAtDate = new Date(announcement.createdAt).toLocaleString();
 
   const deleteAnnouncement = async () => {
     try {
@@ -74,7 +72,7 @@ const AnnouncementCard = (props) => {
     };
   }, [clickHandler, showButtonsForUserAnnouncements]);
 
-  return loading ? (
+  return announcementService.announcementLoading ? (
     <div className="announcementLoaderInCommentsBlock">
       <Loader />
     </div>

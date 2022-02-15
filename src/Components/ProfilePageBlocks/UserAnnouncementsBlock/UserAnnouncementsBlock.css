@@ -8,6 +8,11 @@
   font-weight: 600;
 }
 
-.profilePageAnnouncementsBlockName {
-  width: 100%;
+.profilePageAnnouncementsBlock {
+  width: 80%;
+}
+
+.profilePageAnnouncementsName {
+  font-weight: 700;
+  font-size: 21px;
 }

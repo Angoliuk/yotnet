@@ -8,14 +8,12 @@ const UserPostsBlock = (props) => {
   const { showAlertHandler, userId, posts, userInfo } = props;
   const id = useParams().id;
 
-  const userPosts = posts.filter(
-    (announcement) => announcement.userId === Number(id)
-  );
+  const userPosts = posts.filter((post) => String(post.userId) === String(id));
 
   return userPosts.length > 0 ? (
     <div className="profilePagePostsBlock">
       <p className="profilePagePostsName">
-        {userId === Number(id) ? "Your" : userInfo.firstname} posts
+        {String(userId) === String(id) ? "Your" : userInfo.firstname} posts
       </p>
 
       {userPosts.map((post, i) => {

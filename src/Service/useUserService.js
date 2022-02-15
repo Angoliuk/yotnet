@@ -2,36 +2,75 @@ import { useDispatch } from "react-redux";
 import { useHttp } from "./Http/useHttp";
 import { login } from "../ReduxStorage/actions/userActions";
 import { useValidator } from "./validator/useValidator";
+import { useCallback, useState } from "react";
 
 export const useUserService = () => {
-  const { request, loading } = useHttp();
+  const { request } = useHttp();
   const dispatch = useDispatch();
+  const [userLoading, setUserLoading] = useState(false);
   const validatorService = useValidator();
 
-  const processLogin = async (loginData) => {
-    validatorService.validateUserLogin(loginData);
-    const data = await request("/login", "POST", loginData);
-    login({ ...data.user, accessToken: data.accessToken });
-  };
+  const processLogin = useCallback(
+    async (loginData) => {
+      try {
+        setUserLoading(true);
+        validatorService.validateUserLogin(loginData);
+        const data = await request("/login", "POST", loginData);
+        dispatch(login({ ...data.user, accessToken: data.accessToken }));
+      } catch (e) {
+        throw new Error(e.message);
+      } finally {
+        setUserLoading(false);
+      }
+    },
+    [dispatch, request, validatorService]
+  );
 
-  const processRegister = async (registerData) => {
-    validatorService.validateUser(registerData);
+  const processRegister = useCallback(
+    async (registerData) => {
+      try {
+        validatorService.validateUser(registerData);
+        const data = await request("/register", "POST", registerData);
+        dispatch(login({ ...data.user, accessToken: data.accessToken }));
+      } catch (e) {
+        throw new Error(e.message);
+      } finally {
+        setUserLoading(false);
+      }
+    },
+    [dispatch, request, validatorService]
+  );
 
-    const data = await request("/registedaders", "POST", registerData);
+  const getUser = useCallback(
+    async (id) => {
+      try {
+        await request(`/users?id=${id}`, "GET", null);
+      } catch (e) {
+        throw new Error(e.message);
+      } finally {
+        setUserLoading(false);
+      }
+    },
+    [request]
+  );
 
-    dispatch(login({ ...data.user, accessToken: data.accessToken }));
-  };
+  const updateUser = useCallback(
+    async (id, user, token) => {
+      try {
+        validatorService.validateUser(user);
 
-  const getUser = async (id) => await request(`/users?id=${id}`, "GET", null);
+        const updatedUser = await request(`/640/users/${id}`, "PATCH", user, {
+          Authorization: `Bearer ${token}`,
+        });
+        dispatch(login({ ...updatedUser, accessToken: token }));
+      } catch (e) {
+        throw new Error(e.message);
+      } finally {
+        setUserLoading(false);
+      }
+    },
+    [dispatch, request, validatorService]
+  );
 
-  const updateUser = async (id, user, token) => {
-    validatorService.validateUser(user);
-
-    const updatedUser = await request(`/640/users/${id}`, "PATCH", user, {
-      Authorization: `Bearer ${token}`,
-    });
-    dispatch(login({ ...updatedUser, accessToken: token }));
-  };
-
-  return { processRegister, processLogin, getUser, updateUser, loading };
+  return { processRegister, processLogin, getUser, updateUser, userLoading };
 };

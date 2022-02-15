@@ -15,7 +15,6 @@ const NewUploadBlock = (props) => {
   const announcementService = useAnnouncementService();
 
   const [showNewPostBlock, setShowNewPostBlock] = useState(false);
-  const [creatingNewPost, setCreatingNewPost] = useState(false);
 
   const [newPost, setNewPost] = useState({
     title: "",
@@ -68,8 +67,7 @@ const NewUploadBlock = (props) => {
 
   const createNewPost = async () => {
     try {
-      setCreatingNewPost(true);
-      newPost.isAnnouncement ? createAnnouncement() : createPost();
+      newPost.isAnnouncement ? await createAnnouncement() : await createPost();
     } catch (e) {
       showAlertHandler({
         show: true,
@@ -81,15 +79,12 @@ const NewUploadBlock = (props) => {
         title: "",
         body: "",
       });
-      setCreatingNewPost(false);
       setShowNewPostBlock(false);
     }
   };
 
   return (
     <>
-      {creatingNewPost && Modal(<Loader />)}
-
       {userInfo.accessToken && (
         <Button
           text="What`s on your mind?"
@@ -103,6 +98,10 @@ const NewUploadBlock = (props) => {
       {showNewPostBlock &&
         Modal(
           <div className="createPostBlock">
+            {(postService.postLoading ||
+              announcementService.announcementLoading) &&
+              Modal(<Loader />)}
+
             <Input
               name="title"
               value={newPost.title}

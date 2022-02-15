@@ -16,14 +16,14 @@ const EditPage = (props) => {
   const navigate = useNavigate();
   const { id, uploadType } = useParams();
   const postService = usePostService();
-  const { loading } = usePostService();
   const announcementService = useAnnouncementService();
 
   const upload =
     uploadType === "post"
-      ? posts.find((post) => Number(id) === post.id)
-      : announcements.find((announcement) => Number(id) === announcement.id);
-
+      ? posts.find((post) => String(id) === String(post.id))
+      : announcements.find(
+          (announcement) => String(id) === String(announcement.id)
+        );
   const [postChanges, setPostChanges] = useState({
     body: upload.body,
     title: upload.title,
@@ -63,7 +63,8 @@ const EditPage = (props) => {
 
   return (
     <div className="editPostBlock">
-      {loading && Modal(<Loader />)}
+      {(postService.postLoading || announcementService.announcementLoading) &&
+        Modal(<Loader />)}
 
       <Input
         name="title"

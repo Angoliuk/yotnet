@@ -9,13 +9,14 @@ const UserAnnouncementsBlock = (props) => {
   const id = useParams().id;
 
   const userAnnouncements = announcements.filter(
-    (announcement) => announcement.userId === Number(id)
+    (announcement) => String(announcement.userId) === String(id)
   );
 
   return userAnnouncements && userAnnouncements.length > 0 ? (
     <div className="profilePageAnnouncementsBlock">
-      <p className="profilePageAnnouncementsBlockName">
-        {userId === Number(id) ? "Your" : userInfo.firstname} announcements
+      <p className="profilePageAnnouncementsName">
+        {String(userId) === String(id) ? "Your " : userInfo.firstname}
+        announcements
       </p>
 
       {userAnnouncements.map((announcement) => {

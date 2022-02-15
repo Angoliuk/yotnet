@@ -6,7 +6,7 @@ import "./NavBar.css";
 import AnnouncementsBlock from "../UploadBlocks/AnnouncementsBlock/AnnouncementsBlock";
 
 const NavBar = (props) => {
-  const { isAuth, id, logout, avatar } = props;
+  const { isAuth, id, logout, avatar, showAlertHandler } = props;
 
   return isAuth ? (
     <nav className="loggedNavBar">
@@ -23,7 +23,7 @@ const NavBar = (props) => {
         </svg>
       </NavLink>
 
-      <AnnouncementsBlock />
+      <AnnouncementsBlock showAlertHandler={showAlertHandler} />
 
       <NavLink to={`/profile/${id}`}>
         <img
@@ -58,6 +58,8 @@ const NavBar = (props) => {
   ) : (
     <nav className="notLoggedNavBar">
       <NavLink to="/home">Home</NavLink>
+      <AnnouncementsBlock showAlertHandler={showAlertHandler} />
+      {/* <NavLink to="/login">Announcements</NavLink> */}
       <NavLink to="/login">Login</NavLink>
       <NavLink to="/register">Register</NavLink>
     </nav>

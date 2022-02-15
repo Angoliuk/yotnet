@@ -7,7 +7,6 @@ import { usePostService } from "../../../Service/usePostService";
 
 const PostsBlock = (props) => {
   const { posts, showAlertHandler } = props;
-  const { xTotalCount } = usePostService();
   const postService = usePostService();
 
   const [pageNum, setPageNum] = useState(1);
@@ -41,13 +40,14 @@ const PostsBlock = (props) => {
         e.target.documentElement.scrollHeight -
           (window.innerHeight + e.target.documentElement.scrollTop) <
           100 &&
-        xTotalCount > pageNum * 10
+        postService.xTotalCount > pageNum * 10
       ) {
+        console.log("here");
         setLoadNewPosts(true);
         setPageNum((prevState) => prevState + 1);
       }
     },
-    [xTotalCount, pageNum]
+    [postService.xTotalCount, pageNum]
   );
 
   useEffect(() => {
@@ -72,12 +72,12 @@ const PostsBlock = (props) => {
 
   return (
     <div className="postsBlockWrapper">
-      <PostsListBlock />
-      {loadNewPosts && (
+      {postService.postLoading && (
         <div className="homeLoaderInPostsBlock">
           <Loader />
         </div>
       )}
+      <PostsListBlock />
     </div>
   );
 };

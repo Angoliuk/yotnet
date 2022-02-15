@@ -15,7 +15,6 @@ import { useUserService } from "../../Service/useUserService";
 const ProfilePage = (props) => {
   const { showAlertHandler } = props;
   const id = useParams().id;
-  const { loading } = usePostService();
   const postService = usePostService();
   const userService = useUserService();
   const announcementService = useAnnouncementService();
@@ -50,7 +49,7 @@ const ProfilePage = (props) => {
         type: "error",
       });
     }
-  }, [section]);
+  }, [section, id, showAlertHandler]);
 
   const changeSection = (e) => {
     setSection(e.target.name);
@@ -70,7 +69,12 @@ const ProfilePage = (props) => {
           userInfo={userInfo}
         />
       ),
-      announcements: <UserAnnouncementsBlock userInfo={userInfo} />,
+      announcements: (
+        <UserAnnouncementsBlock
+          userInfo={userInfo}
+          showAlertHandler={showAlertHandler}
+        />
+      ),
     }[section];
   }, [section, userInfo, showAlertHandler]);
 
@@ -80,7 +84,10 @@ const ProfilePage = (props) => {
 
   return (
     <div className="profilePageMainBlock">
-      {loading && Modal(<Loader />)}
+      {(userService.userLoading ||
+        postService.postLoading ||
+        announcementService.announcementLoading) &&
+        Modal(<Loader />)}
 
       <div className="chooseInfoTypeBlock">
         <Button

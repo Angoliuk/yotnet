@@ -12,7 +12,6 @@ const LoginPage = (props) => {
   const { showAlertHandler } = props;
   const navigate = useNavigate();
   const userService = useUserService();
-  const { loading } = useUserService();
 
   const [loginData, setLoginData] = useState({
     email: "",
@@ -41,7 +40,7 @@ const LoginPage = (props) => {
 
   return (
     <div className="loginPageBlock">
-      {loading && Modal(<Loader />)}
+      {userService.userLoading && Modal(<Loader />)}
 
       <Input
         name="email"

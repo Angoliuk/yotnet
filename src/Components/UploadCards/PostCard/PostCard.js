@@ -16,15 +16,12 @@ const PostCard = (props) => {
   const post = posts.find((post) => post.id === postId);
   const createdAtDate = new Date(post.createdAt).toLocaleString();
 
-  const [loadingPost, setLoadingPost] = useState(false);
   const [showButtonsForUserPosts, setShowButtonsForUserPosts] = useState(false);
-  const [loadingComments, setLoadingComment] = useState(false);
   const [showComments, setShowComments] = useState(false);
 
   const dataRequest = useCallback(async () => {
     //here were comments in ()
     try {
-      setLoadingComment(true);
       await commentService.getComments(postId);
     } catch (e) {
       showAlertHandler({
@@ -32,14 +29,11 @@ const PostCard = (props) => {
         text: `Error, try to reload this page. ${e}`,
         type: "error",
       });
-    } finally {
-      setLoadingComment(false);
     }
-  }, [postId, showAlertHandler]);
+  }, [postId, showAlertHandler, commentService]);
 
   const deletePost = async () => {
     try {
-      setLoadingPost(true);
       await postService.deletePost(postId, userInfo.accessToken);
     } catch (e) {
       showAlertHandler({
@@ -47,8 +41,6 @@ const PostCard = (props) => {
         text: `Error, try to delete post again. ${e}`,
         type: "error",
       });
-    } finally {
-      setLoadingPost(false);
     }
   };
 
@@ -101,7 +93,7 @@ const PostCard = (props) => {
   }, [clickHandler, showButtonsForUserPosts]);
   //
 
-  return loadingPost ? (
+  return postService.postLoading ? (
     <div className="loaderInPostCard">
       <Loader />
     </div>
@@ -176,11 +168,11 @@ const PostCard = (props) => {
           )}
         </p>
 
-        {showComments && !loadingComments && (
+        {showComments && !commentService.commentLoading && (
           <CommentsBlock showAlertHandler={showAlertHandler} postId={postId} />
         )}
 
-        {loadingComments && (
+        {commentService.commentLoading && (
           <div className="loaderInPostCard">
             <Loader />
           </div>

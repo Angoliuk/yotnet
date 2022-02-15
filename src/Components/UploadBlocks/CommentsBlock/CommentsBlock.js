@@ -11,8 +11,6 @@ const CommentsBlock = (props) => {
   const { userInfo, showAlertHandler, comments, postId } = props;
   const commentService = useCommentService();
 
-  const [addingComments, setAddingComment] = useState(false);
-
   const [newComment, setNewComment] = useState({
     text: "",
   });
@@ -26,7 +24,6 @@ const CommentsBlock = (props) => {
 
   const createNewComment = async () => {
     try {
-      setAddingComment(true);
       await commentService.createComment(
         {
           body: newComment.text,
@@ -45,7 +42,6 @@ const CommentsBlock = (props) => {
         type: "error",
       });
     } finally {
-      setAddingComment(false);
       setNewComment({
         ...newComment,
         text: "",
@@ -170,7 +166,7 @@ const CommentsBlock = (props) => {
         </div>
       )}
 
-      {addingComments && (
+      {commentService.commentLoading && (
         <div className="commentLoaderInCommentsBlock">
           <Loader />
         </div>

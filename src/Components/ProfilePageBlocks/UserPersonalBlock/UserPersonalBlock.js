@@ -6,6 +6,8 @@ import { Button } from "../../Common/Button/Button";
 import { Input } from "../../Common/Input/Input";
 import InputsWithUserData from "../../Common/InputsWithUserData/InputsWithUserData";
 import { useUserService } from "../../../Service/useUserService";
+import { Modal } from "../../Common/Modal/Modal";
+import { Loader } from "../../Common/Loader/Loader";
 
 const UserPersonalBlock = (props) => {
   const { showAlertHandler, accessToken, userId, userInfo } = props;
@@ -62,11 +64,14 @@ const UserPersonalBlock = (props) => {
 
   return (
     <div className="profilePagePersonalBlock">
+      {userService.userLoading && Modal(<Loader />)}
+
       <p className="profilePagePersonalName">
-        Information about {userId === Number(id) ? "you" : user.firstname}
+        Information about{" "}
+        {String(userId) === String(id) ? "you" : user.firstname}
       </p>
 
-      {userId === Number(id) ? (
+      {String(userId) === String(id) ? (
         <div>
           <InputsWithUserData
             showPassword={false}

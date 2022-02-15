@@ -9,7 +9,6 @@ import { useAnnouncementService } from "../../../Service/useAnnouncementService"
 const AnnouncementsBlock = (props) => {
   const announcementService = useAnnouncementService();
   // console.log(announcementService.getAnnouncements(1, 10));
-  const { loading, xTotalCount } = useAnnouncementService();
   const { id, announcements, showAlertHandler } = props;
 
   const [showAnnouncement, setShowAnnouncement] = useState(false);
@@ -52,13 +51,13 @@ const AnnouncementsBlock = (props) => {
       if (
         e.target.scrollHeight - (e.target.scrollTop + e.target.offsetHeight) <
           10 &&
-        xTotalCount > pageNum * 10
+        announcementService.xTotalCount > pageNum * 10
       ) {
         setLoadNewAnnouncements(true);
         setPageNum((prevState) => prevState + 1);
       }
     },
-    [xTotalCount, pageNum]
+    [announcementService.xTotalCount, pageNum]
   );
 
   const AnnouncementsListBlock = useCallback(() => {
@@ -150,7 +149,8 @@ const AnnouncementsBlock = (props) => {
 
             <AnnouncementsListBlock />
 
-            {(loadNewAnnouncements || loading) && (
+            {(loadNewAnnouncements ||
+              announcementService.announcementLoading) && (
               <div className="navBarAnnouncementsBlockLoader">
                 <Loader />
               </div>

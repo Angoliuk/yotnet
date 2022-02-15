@@ -10,7 +10,6 @@ import "./CommentsCard.css";
 const CommentCard = (props) => {
   const { showAlertHandler, comments, userId, user, commentId } = props;
   const commentService = useCommentService();
-  const { loading } = useCommentService();
 
   const comment = comments.find((comment) => comment.id === commentId);
   const createdAtDate = new Date(comment.createdAt).toLocaleString();
@@ -102,7 +101,7 @@ const CommentCard = (props) => {
     };
   }, [clickHandler, showButtonsForUserComments]);
 
-  return loading ? (
+  return commentService.commentLoading ? (
     <div className="commentLoaderInCommentCard">
       <Loader />
     </div>
