@@ -14,9 +14,11 @@ const PostsBlock = (props) => {
 
   const dataRequest = useCallback(async () => {
     try {
-      if (!loadNewPosts) {
+      if (!loadNewPosts || postService.postLoading) {
         return null;
       }
+      setPageNum((prevState) => prevState + 1);
+
       await postService.getPosts(pageNum, 10);
     } catch (e) {
       showAlertHandler({
@@ -27,7 +29,7 @@ const PostsBlock = (props) => {
     } finally {
       setLoadNewPosts(false);
     }
-  }, [pageNum, showAlertHandler]);
+  }, [pageNum, showAlertHandler, loadNewPosts]);
 
   //load new posts when you scroll to the end of page
   useEffect(() => {
@@ -39,12 +41,10 @@ const PostsBlock = (props) => {
       if (
         e.target.documentElement.scrollHeight -
           (window.innerHeight + e.target.documentElement.scrollTop) <
-          100 &&
+          80 &&
         postService.xTotalCount > pageNum * 10
       ) {
-        console.log("here");
         setLoadNewPosts(true);
-        setPageNum((prevState) => prevState + 1);
       }
     },
     [postService.xTotalCount, pageNum]
@@ -72,12 +72,12 @@ const PostsBlock = (props) => {
 
   return (
     <div className="postsBlockWrapper">
+      <PostsListBlock />
       {postService.postLoading && (
         <div className="homeLoaderInPostsBlock">
           <Loader />
         </div>
       )}
-      <PostsListBlock />
     </div>
   );
 };

@@ -50,7 +50,7 @@ const AnnouncementsBlock = (props) => {
     (e) => {
       if (
         e.target.scrollHeight - (e.target.scrollTop + e.target.offsetHeight) <
-          10 &&
+          30 &&
         announcementService.xTotalCount > pageNum * 10
       ) {
         setLoadNewAnnouncements(true);
