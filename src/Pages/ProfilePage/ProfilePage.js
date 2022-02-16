@@ -50,7 +50,7 @@ const ProfilePage = (props) => {
         type: "error",
       });
     }
-  }, [section, id, showAlertHandler]);
+  }, [section, id]);
 
   const changeSection = (e) => {
     setSection(e.target.name);

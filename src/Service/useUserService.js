@@ -94,7 +94,7 @@ export const useUserService = () => {
         setUserLoading(false);
       }
     },
-    [dispatch, request, validatorService]
+    [dispatch, request, validatorService, posts, announcements, comments]
   );
 
   return { processRegister, processLogin, getUser, updateUser, userLoading };
