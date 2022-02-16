@@ -17,9 +17,7 @@ const UserPersonalBlock = (props) => {
   const [newPassword, setNewPassword] = useState("");
   const [showAvatarsBlock, setShowAvatarsBlock] = useState(false);
 
-  const [user, setUser] = useState({
-    ...userInfo,
-  });
+  const [user, setUser] = useState(userInfo);
 
   const inputChangeHandler = (event) => {
     setUser({

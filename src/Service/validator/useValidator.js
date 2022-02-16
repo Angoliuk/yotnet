@@ -21,6 +21,20 @@ export const useValidator = () => {
     if (user.age < 14) throw new Error("You need to be at least 14");
   };
 
+  const validateUserUpdate = (user) => {
+    if (!validator.isEmail(user.email)) throw new Error("Wrong Email");
+
+    if (
+      user.password &&
+      !validator.isLength(user.password, { min: 6, max: undefined })
+    )
+      throw new Error("Too short password, minimal lenght - 6");
+
+    if (!user.lastname || !user.firstname) throw new Error("Enter your name");
+
+    if (user.age < 14) throw new Error("You need to be at least 14");
+  };
+
   const validatePost = (post) => {
     if (!validator.isLength(post.title, { min: 1, max: 1000 })) {
       throw new Error("It`s required field, signs limit - 1000");
@@ -51,5 +65,6 @@ export const useValidator = () => {
     validatePost,
     validateUser,
     validateUserLogin,
+    validateUserUpdate,
   };
 };

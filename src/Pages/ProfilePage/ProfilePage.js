@@ -43,6 +43,7 @@ const ProfilePage = (props) => {
         throw new Error("unknown info section");
       }
     } catch (e) {
+      console.log(e);
       showAlertHandler({
         show: true,
         text: `Error, try to reload this page. ${e}`,
