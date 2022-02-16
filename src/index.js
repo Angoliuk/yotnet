@@ -14,9 +14,8 @@ const composeEnhancers =
       })
     : compose;
 
-const enhancer =
-  composeEnhancers();
-  // other store enhancers if any
+const enhancer = composeEnhancers();
+// other store enhancers if any
 
 const store = createStore(MainReducer, enhancer);
 
