@@ -2,7 +2,7 @@
   width: 600px;
   border-radius: 20px;
   height: 200px;
-  background-color: rgb(255, 255, 255);
+  background-color: var(--white);
   z-index: 1;
   position: fixed;
   display: flex;
@@ -14,7 +14,7 @@
   width: 120px;
   height: 120px;
   border-radius: 15%;
-  border: 2px solid black;
+  border: 2px solid var(--black);
 }
 
 @media screen and (max-width: 700px) {
@@ -61,5 +61,5 @@
   height: 190px;
   border-radius: 10px;
   margin-left: 15px;
-  border: 2px solid black;
+  border: 2px solid var(--black);
 }

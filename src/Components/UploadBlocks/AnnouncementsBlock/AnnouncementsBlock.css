@@ -8,7 +8,7 @@
 }
 
 .navElem:hover {
-  background-color: #7897dd;
+  background-color: var(--hoverBlue);
   border-radius: 10px;
 }
 
