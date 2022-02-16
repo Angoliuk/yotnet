@@ -9,7 +9,7 @@ import { useAnnouncementService } from "../../../Service/useAnnouncementService"
 const AnnouncementsBlock = (props) => {
   const announcementService = useAnnouncementService();
   // console.log(announcementService.getAnnouncements(1, 10));
-  const { id, announcements, showAlertHandler } = props;
+  const { id, announcements, showAlertHandler, text } = props;
 
   const [showAnnouncement, setShowAnnouncement] = useState(false);
   const [pageNum, setPageNum] = useState(1);
@@ -78,64 +78,68 @@ const AnnouncementsBlock = (props) => {
 
   return (
     <>
-      <p
-        onClick={showAnnouncementHandler}
-        className="navElem navElemAnnouncements"
-      >
-        <svg
-          width="40px"
-          height="40px"
-          viewBox="0 0 32 32"
-          enableBackground="new 0 0 32 32"
-          id="Stock_cut"
-          version="1.1"
-          xmlSpace="preserve"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlnsXlink="http://www.w3.org/1999/xlink"
+      {text ? (
+        <p
+          onClick={showAnnouncementHandler}
+          className="navElem navElemAnnouncements"
         >
-          <desc />
-          <g>
-            <polygon
-              fill="none"
-              points="2,3 2,23 6,23    6,29 12,23 30,23 30,3  "
-              stroke="#000000"
-              strokeLinejoin="round"
-              strokeMiterlimit="10"
-              strokeWidth="2"
-            />
-            <circle
-              cx="8"
-              cy="13"
-              fill="none"
-              r="2"
-              stroke="#000000"
-              strokeLinejoin="round"
-              strokeMiterlimit="10"
-              strokeWidth="2"
-            />
-            <circle
-              cx="16"
-              cy="13"
-              fill="none"
-              r="2"
-              stroke="#000000"
-              strokeLinejoin="round"
-              strokeMiterlimit="10"
-              strokeWidth="2"
-            />
-            <circle
-              cx="24"
-              cy="13"
-              fill="none"
-              r="2"
-              stroke="#000000"
-              strokeLinejoin="round"
-              strokeMiterlimit="10"
-              strokeWidth="2"
-            />
-          </g>
-        </svg>
-      </p>
+          <svg
+            width="40px"
+            height="40px"
+            viewBox="0 0 32 32"
+            enableBackground="new 0 0 32 32"
+            id="Stock_cut"
+            version="1.1"
+            xmlSpace="preserve"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlnsXlink="http://www.w3.org/1999/xlink"
+          >
+            <desc />
+            <g>
+              <polygon
+                fill="none"
+                points="2,3 2,23 6,23    6,29 12,23 30,23 30,3  "
+                stroke="#000000"
+                strokeLinejoin="round"
+                strokeMiterlimit="10"
+                strokeWidth="2"
+              />
+              <circle
+                cx="8"
+                cy="13"
+                fill="none"
+                r="2"
+                stroke="#000000"
+                strokeLinejoin="round"
+                strokeMiterlimit="10"
+                strokeWidth="2"
+              />
+              <circle
+                cx="16"
+                cy="13"
+                fill="none"
+                r="2"
+                stroke="#000000"
+                strokeLinejoin="round"
+                strokeMiterlimit="10"
+                strokeWidth="2"
+              />
+              <circle
+                cx="24"
+                cy="13"
+                fill="none"
+                r="2"
+                stroke="#000000"
+                strokeLinejoin="round"
+                strokeMiterlimit="10"
+                strokeWidth="2"
+              />
+            </g>
+          </svg>
+        </p>
+      ) : (
+        <p onClick={showAnnouncementHandler}>Announcements</p>
+      )}
 
       {showAnnouncement &&
         Modal(
