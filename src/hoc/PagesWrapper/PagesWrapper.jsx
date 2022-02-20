@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Alert } from "../../Components/Common/Alert/Alert";
 import NavBar from "../../Components/NavBar/NavBar";
-import "./PagesWrapper.css";
+import "./PagesWrapper.scss";
 
 export const PagesWrapper = (Component) => {
   const WrappingWithAlert = (props) => {

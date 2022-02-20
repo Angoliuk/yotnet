@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { logout } from "../../../ReduxStorage/actions/userActions";
-import "./NavBarDesktop.css";
+import "./NavBarDesktop.scss";
 import AnnouncementsBlock from "../../UploadBlocks/AnnouncementsBlock/AnnouncementsBlock";
 const NavBarDesktop = (props) => {
   const { isAuth, id, logout, avatar, showAlertHandler } = props;

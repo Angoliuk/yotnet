@@ -1,3 +1,4 @@
+@import "../../../Constants/queries.scss";
 .createPostBlock {
   width: 50%;
   background-color: var(--white);
@@ -8,7 +9,7 @@
   z-index: 1;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: $miniLaptop) {
   .createPostBlock {
     width: 75.6%;
   }

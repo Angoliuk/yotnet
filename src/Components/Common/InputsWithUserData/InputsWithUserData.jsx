@@ -1,6 +1,6 @@
 import { Input } from "../Input/Input";
 import { Modal } from "../Modal/Modal";
-import "./InputsWithUserData.css";
+import "./InputsWithUserData.scss";
 
 const InputsWithUserData = (props) => {
   const avatarLinks = [

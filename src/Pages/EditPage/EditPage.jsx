@@ -5,7 +5,7 @@ import { Button } from "../../Components/Common/Button/Button";
 import { Input } from "../../Components/Common/Input/Input";
 import { Textarea } from "../../Components/Common/Textarea/Textarea";
 import { PagesWrapper } from "../../hoc/PagesWrapper/PagesWrapper";
-import "./EditPage.css";
+import "./EditPage.scss";
 import { Modal } from "../../Components/Common/Modal/Modal";
 import { Loader } from "../../Components/Common/Loader/Loader";
 import { useAnnouncementService } from "../../Service/useAnnouncementService";

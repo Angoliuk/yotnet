@@ -5,7 +5,7 @@ import { Textarea } from "../../Common/Textarea/Textarea";
 import { Input } from "../../Common/Input/Input";
 import { Modal } from "../../Common/Modal/Modal";
 import { Loader } from "../../Common/Loader/Loader";
-import "./NewUploadBlock.css";
+import "./NewUploadBlock.scss";
 import { usePostService } from "../../../Service/usePostService";
 import { useAnnouncementService } from "../../../Service/useAnnouncementService";
 

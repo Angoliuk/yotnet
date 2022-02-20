@@ -1,3 +1,5 @@
+@import "../../../Constants/queries.scss";
+
 .closeAlert {
   margin-left: 15px;
   border-radius: 15px;
@@ -37,15 +39,15 @@
   color: var(--white);
   margin-bottom: 15px;
   width: 30%;
-}
+} 
 
-@media screen and (max-width: 865px) {
+@media screen and (max-width: $prePhone) {
   .alert {
     width: 60%;
   }
 }
 
-@media screen and (max-width: 420px) {
+@media screen and (max-width: $phone) {
   .alert {
     width: 66%;
   }

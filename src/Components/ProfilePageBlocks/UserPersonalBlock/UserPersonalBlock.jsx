@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
-import "./UserPersonalBlock.css";
+import "./UserPersonalBlock.scss";
 import { Button } from "../../Common/Button/Button";
 import { Input } from "../../Common/Input/Input";
 import InputsWithUserData from "../../Common/InputsWithUserData/InputsWithUserData";

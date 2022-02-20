@@ -1,3 +1,4 @@
+@import "../../Constants/queries.scss";
 .chooseInfoTypeBlock {
   margin-right: 60px;
 }
@@ -7,13 +8,13 @@
   display: flex;
 }
 
-@media screen and (max-width: 1300px) {
+@media screen and (max-width: $laptop) {
   .profilePageMainBlock {
     width: 100%;
   }
 }
 
-@media screen and (max-width: 830px) {
+@media screen and (max-width: $preTablet) {
   .profilePageMainBlock {
     flex-direction: column;
   }
@@ -24,7 +25,7 @@
   }
 }
 
-@media screen and (max-width: 670px) {
+@media screen and (max-width: $tablet) {
   .chooseInfoTypeBlock {
     flex-direction: column;
   }

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Button } from "../../Components/Common/Button/Button";
 import { PagesWrapper } from "../../hoc/PagesWrapper/PagesWrapper";
-import "./ProfilePage.css";
+import "./ProfilePage.scss";
 import { Loader } from "../../Components/Common/Loader/Loader";
 import { Modal } from "../../Components/Common/Modal/Modal";
 import UserPersonalBlock from "../../Components/ProfilePageBlocks/UserPersonalBlock/UserPersonalBlock";

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button } from "../../Components/Common/Button/Button";
 import { PagesWrapper } from "../../hoc/PagesWrapper/PagesWrapper";
-import "./RegisterPage.css";
+import "./RegisterPage.scss";
 import InputsWithUserData from "../../Components/Common/InputsWithUserData/InputsWithUserData";
 import { Loader } from "../../Components/Common/Loader/Loader";
 import { Modal } from "../../Components/Common/Modal/Modal";

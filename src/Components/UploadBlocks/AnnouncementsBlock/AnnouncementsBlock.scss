@@ -1,3 +1,4 @@
+@import"../../../Constants/queries.scss";
 .navElem {
   transition: 0.7s;
   display: flex;
@@ -32,13 +33,13 @@
   border: 1.5px solid black;
 }
 
-@media screen and (max-width: 680px) {
+@media screen and (max-width: $tablet) {
   .navBarAnnouncementsBlock {
     margin-right: 10%;
   }
 }
 
-@media screen and (max-width: 550px) {
+@media screen and (max-width: $prePhone) {
   .navBarAnnouncementsBlock {
     width: 250px;
     height: 400px;

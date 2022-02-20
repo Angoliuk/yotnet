@@ -4,7 +4,7 @@ import { Input } from "../../Components/Common/Input/Input";
 import { PagesWrapper } from "../../hoc/PagesWrapper/PagesWrapper";
 import { Loader } from "../../Components/Common/Loader/Loader";
 import { Modal } from "../../Components/Common/Modal/Modal";
-import "./LoginPage.css";
+import "./LoginPage.scss";
 import { useNavigate } from "react-router-dom";
 import { useUserService } from "../../Service/useUserService";
 

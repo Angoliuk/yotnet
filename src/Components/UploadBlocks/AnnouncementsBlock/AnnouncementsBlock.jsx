@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Modal } from "../../Common/Modal/Modal";
-import "./AnnouncementsBlock.css";
+import "./AnnouncementsBlock.scss";
 import AnnouncementCard from "../../UploadCards/AnnouncementCard/AnnouncementCard";
 import { Loader } from "../../Common/Loader/Loader";
 import { useAnnouncementService } from "../../../Service/useAnnouncementService";

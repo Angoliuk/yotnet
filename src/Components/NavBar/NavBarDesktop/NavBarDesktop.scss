@@ -1,3 +1,4 @@
+@import"../../../Constants/queries.scss";
 .notLoggedNavBar,
 .loggedNavBar {
   width: 80%;
@@ -53,7 +54,7 @@ nav.loggedNavBar > * {
   height: 60px;
 }
 
-@media screen and (max-width: 1100px) {
+@media screen and (max-width: $miniLaptop) {
   .loggedNavBar,
   .notLoggedNavBar {
     justify-content: center;
