@@ -6,7 +6,7 @@ import InputsWithUserData from "../../Components/Common/InputsWithUserData/Input
 import { Loader } from "../../Components/Common/Loader/Loader";
 import { Modal } from "../../Components/Common/Modal/Modal";
 import { useNavigate } from "react-router-dom";
-import { useUserService } from "../../Service/useUserService";
+import { useUserService } from "../../Service/Requests/useUserService";
 
 const RegisterPage = (props) => {
   const userService = useUserService();
@@ -25,12 +25,11 @@ const RegisterPage = (props) => {
       "https://preview.redd.it/yom0nq8tznsz.jpg?width=640&crop=smart&auto=webp&s=f71630cd970ede845f2c992ffc8ffe4f5c59f289",
   });
 
-  const inputChangeHandler = (event) => {
+  const inputChangeHandler = (event) =>
     setRegisterData({
       ...registerData,
       [event.target.name]: event.target.value,
     });
-  };
 
   const avatarChangeHandler = (event) => {
     setRegisterData({
@@ -43,7 +42,7 @@ const RegisterPage = (props) => {
 
   const processRegister = async () => {
     try {
-      await userService.processRegister(registerData);
+      await userService.register(registerData);
       navigate("/home");
     } catch (e) {
       showAlertHandler({

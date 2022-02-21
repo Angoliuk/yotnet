@@ -16,15 +16,13 @@ const UserPostsBlock = (props) => {
         {String(userId) === String(id) ? "Your" : userInfo.firstname} posts
       </p>
 
-      {userPosts.map((post, i) => {
-        return (
-          <PostCard
-            showAlertHandler={showAlertHandler}
-            key={i}
-            postId={post.id}
-          />
-        );
-      })}
+      {userPosts.map((post, i) => (
+        <PostCard
+          showAlertHandler={showAlertHandler}
+          key={i}
+          postId={post.id}
+        />
+      ))}
     </div>
   ) : (
     <p className="profilePagePostsEmptySection">
@@ -33,11 +31,9 @@ const UserPostsBlock = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    userId: state.userReducers.id,
-    posts: state.postReducers.posts,
-  };
-};
+const mapStateToProps = (state) => ({
+  userId: state.userReducers.id,
+  posts: state.postReducers.posts,
+});
 
 export default connect(mapStateToProps)(UserPostsBlock);

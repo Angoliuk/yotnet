@@ -5,8 +5,8 @@ import { Button } from "../../Common/Button/Button";
 import "./PostCard.css";
 import { Loader } from "../../Common/Loader/Loader";
 import CommentsBlock from "../../UploadBlocks/CommentsBlock/CommentsBlock";
-import { usePostService } from "../../../Service/usePostService";
-import { useCommentService } from "../../../Service/useCommentService";
+import { usePostService } from "../../../Service/Requests/usePostService";
+import { useCommentService } from "../../../Service/Requests/useCommentService";
 
 const PostCard = (props) => {
   const { posts, userInfo, showAlertHandler, postId } = props;
@@ -34,7 +34,7 @@ const PostCard = (props) => {
 
   const deletePost = async () => {
     try {
-      await postService.deletePost(postId, userInfo.accessToken);
+      await postService.deletePost(postId);
     } catch (e) {
       showAlertHandler({
         show: true,
@@ -44,31 +44,30 @@ const PostCard = (props) => {
     }
   };
 
-  const showButtonsForUserPostsHandler = useCallback(() => {
-    setShowButtonsForUserPosts(!showButtonsForUserPosts);
-  }, [showButtonsForUserPosts]);
+  const showButtonsForUserPostsHandler = useCallback(
+    () => setShowButtonsForUserPosts(!showButtonsForUserPosts),
+    [showButtonsForUserPosts]
+  );
 
-  const ButtonsForUserPosts = () => {
-    return (
-      <div className="buttonsForUserPostsBlock">
-        <Link to={`/edit/post/${postId}`}>
-          <Button
-            text="Edit"
-            name={`editButton${postId}`}
-            className="editButton button"
-            classNameBlock="editButtonBlock"
-          />
-        </Link>
-
+  const ButtonsForUserPosts = () => (
+    <div className="buttonsForUserPostsBlock">
+      <Link to={`/edit/post/${postId}`}>
         <Button
-          text="Delete"
-          name={`deleteButton${postId}`}
-          className="deleteButton button"
-          onClick={deletePost}
+          text="Edit"
+          name={`editButton${postId}`}
+          className="editButton button"
+          classNameBlock="editButtonBlock"
         />
-      </div>
-    );
-  };
+      </Link>
+
+      <Button
+        text="Delete"
+        name={`deleteButton${postId}`}
+        className="deleteButton button"
+        onClick={deletePost}
+      />
+    </div>
+  );
 
   const showCommentsHandler = () => {
     setShowComments(!showComments);
@@ -87,9 +86,7 @@ const PostCard = (props) => {
 
   useEffect(() => {
     document.addEventListener("click", clickHandler);
-    return function () {
-      document.removeEventListener("click", clickHandler);
-    };
+    return () => document.removeEventListener("click", clickHandler);
   }, [clickHandler, showButtonsForUserPosts]);
   //
 

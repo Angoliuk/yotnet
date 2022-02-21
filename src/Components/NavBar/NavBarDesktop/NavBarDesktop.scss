@@ -54,7 +54,7 @@ nav.loggedNavBar > * {
   height: 60px;
 }
 
-@media screen and (max-width: $miniLaptop) {
+@media screen and (max-width: $preTablet) {
   .loggedNavBar,
   .notLoggedNavBar {
     justify-content: center;

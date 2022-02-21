@@ -8,8 +8,8 @@ import { PagesWrapper } from "../../hoc/PagesWrapper/PagesWrapper";
 import "./EditPage.scss";
 import { Modal } from "../../Components/Common/Modal/Modal";
 import { Loader } from "../../Components/Common/Loader/Loader";
-import { useAnnouncementService } from "../../Service/useAnnouncementService";
-import { usePostService } from "../../Service/usePostService";
+import { useAnnouncementService } from "../../Service/Requests/useAnnouncementService";
+import { usePostService } from "../../Service/Requests/usePostService";
 
 const EditPage = (props) => {
   const { showAlertHandler, user, posts, announcements } = props;
@@ -24,22 +24,22 @@ const EditPage = (props) => {
       : announcements.find(
           (announcement) => String(id) === String(announcement.id)
         );
+
   const [postChanges, setPostChanges] = useState({
     body: upload.body,
     title: upload.title,
   });
 
-  const postEditInputHandler = (event) => {
+  const postEditInputHandler = (event) =>
     setPostChanges({
       ...postChanges,
       [event.target.name]: event.target.value,
     });
-  };
 
   const saveUploadChanges = async () => {
     try {
       if (uploadType === "post") {
-        await postService.patchPost(id, postChanges, user, user.accessToken);
+        await postService.patchPost(id, postChanges);
         navigate("/");
       } else if (uploadType === "announcement") {
         await announcementService.patchAnnouncement(

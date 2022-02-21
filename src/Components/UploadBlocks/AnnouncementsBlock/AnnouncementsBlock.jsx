@@ -4,11 +4,10 @@ import { Modal } from "../../Common/Modal/Modal";
 import "./AnnouncementsBlock.scss";
 import AnnouncementCard from "../../UploadCards/AnnouncementCard/AnnouncementCard";
 import { Loader } from "../../Common/Loader/Loader";
-import { useAnnouncementService } from "../../../Service/useAnnouncementService";
+import { useAnnouncementService } from "../../../Service/Requests/useAnnouncementService";
 
 const AnnouncementsBlock = (props) => {
   const announcementService = useAnnouncementService();
-  // console.log(announcementService.getAnnouncements(1, 10));
   const { id, announcements, showAlertHandler, text } = props;
 
   const [showAnnouncement, setShowAnnouncement] = useState(false);
@@ -60,21 +59,21 @@ const AnnouncementsBlock = (props) => {
     [announcementService.xTotalCount, pageNum]
   );
 
-  const AnnouncementsListBlock = useCallback(() => {
-    return announcements && announcements.length > 0 ? (
-      announcements.map((announcement) => {
-        return (
+  const AnnouncementsListBlock = useCallback(
+    () =>
+      announcements && announcements.length > 0 ? (
+        announcements.map((announcement) => (
           <AnnouncementCard
             showAlertHandler={showAlertHandler}
             key={announcement.id + id}
             announcementId={announcement.id}
           />
-        );
-      })
-    ) : (
-      <p>Announcements not found</p>
-    );
-  }, [announcements, id, showAlertHandler]);
+        ))
+      ) : (
+        <p>Announcements not found</p>
+      ),
+    [announcements, id, showAlertHandler]
+  );
 
   return (
     <>
@@ -167,11 +166,9 @@ const AnnouncementsBlock = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    id: state.userReducers.id,
-    announcements: state.announcementReducers.announcements,
-  };
-};
+const mapStateToProps = (state) => ({
+  id: state.userReducers.id,
+  announcements: state.announcementReducers.announcements,
+});
 
 export default connect(mapStateToProps)(AnnouncementsBlock);

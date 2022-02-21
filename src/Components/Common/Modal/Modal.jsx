@@ -3,16 +3,12 @@ import "./Modal.css";
 
 export const Modal = (
   Component,
-  onClick = () => {
-    return null;
-  },
+  onClick = () => {},
   classNameBackground = "modalBackground",
   className = "modal"
-) => {
-  return (
-    <div className={className}>
-      {Component}
-      <div onClick={onClick} className={classNameBackground}></div>
-    </div>
-  );
-};
+) => (
+  <div className={className}>
+    {Component}
+    <div onClick={onClick} className={classNameBackground}></div>
+  </div>
+);

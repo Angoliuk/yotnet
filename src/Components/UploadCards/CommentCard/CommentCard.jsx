@@ -1,14 +1,14 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
-import { useCommentService } from "../../../Service/useCommentService";
+import { useCommentService } from "../../../Service/Requests/useCommentService";
 import { Button } from "../../Common/Button/Button";
 import { Loader } from "../../Common/Loader/Loader";
 import { Textarea } from "../../Common/Textarea/Textarea";
 import "./CommentsCard.css";
 
 const CommentCard = (props) => {
-  const { showAlertHandler, comments, userId, user, commentId } = props;
+  const { showAlertHandler, comments, userId, commentId } = props;
   const commentService = useCommentService();
 
   const comment = comments.find((comment) => comment.id === commentId);
@@ -34,21 +34,15 @@ const CommentCard = (props) => {
     }
   };
 
-  const commentEditInputHandler = (event) => {
+  const commentEditInputHandler = (event) =>
     setCommentChanges({
       ...commentChanges,
       [event.target.name]: event.target.value,
     });
-  };
 
   const saveChangedComment = async () => {
     try {
-      await commentService.patchComment(
-        commentId,
-        commentChanges,
-        user,
-        user.accessToken
-      );
+      await commentService.patchComment(commentId, commentChanges);
     } catch (e) {
       showAlertHandler({
         show: true,
@@ -60,33 +54,32 @@ const CommentCard = (props) => {
     }
   };
 
-  const showButtonsForUserCommentsHandler = useCallback(() => {
-    setShowButtonsForUserComments(!showButtonsForUserComments);
-  }, [showButtonsForUserComments]);
+  const showButtonsForUserCommentsHandler = useCallback(
+    () => setShowButtonsForUserComments(!showButtonsForUserComments),
+    [showButtonsForUserComments]
+  );
 
-  const ButtonsForUserComments = () => {
-    return (
-      <div className="buttonsForUserCommentCard">
-        <Button
-          text="Edit"
-          name={`editButton${commentId}`}
-          className="editButton button"
-          classNameBlock="editButtonBlock"
-          onClick={() => {
-            setEditingComment(true);
-            setShowButtonsForUserComments(false);
-          }}
-        />
+  const ButtonsForUserComments = () => (
+    <div className="buttonsForUserCommentCard">
+      <Button
+        text="Edit"
+        name={`editButton${commentId}`}
+        className="editButton button"
+        classNameBlock="editButtonBlock"
+        onClick={() => {
+          setEditingComment(true);
+          setShowButtonsForUserComments(false);
+        }}
+      />
 
-        <Button
-          text="Delete"
-          name={`deleteButton${commentId}`}
-          className="deleteButton button"
-          onClick={deleteComment}
-        />
-      </div>
-    );
-  };
+      <Button
+        text="Delete"
+        name={`deleteButton${commentId}`}
+        className="deleteButton button"
+        onClick={deleteComment}
+      />
+    </div>
+  );
 
   const clickHandler = useCallback(() => {
     if (!showButtonsForUserComments) return null;
@@ -96,11 +89,8 @@ const CommentCard = (props) => {
 
   useEffect(() => {
     document.addEventListener("click", clickHandler);
-    return function () {
-      document.removeEventListener("click", clickHandler);
-    };
+    return () => document.removeEventListener("click", clickHandler);
   }, [clickHandler, showButtonsForUserComments]);
-
   return commentService.commentLoading ? (
     <div className="commentLoaderInCommentCard">
       <Loader />
@@ -125,7 +115,7 @@ const CommentCard = (props) => {
 
           <div className="commentInfoTextBlock">
             <p>
-              {comment.user.firstname} {comment?.user?.lastname}
+              {comment.user.firstname} {comment.user.lastname}
             </p>
             <p className="commentDate">{createdAtDate}</p>
           </div>

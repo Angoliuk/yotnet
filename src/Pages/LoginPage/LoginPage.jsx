@@ -6,7 +6,7 @@ import { Loader } from "../../Components/Common/Loader/Loader";
 import { Modal } from "../../Components/Common/Modal/Modal";
 import "./LoginPage.scss";
 import { useNavigate } from "react-router-dom";
-import { useUserService } from "../../Service/useUserService";
+import { useUserService } from "../../Service/Requests/useUserService";
 
 const LoginPage = (props) => {
   const { showAlertHandler } = props;
@@ -18,16 +18,15 @@ const LoginPage = (props) => {
     password: "",
   });
 
-  const inputChangeHandler = (event) => {
+  const inputChangeHandler = (event) =>
     setLoginData({
       ...loginData,
       [event.target.name]: event.target.value,
     });
-  };
 
   const processLogin = async () => {
     try {
-      await userService.processLogin(loginData);
+      await userService.login(loginData);
       navigate("/home");
     } catch (e) {
       showAlertHandler({

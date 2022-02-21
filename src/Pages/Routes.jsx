@@ -39,10 +39,8 @@ const RoutesList = (props) => (
   </Router>
 );
 
-const mapStateToProps = (state) => {
-  return {
-    isAuth: !!state.userReducers.accessToken,
-  };
-};
+const mapStateToProps = (state) => ({
+  isAuth: !!state.userReducers.accessToken,
+});
 
 export default connect(mapStateToProps)(RoutesList);

@@ -5,7 +5,7 @@ import CommentCard from "../../UploadCards/CommentCard/CommentCard";
 import { Textarea } from "../../Common/Textarea/Textarea";
 import "./CommentsBlock.css";
 import { Loader } from "../../Common/Loader/Loader";
-import { useCommentService } from "../../../Service/useCommentService";
+import { useCommentService } from "../../../Service/Requests/useCommentService";
 
 const CommentsBlock = (props) => {
   const { userInfo, showAlertHandler, comments, postId } = props;
@@ -15,26 +15,21 @@ const CommentsBlock = (props) => {
     text: "",
   });
 
-  const newCommentInputHandler = (event) => {
+  const newCommentInputHandler = (event) =>
     setNewComment({
       ...newComment,
       [event.target.name]: event.target.value,
     });
-  };
 
   const createNewComment = async () => {
     try {
-      await commentService.createComment(
-        {
-          body: newComment.text,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          postId: postId,
-          userId: userInfo.id,
-        },
-        userInfo,
-        userInfo.accessToken
-      );
+      await commentService.createComment({
+        body: newComment.text,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        postId: postId,
+        userId: userInfo.id,
+      });
     } catch (e) {
       showAlertHandler({
         show: true,
@@ -177,11 +172,9 @@ const CommentsBlock = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    userInfo: state.userReducers,
-    comments: state.postReducers.comments,
-  };
-};
+const mapStateToProps = (state) => ({
+  userInfo: state.userReducers,
+  comments: state.postReducers.comments,
+});
 
 export default connect(mapStateToProps)(CommentsBlock);

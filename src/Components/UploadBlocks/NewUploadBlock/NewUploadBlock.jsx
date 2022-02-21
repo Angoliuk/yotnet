@@ -6,8 +6,8 @@ import { Input } from "../../Common/Input/Input";
 import { Modal } from "../../Common/Modal/Modal";
 import { Loader } from "../../Common/Loader/Loader";
 import "./NewUploadBlock.scss";
-import { usePostService } from "../../../Service/usePostService";
-import { useAnnouncementService } from "../../../Service/useAnnouncementService";
+import { usePostService } from "../../../Service/Requests/usePostService";
+import { useAnnouncementService } from "../../../Service/Requests/useAnnouncementService";
 
 const NewUploadBlock = (props) => {
   const { userInfo, showAlertHandler } = props;
@@ -23,7 +23,7 @@ const NewUploadBlock = (props) => {
   });
 
   const newPostInputHandler = useCallback(
-    (event) => {
+    (event) =>
       event.target.name === "isAnnouncement"
         ? setNewPost({
             ...newPost,
@@ -32,38 +32,27 @@ const NewUploadBlock = (props) => {
         : setNewPost({
             ...newPost,
             [event.target.name]: event.target.value,
-          });
-    },
+          }),
     [newPost]
   );
 
-  const createPost = async () => {
-    await postService.createPost(
-      {
-        title: newPost.title,
-        body: newPost.body,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        userId: userInfo.id,
-      },
-      userInfo,
-      userInfo.accessToken
-    );
-  };
+  const createPost = async () =>
+    await postService.createPost({
+      title: newPost.title,
+      body: newPost.body,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      userId: userInfo.id,
+    });
 
-  const createAnnouncement = async () => {
-    await announcementService.createAnnouncement(
-      {
-        title: newPost.title,
-        body: newPost.body,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        userId: userInfo.id,
-      },
-      userInfo,
-      userInfo.accessToken
-    );
-  };
+  const createAnnouncement = async () =>
+    await announcementService.createAnnouncement({
+      title: newPost.title,
+      body: newPost.body,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      userId: userInfo.id,
+    });
 
   const createNewPost = async () => {
     try {
@@ -151,10 +140,8 @@ const NewUploadBlock = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    userInfo: state.userReducers,
-  };
-};
+const mapStateToProps = (state) => ({
+  userInfo: state.userReducers,
+});
 
 export default connect(mapStateToProps)(NewUploadBlock);

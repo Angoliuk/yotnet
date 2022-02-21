@@ -1,6 +1,4 @@
 import React from "react";
 import "./Loader.css";
 
-export const Loader = () => {
-  return <span className="loader"></span>;
-};
+export const Loader = () => <span className="loader"></span>;

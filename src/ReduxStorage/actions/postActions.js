@@ -6,19 +6,15 @@ import {
   UPDATE_POSTS,
 } from "./actionsTypes";
 
-export const setPosts = (posts) => {
-  return {
-    type: UPDATE_POSTS,
-    payload: posts,
-  };
-};
+export const setPosts = (posts) => ({
+  type: UPDATE_POSTS,
+  payload: posts,
+});
 
-export const setComments = (comments) => {
-  return {
-    type: UPDATE_COMMENTS,
-    payload: comments,
-  };
-};
+export const setComments = (comments) => ({
+  type: UPDATE_COMMENTS,
+  payload: comments,
+});
 
 export const addComments = (comments) => ({
   type: ADD_COMMENTS,

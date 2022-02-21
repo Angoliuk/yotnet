@@ -3,7 +3,7 @@ import PostCard from "../../UploadCards/PostCard/PostCard";
 import "./PostsBlock.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { Loader } from "../../Common/Loader/Loader";
-import { usePostService } from "../../../Service/usePostService";
+import { usePostService } from "../../../Service/Requests/usePostService";
 
 const PostsBlock = (props) => {
   const { posts, showAlertHandler } = props;
@@ -52,23 +52,21 @@ const PostsBlock = (props) => {
 
   useEffect(() => {
     document.addEventListener("scroll", scrollHandler);
-    return function () {
-      document.removeEventListener("scroll", scrollHandler);
-    };
+    return () => document.removeEventListener("scroll", scrollHandler);
   }, [scrollHandler]);
   //
 
-  const PostsListBlock = useCallback(() => {
-    return posts.map((post, i) => {
-      return (
+  const PostsListBlock = useCallback(
+    () =>
+      posts.map((post, i) => (
         <PostCard
           showAlertHandler={showAlertHandler}
           key={i}
           postId={post.id}
         />
-      );
-    });
-  }, [posts, showAlertHandler]);
+      )),
+    [posts, showAlertHandler]
+  );
 
   return (
     <div className="postsBlockWrapper">
@@ -82,10 +80,8 @@ const PostsBlock = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    posts: state.postReducers.posts,
-  };
-};
+const mapStateToProps = (state) => ({
+  posts: state.postReducers.posts,
+});
 
 export default connect(mapStateToProps)(PostsBlock);

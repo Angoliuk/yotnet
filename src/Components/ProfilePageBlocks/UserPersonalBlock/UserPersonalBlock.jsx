@@ -5,7 +5,7 @@ import "./UserPersonalBlock.scss";
 import { Button } from "../../Common/Button/Button";
 import { Input } from "../../Common/Input/Input";
 import InputsWithUserData from "../../Common/InputsWithUserData/InputsWithUserData";
-import { useUserService } from "../../../Service/useUserService";
+import { useUserService } from "../../../Service/Requests/useUserService";
 import { Modal } from "../../Common/Modal/Modal";
 import { Loader } from "../../Common/Loader/Loader";
 
@@ -19,16 +19,14 @@ const UserPersonalBlock = (props) => {
 
   const [user, setUser] = useState(userInfo);
 
-  const inputChangeHandler = (event) => {
+  const inputChangeHandler = (event) =>
     setUser({
       ...user,
       [event.target.name]: event.target.value,
     });
-  };
 
-  const passwordInputChangeHandler = (event) => {
+  const passwordInputChangeHandler = (event) =>
     setNewPassword(event.target.value);
-  };
 
   const avatarChangeHandler = (event) => {
     setUser({
@@ -117,11 +115,9 @@ const UserPersonalBlock = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    accessToken: state.userReducers.accessToken,
-    userId: state.userReducers.id,
-  };
-};
+const mapStateToProps = (state) => ({
+  accessToken: state.userReducers.accessToken,
+  userId: state.userReducers.id,
+});
 
 export default connect(mapStateToProps)(UserPersonalBlock);

@@ -4,7 +4,7 @@ import "./AnnouncementCard.css";
 import { Link, NavLink } from "react-router-dom";
 import { Button } from "../../Common/Button/Button";
 import { Loader } from "../../Common/Loader/Loader";
-import { useAnnouncementService } from "../../../Service/useAnnouncementService";
+import { useAnnouncementService } from "../../../Service/Requests/useAnnouncementService";
 
 const AnnouncementCard = (props) => {
   const { showAlertHandler, announcementId, announcements, userInfo } = props;
@@ -20,10 +20,7 @@ const AnnouncementCard = (props) => {
 
   const deleteAnnouncement = async () => {
     try {
-      await announcementService.deleteAnnouncement(
-        announcementId,
-        userInfo.accessToken
-      );
+      await announcementService.deleteAnnouncement(announcementId);
     } catch (e) {
       showAlertHandler({
         show: true,
@@ -33,31 +30,30 @@ const AnnouncementCard = (props) => {
     }
   };
 
-  const ButtonsForUserPosts = () => {
-    return (
-      <div className="buttonsForUserAnnouncementsBlock">
-        <Link to={`/edit/announcement/${announcementId}`}>
-          <Button
-            text="Edit"
-            name={`editButton${announcementId}`}
-            className="editButtonAnnouncement button"
-            classNameBlock="editButtonBlock"
-          />
-        </Link>
-
+  const ButtonsForUserPosts = () => (
+    <div className="buttonsForUserAnnouncementsBlock">
+      <Link to={`/edit/announcement/${announcementId}`}>
         <Button
-          text="Delete"
-          name={`deleteButton${announcementId}`}
-          className="deleteButtonAnnouncement button"
-          onClick={deleteAnnouncement}
+          text="Edit"
+          name={`editButton${announcementId}`}
+          className="editButtonAnnouncement button"
+          classNameBlock="editButtonBlock"
         />
-      </div>
-    );
-  };
+      </Link>
 
-  const showButtonsForUserAnnouncementsHandler = useCallback(() => {
-    setShowButtonsForUserAnnouncements(!showButtonsForUserAnnouncements);
-  }, [showButtonsForUserAnnouncements]);
+      <Button
+        text="Delete"
+        name={`deleteButton${announcementId}`}
+        className="deleteButtonAnnouncement button"
+        onClick={deleteAnnouncement}
+      />
+    </div>
+  );
+
+  const showButtonsForUserAnnouncementsHandler = useCallback(
+    () => setShowButtonsForUserAnnouncements(!showButtonsForUserAnnouncements),
+    [showButtonsForUserAnnouncements]
+  );
 
   const clickHandler = useCallback(() => {
     if (!showButtonsForUserAnnouncements) return null;
@@ -67,9 +63,7 @@ const AnnouncementCard = (props) => {
 
   useEffect(() => {
     document.addEventListener("click", clickHandler);
-    return function () {
-      document.removeEventListener("click", clickHandler);
-    };
+    return () => document.removeEventListener("click", clickHandler);
   }, [clickHandler, showButtonsForUserAnnouncements]);
 
   return announcementService.announcementLoading ? (

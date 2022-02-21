@@ -7,9 +7,8 @@ import AnnouncementsBlock from "../../UploadBlocks/AnnouncementsBlock/Announceme
 const NavBarMobile = (props) => {
   const { isAuth, id, logout, showAlertHandler } = props;
   const [showMenu, setShowMenu] = useState(false);
-  const handleShowMenu = () => {
-    setShowMenu(!showMenu);
-  };
+  const handleShowMenu = () => setShowMenu(!showMenu);
+
   return isAuth ? (
     <>
       <nav className="loggedNavBarMobile">
@@ -80,17 +79,13 @@ const NavBarMobile = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    isAuth: !!state.userReducers.accessToken,
-    id: state.userReducers.id,
-  };
-};
+const mapStateToProps = (state) => ({
+  isAuth: !!state.userReducers.accessToken,
+  id: state.userReducers.id,
+});
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    logout: () => dispatch(logout()),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  logout: () => dispatch(logout()),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(NavBarMobile);

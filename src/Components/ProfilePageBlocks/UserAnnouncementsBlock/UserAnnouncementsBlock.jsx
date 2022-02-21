@@ -19,14 +19,12 @@ const UserAnnouncementsBlock = (props) => {
         announcements
       </p>
 
-      {userAnnouncements.map((announcement) => {
-        return (
-          <AnnouncementCard
-            key={announcement.id}
-            announcementId={announcement.id}
-          />
-        );
-      })}
+      {userAnnouncements.map((announcement) => (
+        <AnnouncementCard
+          key={announcement.id}
+          announcementId={announcement.id}
+        />
+      ))}
     </div>
   ) : (
     <p className="profilePageAnnouncementsEmptySection">
@@ -35,11 +33,9 @@ const UserAnnouncementsBlock = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    userId: state.userReducers.id,
-    announcements: state.announcementReducers.announcements,
-  };
-};
+const mapStateToProps = (state) => ({
+  userId: state.userReducers.id,
+  announcements: state.announcementReducers.announcements,
+});
 
 export default connect(mapStateToProps)(UserAnnouncementsBlock);

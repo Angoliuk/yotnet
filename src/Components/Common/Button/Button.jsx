@@ -4,17 +4,13 @@ import "./Button.scss";
 export const Button = ({
   name = "button",
   text = "button",
-  onClick = () => {
-    return null;
-  },
+  onClick = () => {},
   className = "button",
   classNameBlock = "",
-}) => {
-  return (
-    <div className={classNameBlock}>
-      <button name={name} id={name} onClick={onClick} className={className}>
-        {text}
-      </button>
-    </div>
-  );
-};
+}) => (
+  <div className={classNameBlock}>
+    <button name={name} id={name} onClick={onClick} className={className}>
+      {text}
+    </button>
+  </div>
+);

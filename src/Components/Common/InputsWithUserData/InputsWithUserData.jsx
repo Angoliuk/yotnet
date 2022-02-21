@@ -28,7 +28,7 @@ const InputsWithUserData = (props) => {
         type="email"
       />
 
-      {showPassword ? (
+      {showPassword && (
         <Input
           name="password"
           value={stateForInputs.password}
@@ -37,7 +37,7 @@ const InputsWithUserData = (props) => {
           className="input personalInfoProfilePageInput"
           type="password"
         />
-      ) : null}
+      )}
 
       <Input
         name="firstname"

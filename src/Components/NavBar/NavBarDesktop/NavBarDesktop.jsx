@@ -63,18 +63,14 @@ const NavBarDesktop = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    isAuth: !!state.userReducers.accessToken,
-    id: state.userReducers.id,
-    avatar: state.userReducers.avatar,
-  };
-};
+const mapStateToProps = (state) => ({
+  isAuth: !!state.userReducers.accessToken,
+  id: state.userReducers.id,
+  avatar: state.userReducers.avatar,
+});
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    logout: () => dispatch(logout()),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  logout: () => dispatch(logout()),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(NavBarDesktop);
