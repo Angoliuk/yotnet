@@ -8,9 +8,9 @@ import { Modal } from "../../Components/Common/Modal/Modal";
 import UserPersonalBlock from "../../Components/ProfilePageBlocks/UserPersonalBlock/UserPersonalBlock";
 import UserPostsBlock from "../../Components/ProfilePageBlocks/UserPostsBlock/UserPostsBlock";
 import UserAnnouncementsBlock from "../../Components/ProfilePageBlocks/UserAnnouncementsBlock/UserAnnouncementsBlock";
-import { usePostService } from "../../Service/usePostService";
-import { useAnnouncementService } from "../../Service/useAnnouncementService";
-import { useUserService } from "../../Service/useUserService";
+import { usePostService } from "../../Service/Requests/usePostService";
+import { useAnnouncementService } from "../../Service/Requests/useAnnouncementService";
+import { useUserService } from "../../Service/Requests/useUserService";
 
 const ProfilePage = (props) => {
   const { showAlertHandler } = props;
@@ -18,6 +18,10 @@ const ProfilePage = (props) => {
   const postService = usePostService();
   const userService = useUserService();
   const announcementService = useAnnouncementService();
+  const loading =
+    userService.userLoading ||
+    postService.postLoading ||
+    announcementService.announcementLoading;
 
   const [section, setSection] = useState("personal");
 
@@ -32,7 +36,7 @@ const ProfilePage = (props) => {
   const dataRequest = useCallback(async () => {
     try {
       if (section === "personal") {
-        const user = await userService.getUser(id);
+        const user = await userService.get(id);
         delete user[0].password;
         setUserInfo(user[0]);
       } else if (section === "announcements") {
@@ -52,9 +56,7 @@ const ProfilePage = (props) => {
     }
   }, [section, id, showAlertHandler]);
 
-  const changeSection = (e) => {
-    setSection(e.target.name);
-  };
+  const changeSection = (e) => setSection(e.target.name);
 
   const ChosenSectionBlock = useCallback(() => {
     return {
@@ -85,10 +87,7 @@ const ProfilePage = (props) => {
 
   return (
     <div className="profilePageMainBlock">
-      {(userService.userLoading ||
-        postService.postLoading ||
-        announcementService.announcementLoading) &&
-        Modal(<Loader />)}
+      {loading && Modal(<Loader />)}
 
       <div className="chooseInfoTypeBlock">
         <Button
