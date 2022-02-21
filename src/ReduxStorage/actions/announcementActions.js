@@ -4,23 +4,17 @@ import {
   UPDATE_ANNOUNCEMENTS,
 } from "./actionsTypes";
 
-export function setAnnouncements(announcements) {
-  return {
-    type: UPDATE_ANNOUNCEMENTS,
-    payload: announcements,
-  };
-}
+export const setAnnouncements = (announcements) => ({
+  type: UPDATE_ANNOUNCEMENTS,
+  payload: announcements,
+});
 
-export function addAnnouncements(announcements) {
-  return {
-    type: ADD_ANNOUNCEMENTS,
-    payload: announcements,
-  };
-}
+export const addAnnouncements = (announcements) => ({
+  type: ADD_ANNOUNCEMENTS,
+  payload: announcements,
+});
 
-export function addToEndAnnouncements(announcements) {
-  return {
-    type: ADD_TO_END_ANNOUNCEMENTS,
-    payload: announcements,
-  };
-}
+export const addToEndAnnouncements = (announcements) => ({
+  type: ADD_TO_END_ANNOUNCEMENTS,
+  payload: announcements,
+});

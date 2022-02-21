@@ -173,11 +173,9 @@ const CommentCard = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    comments: state.postReducers.comments,
-    user: state.userReducers,
-  };
-};
+const mapStateToProps = (state) => ({
+  comments: state.postReducers.comments,
+  user: state.userReducers,
+});
 
 export default connect(mapStateToProps)(CommentCard);

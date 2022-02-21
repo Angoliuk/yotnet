@@ -128,11 +128,9 @@ const AnnouncementCard = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    userInfo: state.userReducers,
-    announcements: state.announcementReducers.announcements,
-  };
-};
+const mapStateToProps = (state) => ({
+  userInfo: state.userReducers,
+  announcements: state.announcementReducers.announcements,
+});
 
 export default connect(mapStateToProps)(AnnouncementCard);

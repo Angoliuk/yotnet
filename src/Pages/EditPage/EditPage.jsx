@@ -94,12 +94,10 @@ const EditPage = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    posts: state.postReducers.posts,
-    announcements: state.announcementReducers.announcements,
-    user: state.userReducers,
-  };
-};
+const mapStateToProps = (state) => ({
+  posts: state.postReducers.posts,
+  announcements: state.announcementReducers.announcements,
+  user: state.userReducers,
+});
 
 export default connect(mapStateToProps)(PagesWrapper(EditPage));

@@ -11,40 +11,38 @@ const ProfilePage = lazy(() => import("./ProfilePage/ProfilePage"));
 const RegisterPage = lazy(() => import("./RegisterPage/RegisterPage"));
 const EditPage = lazy(() => import("./EditPage/EditPage"));
 
-const RoutesList = (props) => {
-  return (
-    <Router>
-      <Suspense fallback={Modal(<Loader />)}>
-        {props.isAuth ? (
-          <Routes>
-            <Route path="/home" element={<HomePage />} />
+const RoutesList = (props) => (
+  <Router>
+    <Suspense fallback={Modal(<Loader />)}>
+      {props.isAuth ? (
+        <Routes>
+          <Route path="/home" element={<HomePage />} />
 
-            <Route path="/profile/:id" element={<ProfilePage />} />
+          <Route path="/profile/:id" element={<ProfilePage />} />
 
-            <Route path="/edit/:uploadType/:id" element={<EditPage />} />
+          <Route path="/edit/:uploadType/:id" element={<EditPage />} />
 
-            <Route path="*" element={<Navigate to="/home" />} />
-          </Routes>
-        ) : (
-          <Routes>
-            <Route path="/home" element={<HomePage />} />
+          <Route path="*" element={<Navigate to="/home" />} />
+        </Routes>
+      ) : (
+        <Routes>
+          <Route path="/home" element={<HomePage />} />
 
-            <Route path="/login" element={<LoginPage />} />
+          <Route path="/login" element={<LoginPage />} />
 
-            <Route path="/register" element={<RegisterPage />} />
+          <Route path="/register" element={<RegisterPage />} />
 
-            <Route path="*" element={<Navigate to="/home" />} />
-          </Routes>
-        )}
-      </Suspense>
-    </Router>
-  );
-};
+          <Route path="*" element={<Navigate to="/home" />} />
+        </Routes>
+      )}
+    </Suspense>
+  </Router>
+);
 
-function mapStateToProps(state) {
+const mapStateToProps = (state) => {
   return {
     isAuth: !!state.userReducers.accessToken,
   };
-}
+};
 
 export default connect(mapStateToProps)(RoutesList);

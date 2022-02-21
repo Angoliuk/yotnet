@@ -41,7 +41,5 @@ export const PagesWrapper = (Component) => {
     );
   };
 
-  return (props) => {
-    return WrappingWithAlert(props);
-  };
+  return (props) => WrappingWithAlert(props);
 };

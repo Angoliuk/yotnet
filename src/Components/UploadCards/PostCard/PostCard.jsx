@@ -182,11 +182,9 @@ const PostCard = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    userInfo: state.userReducers,
-    posts: state.postReducers.posts,
-  };
-};
+const mapStateToProps = (state) => ({
+  userInfo: state.userReducers,
+  posts: state.postReducers.posts,
+});
 
 export default connect(mapStateToProps)(PostCard);

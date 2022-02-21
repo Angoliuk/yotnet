@@ -8,7 +8,7 @@ const initialState = {
   announcements: [],
 };
 
-export default function announcementReducers(state = initialState, action) {
+export const announcementReducers = (state = initialState, action) => {
   switch (action.type) {
     case ADD_ANNOUNCEMENTS:
       return {
@@ -31,4 +31,4 @@ export default function announcementReducers(state = initialState, action) {
     default:
       return state;
   }
-}
+};

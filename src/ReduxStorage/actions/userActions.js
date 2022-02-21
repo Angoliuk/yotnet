@@ -1,6 +1,6 @@
 import { LOGIN, LOGOUT } from "./actionsTypes";
 
-export function autoLogin() {
+export const autoLogin = () => {
   const userInfo = JSON.parse(localStorage.getItem("userData"));
   if (!!userInfo?.accessToken) {
     return {
@@ -12,19 +12,19 @@ export function autoLogin() {
       type: LOGOUT,
     };
   }
-}
+};
 
-export function login(userInfo) {
+export const login = (userInfo) => {
   localStorage.setItem("userData", JSON.stringify(userInfo));
   return {
     type: LOGIN,
     payload: userInfo,
   };
-}
+};
 
-export function logout() {
+export const logout = () => {
   localStorage.removeItem("userData");
   return {
     type: LOGOUT,
   };
-}
+};

@@ -10,7 +10,7 @@ const initialState = {
   avatar: null,
 };
 
-export default function userReducers(state = initialState, action) {
+export const userReducers = (state = initialState, action) => {
   switch (action.type) {
     case LOGOUT:
       return {
@@ -37,4 +37,4 @@ export default function userReducers(state = initialState, action) {
     default:
       return state;
   }
-}
+};

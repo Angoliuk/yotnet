@@ -11,7 +11,7 @@ const initialState = {
   comments: [],
 };
 
-export default function postReducers(state = initialState, action) {
+export const postReducers = (state = initialState, action) => {
   switch (action.type) {
     case UPDATE_POSTS:
       return {
@@ -46,4 +46,4 @@ export default function postReducers(state = initialState, action) {
     default:
       return state;
   }
-}
+};
