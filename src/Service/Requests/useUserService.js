@@ -38,11 +38,15 @@ export const useUserService = () => {
   );
 
   const updateUser = useCallback(
-    async (id, user) => {
+    async (id, user, token) => {
       try {
         setUserLoading(true);
         const updatedUser = await apiUserService.updateUserApi(id, user);
-        reduxUserService.updateUserRedux(updatedUser);
+        reduxUserService.updateUserRedux({
+          ...updatedUser,
+          accessToken: token,
+        });
+        // reduxUserService.loginRedux(updatedUser);
       } catch (e) {
         throw new Error(e.message);
       } finally {
@@ -52,10 +56,26 @@ export const useUserService = () => {
     [apiUserService, reduxUserService]
   );
 
+  const getUser = useCallback(
+    async (id) => {
+      try {
+        setUserLoading(true);
+        const user = await apiUserService.getUserApi(id);
+        return user;
+      } catch (e) {
+        throw new Error(e.message);
+      } finally {
+        setUserLoading(false);
+      }
+    },
+    [apiUserService]
+  );
+
   return {
     register,
     login,
     updateUser,
     userLoading,
+    getUser,
   };
 };

@@ -71,6 +71,7 @@ export const useReduxPostService = () => {
               lastname: user.lastname,
               email: user.email,
               age: user.age,
+              avatar: user?.avatar ? user.avatar : "https://picsum.photos/200",
             },
           },
         ])

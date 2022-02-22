@@ -36,7 +36,7 @@ const ProfilePage = (props) => {
   const dataRequest = useCallback(async () => {
     try {
       if (section === "personal") {
-        const user = await userService.get(id);
+        const user = await userService.getUser(id);
         delete user[0].password;
         setUserInfo(user[0]);
       } else if (section === "announcements") {

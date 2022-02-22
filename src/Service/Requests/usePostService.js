@@ -73,6 +73,7 @@ export const usePostService = () => {
       try {
         setPostLoading(true);
         const newPostFromDB = await apiPostService.createPostApi(post);
+        console.log(newPostFromDB);
         reduxPostService.createPostRedux(newPostFromDB);
       } catch (e) {
         throw new Error(e.message);
